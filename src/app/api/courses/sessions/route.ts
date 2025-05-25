@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
       );
     }
   }
-  const { courseId, sessionStart, sessionEnd } = requestBody;
+  const { courseId, sessionStart, sessionEnd, description } = requestBody;
 
   try {
     await db.insert(courseSession).values({
@@ -41,6 +41,7 @@ export async function POST(request: NextRequest) {
       sessionStart: new Date(sessionStart),
       sessionEnd: new Date(sessionEnd),
       instructorId: authSession.user.id,
+      description: description || null,
     });
     return NextResponse.json({ message: "Course created successfully" });
   } catch (error) {
