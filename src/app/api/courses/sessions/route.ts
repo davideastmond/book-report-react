@@ -50,7 +50,9 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     return NextResponse.json(
       {
-        error: "An error occurred while creating the course.",
+        error:
+          "An error occurred while creating the course:" +
+          (error as Error).message,
       },
       { status: 500 }
     );
@@ -58,7 +60,7 @@ export async function POST(request: NextRequest) {
 }
 
 // This route gets all available courses for browsing purposes
-export async function GET(request: NextRequest) {
+export async function GET() {
   const authSession = await getServerSession(authOptions);
 
   if (!authSession || !authSession.user) {
@@ -93,7 +95,9 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     return NextResponse.json(
       {
-        error: "An error occurred while fetching courses.",
+        error:
+          "An error occurred while fetching courses:" +
+          (error as Error).message,
       },
       { status: 500 }
     );
