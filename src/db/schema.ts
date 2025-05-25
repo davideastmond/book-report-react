@@ -20,6 +20,7 @@ export const academicGrade = pgTable("academic_grade", {
     .references(() => courseSession.id),
   gradeType: text({ enum: ["letter", "percentage"] }).default("percentage"),
   percentageGrade: integer("percentage_grade").notNull(),
+  instructorFeedback: text("instructor_feedback"),
   letterGrade: text({
     enum: [
       "a+",
