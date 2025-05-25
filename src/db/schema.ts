@@ -1,4 +1,11 @@
-import { date, integer, pgTable, text, timestamp } from "drizzle-orm/pg-core";
+import {
+  boolean,
+  date,
+  integer,
+  pgTable,
+  text,
+  timestamp,
+} from "drizzle-orm/pg-core";
 
 export const academicGrade = pgTable("academic_grade", {
   id: text("id").primaryKey(),
@@ -61,6 +68,9 @@ export const courseSession = pgTable("course_session", {
     .references(() => user.id),
   sessionStart: date("session_start", { mode: "date" }).notNull(),
   sessionEnd: date("session_end", { mode: "date" }).notNull(),
+  isCompleted: boolean("is_completed").default(false),
+  description: text("description"),
+  studentAllotment: integer("student_allotment").default(20),
 });
 
 export const roster = pgTable("roster", {
