@@ -2,11 +2,21 @@
 import { CourseClient } from "@/clients/course-client";
 import { CourseSessionClient } from "@/clients/course-session-client";
 import { Course } from "@/db/schema";
+import { createCourseSessionValidator } from "@/lib/validators/course-session/create-course-session-validator";
+import { useRouter } from "next/navigation";
 
 import { useEffect, useState } from "react";
+import z from "zod";
 export function ClassesSessionsCreateForm() {
   const [courses, setCourses] = useState<Partial<Course>[]>([]);
-
+  const [formErrors, setFormErrors] = useState<Record<string, string | null>>({
+    courseId: null,
+    sessionStart: null,
+    sessionEnd: null,
+    description: null,
+    studentAllotment: null,
+  });
+  const router = useRouter();
   useEffect(() => {
     fetchCourses();
   }, []);
@@ -20,15 +30,38 @@ export function ClassesSessionsCreateForm() {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     const data = Object.fromEntries(formData.entries());
-
+    console.log("Form data:", data);
+    clearFormErrors();
+    try {
+      createCourseSessionValidator.parse(data);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        error.errors.forEach((err) => {
+          setFormErrors((prev) => ({
+            ...prev,
+            [err.path[0]]: err.message,
+          }));
+        });
+      }
+      console.error("Error parsing form data:", error);
+      return;
+    }
     try {
       await CourseSessionClient.createCourseSession(data);
-      console.log("Course created successfully");
+      router.push("/dashboard/classes-sessions");
     } catch (error) {
       console.error("Error creating course:", (error as Error).message);
     }
   }
-
+  const clearFormErrors = () => {
+    setFormErrors({
+      courseId: null,
+      sessionStart: null,
+      sessionEnd: null,
+      description: null,
+      studentAllotment: null,
+    });
+  };
   return (
     <div className="p-4">
       <h1 className="text-2xl text-center mb-4 font-bold">
@@ -53,6 +86,48 @@ export function ClassesSessionsCreateForm() {
               </option>
             ))}
           </select>
+          {formErrors.courseId && (
+            <p className="text-red-500 text-sm">{formErrors.courseId}</p>
+          )}
+        </div>
+        <div className="mt-4">
+          <label htmlFor="description">Description:</label>
+          <div>
+            <textarea
+              id="description"
+              name="description"
+              className="w-full p-2"
+              autoComplete="off"
+              rows={4}
+              placeholder="Description of the class session"
+              maxLength={500}
+            ></textarea>
+            {formErrors.description && (
+              <p className="text-red-500 text-sm">{formErrors.description}</p>
+            )}
+          </div>
+        </div>
+        <div className="mt-4">
+          <label htmlFor="studentAllotment">Stu. Allot.:</label>
+          <div>
+            <input
+              type="number"
+              id="studentAllotment"
+              name="studentAllotment"
+              placeholder="20"
+              min={1}
+              max={250}
+              className="w-full p-2"
+              autoComplete="off"
+              data-lpignore="true"
+              onKeyDown={() => false} // Todo, validate
+            ></input>
+            {formErrors.studentAllotment && (
+              <p className="text-red-500 text-sm">
+                {formErrors.studentAllotment}
+              </p>
+            )}
+          </div>
         </div>
         <div className="mt-4">
           <label htmlFor="sessionStart">* Starts:</label>
@@ -67,6 +142,9 @@ export function ClassesSessionsCreateForm() {
               onKeyDown={() => false}
               required
             ></input>
+            {formErrors.sessionStart && (
+              <p className="text-red-500 text-sm">{formErrors.sessionStart}</p>
+            )}
           </div>
         </div>
         <div className="mt-4">
@@ -82,6 +160,9 @@ export function ClassesSessionsCreateForm() {
               required
               onKeyDown={() => false}
             ></input>
+            {formErrors.sessionEnd && (
+              <p className="text-red-500 text-sm">{formErrors.sessionEnd}</p>
+            )}
           </div>
         </div>
         <button

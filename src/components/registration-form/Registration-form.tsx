@@ -3,10 +3,12 @@
 import { registrationValidatorWithConfirmPassword } from "@/lib/validators/registration/registration-validator";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { z } from "zod";
 
 export function RegistrationForm() {
+  const router = useRouter();
   const [formErrors, setFormErrors] = useState<Record<string, string | null>>({
     firstName: null,
     lastName: null,
@@ -49,6 +51,7 @@ export function RegistrationForm() {
     if (response.ok) {
       console.log("Registration successful");
       const { email, password1 } = data;
+      await signInFromRegistration(email as string, password1 as string);
     } else {
       console.error("Registration failed");
     }
@@ -60,10 +63,12 @@ export function RegistrationForm() {
       password,
       redirect: false,
     });
+
     if (res?.error) {
       console.error("Error signing in:", res.error);
       return;
     }
+    router.push("/dashboard");
   }
   const clearFormErrors = () => {
     setFormErrors({

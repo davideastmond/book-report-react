@@ -1,24 +1,8 @@
-"use client";
-import { AdminDashboard } from "@/components/dashboards/admin/Admin-dashboard";
-import { StudentDashboard } from "@/components/dashboards/student/Student-dashboard";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-export default function Dashboard() {
-  const { data: session, status } = useSession();
-  const router = useRouter();
-
-  if (status === "unauthenticated") {
-    return router.replace("/login");
-  }
-
-  if (session?.user) {
-    switch (session.user.role) {
-      case "student":
-        return <StudentDashboard />;
-
-      case "admin":
-      case "teacher":
-        return <AdminDashboard />;
-    }
-  }
+export default function DashboardPage() {
+  return (
+    <div className="lg:ml-[20%] lg:mr-[20%] lg:mt-[20vh]">
+      <h1 className="text-2xl font-bold">Dashboard</h1>
+      <p>Welcome to the dashboard!</p>
+    </div>
+  );
 }
