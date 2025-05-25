@@ -1,8 +1,36 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Book Report
+
+## About
+
+This is a web app platform to manage academics for a school or university, allowing instructors to manages classes, students and grades, and allowing students to manage their classes and grades.
+
+## Tech Stack
+
+- [React](https://reactjs.org/) - A JavaScript library for building user interfaces
+- [Next.js and Vercel](https://nextjs.org/) - The React Framework for Production
+- [TypeScript](https://www.typescriptlang.org/) - A superset of JavaScript that compiles to clean JavaScript output
+- [Tailwind CSS](https://tailwindcss.com/) - A utility-first CSS framework for creating custom designs
+- [Drizzle ORM](https://orm.drizzle.team/) - TypeScript ORM for Postgres databases
+- [PostgreSQL](https://www.postgresql.org/) - The world's most advanced open source relational database
+- [Amazon RDS](https://aws.amazon.com/rds/) - Amazon Relational Database Service (Postgres)
+
+## Environment Variables
 
 ## Getting Started
 
-First, run the development server:
+- Clone the repository.
+- Create a `.env.local` file in the root directory of the project and add the following environment variables, using `sample.env` as a reference:
+- install the dependencies by running:
+
+```bash
+npm install
+# or
+yarn install
+# or
+pnpm install
+```
+
+- Run the development server:
 
 ```bash
 npm run dev
@@ -10,8 +38,6 @@ npm run dev
 yarn dev
 # or
 pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
