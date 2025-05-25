@@ -1,6 +1,7 @@
 import { authOptions } from "@/auth/auth";
 import { db } from "@/db/index";
 import { roster } from "@/db/schema";
+import { isMaxAllotment } from "@/lib/utils/db/course-enrollment-helpers";
 import { and, eq } from "drizzle-orm";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
@@ -40,6 +41,17 @@ export async function POST(
         { status: 400 }
       );
     }
+  }
+
+  // Count the roster for this course session
+  const isCourseFull = await isMaxAllotment(courseSessionId);
+  if (isCourseFull) {
+    return NextResponse.json(
+      {
+        error: `Course session ${courseSessionId} is full`,
+      },
+      { status: 409 }
+    );
   }
 
   const { studentId } = requestBody;

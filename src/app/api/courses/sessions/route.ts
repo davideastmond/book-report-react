@@ -1,7 +1,8 @@
 import { authOptions } from "@/auth/auth";
 import { db } from "@/db/index";
-import { courseSession } from "@/db/schema";
+import { course, courseSession, user } from "@/db/schema";
 import { createCourseSessionValidator } from "@/lib/validators/course-session/create-course-session-validator";
+import { eq } from "drizzle-orm";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 import z from "zod";
@@ -32,7 +33,8 @@ export async function POST(request: NextRequest) {
       );
     }
   }
-  const { courseId, sessionStart, sessionEnd, description } = requestBody;
+  const { courseId, sessionStart, sessionEnd, description, studentAllotment } =
+    requestBody;
 
   try {
     await db.insert(courseSession).values({
@@ -42,12 +44,56 @@ export async function POST(request: NextRequest) {
       sessionEnd: new Date(sessionEnd),
       instructorId: authSession.user.id,
       description: description || null,
+      studentAllotment: studentAllotment,
     });
     return NextResponse.json({ message: "Course created successfully" });
   } catch (error) {
     return NextResponse.json(
       {
         error: "An error occurred while creating the course.",
+      },
+      { status: 500 }
+    );
+  }
+}
+
+// This route gets all available courses for browsing purposes
+export async function GET(request: NextRequest) {
+  const authSession = await getServerSession(authOptions);
+
+  if (!authSession || !authSession.user) {
+    return NextResponse.json(
+      {
+        error: "Unauthorized",
+      },
+      { status: 401 }
+    );
+  }
+
+  try {
+    const availableCourses = await db
+      .select({
+        courseId: course.id,
+        courseName: course.name,
+        courseCode: course.course_code,
+        courseSessionId: courseSession.id,
+        sessionStart: courseSession.sessionStart,
+        sessionEnd: courseSession.sessionEnd,
+        instructorId: user.id,
+        instructorFirstName: user.firstName,
+        instructorLastName: user.lastName,
+        description: courseSession.description,
+        studentAllotment: courseSession.studentAllotment,
+      })
+      .from(courseSession)
+      .where(eq(courseSession.isCompleted, false))
+      .innerJoin(course, eq(course.id, courseSession.courseId))
+      .innerJoin(user, eq(user.id, courseSession.instructorId));
+    return NextResponse.json(availableCourses);
+  } catch (error) {
+    return NextResponse.json(
+      {
+        error: "An error occurred while fetching courses.",
       },
       { status: 500 }
     );

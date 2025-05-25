@@ -7,7 +7,8 @@ export async function GET() {
     return NextResponse.json(courses);
   } catch (error) {
     return NextResponse.json({
-      error: "An error occurred while fetching courses.",
+      error:
+        "An error occurred while fetching courses:" + (error as Error).message,
     });
   }
 }

@@ -1,6 +1,7 @@
 import { authOptions } from "@/auth/auth";
 import { db } from "@/db/index";
 import { course, courseSession, roster, user } from "@/db/schema";
+import { isStudentEnrolled } from "@/lib/utils/db/course-enrollment-helpers";
 import { error } from "console";
 import { eq } from "drizzle-orm";
 import { getServerSession } from "next-auth";
@@ -21,12 +22,20 @@ export async function GET(
   }
   const { courseSessionId } = await urlData.params;
 
-  if (["admin", "teacher"].includes(authSession.user.role)) {
+  if (["admin", "teacher", "student"].includes(authSession.user.role)) {
     const { courseSessionData, students } = await doAdminQuery(courseSessionId);
 
+    const isEnrolled = await isStudentEnrolled({
+      courseSessionId,
+      studentId: authSession.user.id,
+    });
     // This should return one result. We also need to get the students that are in this course session
     return NextResponse.json({
-      courseSessionData: courseSessionData[0],
+      courseSessionData: {
+        ...courseSessionData[0],
+        allotmentCount: students.length,
+      },
+      isEnrolled,
       students,
     });
   }
@@ -51,6 +60,7 @@ async function doAdminQuery(courseSessionId: string) {
       instructorFirstName: user.firstName,
       instructorLastName: user.lastName,
       description: courseSession.description,
+      studentAllotment: courseSession.studentAllotment,
     })
     .from(courseSession)
     .where(eq(courseSession.id, courseSessionId))
