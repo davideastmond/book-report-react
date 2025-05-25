@@ -1,0 +1,64 @@
+MATH1001,Algebra & Trigonometry
+MATH1002,Calculus I
+MATH1003,Statistics & Probability
+MATH1004,Geometry & Logic
+ENGL2001,World Literature
+ENGL2002,Creative Writing
+ENGL2003,Shakespearean Drama
+ENGL2004,Advanced Composition
+SCI3001,Biology: Human Systems
+SCI3002,Chemistry Fundamentals
+SCI3003,Environmental Science
+SCI3004,Physics: Mechanics
+HIST4001,Modern World History
+HIST4002,Canadian History
+HIST4003,Ancient Civilizations
+HIST4004,Political Revolutions
+ART5001,Drawing & Painting
+ART5002,Sculpture & Ceramics
+ART5003,Digital Photography
+ART5004,Mixed Media & Design
+COMP6001,Computer Science Principles
+COMP6002,Web Development Basics
+COMP6003,Cybersecurity Awareness
+COMP6004,Game Design & Programming
+ECON7001,Microeconomics
+ECON7002,Macroeconomics
+ECON7003,Financial Literacy
+ECON7004,Business Analytics
+LANG8001,French Language & Culture
+LANG8002,Spanish for Beginners
+LANG8003,Japanese: Basic Communication
+LANG8004,Latin & Classical Literature
+LANG8005,Italian Language & Culture
+LANG8006,Mandarin for Beginners
+LANG8007,German Language & History
+LANG8008,American Sign Language
+MUS9001,Music Theory & Composition
+MUS9002,Jazz & Contemporary Music
+MUS9003,Orchestration & Arranging
+MUS9004,Vocal Performance Techniques
+PHED1001,Sports & Athletic Training
+PHED1002,Health & Wellness Studies
+PHED1003,Mindfulness & Stress Management
+PHED1004,Yoga & Physical Fitness
+TECH2001,Robotics & Automation
+TECH2002,Electrical Engineering Basics
+TECH2003,Mechanical Systems & Design
+TECH2004,Drone Technology & Applications
+PSYC3001,Introduction to Psychology
+PSYC3002,Cognitive Science & Memory
+PSYC3003,Social Psychology & Behavior
+PSYC3004,Developmental Psychology
+LAW4001,Criminal Justice & Ethics
+LAW4002,Civil Rights & Legal Studies
+LAW4003,International Law & Diplomacy
+LAW4004,Business & Corporate Law
+PHIL5001,Ethics & Moral Philosophy
+PHIL5002,Logic & Critical Thinking
+PHIL5003,Metaphysics & Existentialism
+PHIL5004,Philosophy of Science
+ENV6001,Climate Change & Sustainability
+ENV6002,Renewable Energy & Conservation
+ENV6003,Urban Planning & Environmental Design
+ENV6004,Marine Biology & Oceanography
