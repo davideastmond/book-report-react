@@ -83,9 +83,10 @@ export default function CourseSessionPage() {
   }
   return (
     <div>
-      {["admin", "teacher"].includes(session?.user?.role as string) && (
-        <CourseSessionsNavToolbar />
-      )}
+      {["admin", "teacher"].includes(session?.user?.role as string) &&
+        courseSessionId && (
+          <CourseSessionsNavToolbar courseSessionId={courseSessionId} />
+        )}
       <h1 className="text-3xl py-4">Session Details</h1>
       {courseSession.description && <p>{courseSession.description}</p>}
       <ClassesSessionsList

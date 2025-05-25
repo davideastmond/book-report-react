@@ -1,10 +1,14 @@
-export const CourseSessionsNavToolbar = () => {
+export const CourseSessionsNavToolbar = ({
+  courseSessionId,
+}: {
+  courseSessionId: string;
+}) => {
   return (
     <div className="bg-green-900 p-1 text-sm">
       <ul className="flex justify-around">
         <li>
           <a
-            href="/dashboard/course-work"
+            href={`/dashboard/classes-sessions/${courseSessionId}/course-work`}
             className="text-white hover:text-gray-300"
           >
             Exams and Course Work
@@ -12,7 +16,7 @@ export const CourseSessionsNavToolbar = () => {
         </li>
         <li>
           <a
-            href="/dashboard/grading"
+            href={`/dashboard/classes-sessions/${courseSessionId}/grading`}
             className="text-white hover:text-gray-300"
           >
             Grading
