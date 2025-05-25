@@ -1,3 +1,4 @@
+/* eslint  @typescript-eslint/no-explicit-any: "off" */
 import { db } from "@/db/index";
 import { user as DrizzleDBUser } from "@/db/schema";
 
@@ -9,7 +10,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 export const authOptions: NextAuthOptions = {
   secret: process.env.NEXT_AUTH_SECRET,
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token }) {
       if (!token.email) {
         throw new Error("No email found in token");
       }
@@ -53,7 +54,7 @@ export const authOptions: NextAuthOptions = {
           placeholder: "password",
         },
       },
-      async authorize(credentials, req) {
+      async authorize(credentials) {
         const queryUser = await db.query.user.findFirst({
           where: eq(DrizzleDBUser.email, credentials?.email as string),
         });

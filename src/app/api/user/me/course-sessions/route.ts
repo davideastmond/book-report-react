@@ -3,8 +3,8 @@ import { db } from "@/db/index";
 import { course, courseSession, roster, user } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { getServerSession } from "next-auth";
-import { NextRequest, NextResponse } from "next/server";
-export async function GET(request: NextRequest) {
+import { NextResponse } from "next/server";
+export async function GET() {
   // Get all course sessions for which the user is registered as student
   const authSession = await getServerSession(authOptions);
   if (!authSession || !authSession.user) {

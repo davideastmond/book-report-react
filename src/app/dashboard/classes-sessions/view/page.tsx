@@ -34,7 +34,7 @@ export default function CourseSessionPage() {
     studentId: string,
     customError: string
   ) => {
-    console.error("Not implemented yet");
+    console.error("Not implemented yet", studentId, customError);
   };
 
   const handleStudentAddToRoster = async (
@@ -128,7 +128,7 @@ export default function CourseSessionPage() {
               }
               className="flatStyle"
             >
-              I'm enrolled in this course. Click to remove me.
+              I am enrolled in this course. Click to remove me.
             </button>
           )}
         </div>

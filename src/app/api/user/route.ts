@@ -3,9 +3,9 @@ import { db } from "@/db/index";
 import { user } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { getServerSession } from "next-auth";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   const authSession = await getServerSession(authOptions);
   if (!authSession || !authSession.user) {
     return NextResponse.json(
