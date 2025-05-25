@@ -8,7 +8,7 @@ export const CourseSessionsNavToolbar = ({
       <ul className="flex justify-around">
         <li>
           <a
-            href={`/dashboard/classes-sessions/${courseSessionId}/course-work`}
+            href={`/dashboard/classes-sessions/${courseSessionId}/admin/course-work`}
             className="text-white hover:text-gray-300"
           >
             Exams and Course Work
@@ -16,7 +16,7 @@ export const CourseSessionsNavToolbar = ({
         </li>
         <li>
           <a
-            href={`/dashboard/classes-sessions/${courseSessionId}/grading`}
+            href={`/dashboard/classes-sessions/${courseSessionId}/admin/grading`}
             className="text-white hover:text-gray-300"
           >
             Grading
