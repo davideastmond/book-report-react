@@ -93,6 +93,7 @@ export function RegistrationForm() {
               name="email"
               className="border border-gray-300 rounded p-2 mb-4 w-full"
               required
+              maxLength={100}
             />
             {formErrors.email && (
               <p className="text-red-500 text-sm">{formErrors.email}</p>
@@ -154,6 +155,7 @@ export function RegistrationForm() {
               name="password1"
               className="border border-gray-300 rounded p-2 mb-4 w-full"
               required
+              maxLength={50}
             />
             {formErrors.password1 && (
               <p className="text-red-500 text-sm">{formErrors.password1}</p>
@@ -166,6 +168,7 @@ export function RegistrationForm() {
               id="password2"
               name="password2"
               className="border border-gray-300 rounded p-2 mb-4 w-full"
+              maxLength={50}
               required
             />
             {formErrors.password2 && (
