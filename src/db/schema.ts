@@ -40,6 +40,7 @@ export const academicGrade = pgTable("academic_grade", {
   }).notNull(),
 });
 
+// Also known as class work or course work
 export const academicTask = pgTable("academic_task", {
   id: text("id").primaryKey(),
   name: text("name").notNull(),
