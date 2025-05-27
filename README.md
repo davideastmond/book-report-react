@@ -2,7 +2,7 @@
 
 ## About
 
-This is a web app platform to manage academics for a school or university, allowing instructors to manages classes, students and grades, and allowing students to manage their classes and grades.
+This is a web app platform to manage academics for a school or university, allowing instructors to manages courses, students and grades, and allowing students to manage their courses and grades.
 
 ## Tech Stack
 

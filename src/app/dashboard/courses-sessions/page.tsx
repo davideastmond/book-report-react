@@ -3,11 +3,11 @@ import { CoursesSessionsMain } from "@/components/courses-sessions/Courses-sessi
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 /**
- * This page deals with classes session. Teachers should show all of the classes they've created
- * Admins should see all of the classes created by teachers
- * Students should see all of the classes they are enrolled in
+ * This page deals with courses session. Teachers should show all of the courses they've created
+ * Admins should see all of the courses created by teachers
+ * Students should see all of the courses they are enrolled in
  *
- * Admins and teachers should be able to create new classes
+ * Admins and teachers should be able to create new courses
  */
 export default function CoursesSessionsPage() {
   const router = useRouter();
