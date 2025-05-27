@@ -81,12 +81,12 @@ export default function AdminCourseWorkPage() {
       <CoursesSessionsList coursesSessions={[courseSession]} />
       <h2 className="text-2xl py-4">Tasks for this course</h2>
       <CourseWorkList courseWork={courseWork} />
-      <div className="flex justify-end mx-4">
+      <div className="flex justify-end mx-4 mt-4">
         <Link
           className="flatStyle"
           href={`/dashboard/courses-sessions/${params.courseSessionId}/admin/course-work/new`}
         >
-          Create New
+          New Course Work...
         </Link>
       </div>
     </div>
