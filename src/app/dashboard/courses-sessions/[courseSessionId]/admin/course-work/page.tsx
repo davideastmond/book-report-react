@@ -1,12 +1,15 @@
 // This renders the tools that permits admins and teachers to add/delete/define course work for a specific course
 "use client";
 import { CourseSessionClient } from "@/clients/course-session-client";
-import { ClassesSessionsList } from "@/components/classes-sessions/classes-sessions-list/Classes-sessions-list";
+import { CourseWorkClient } from "@/clients/course-work-client";
+import { CourseWorkList } from "@/components/course-work-list/Course-work-list";
+import { CoursesSessionsList } from "@/components/courses-sessions/courses-sessions-list/Courses-sessions-list";
 import { Spinner } from "@/components/spinner/Spinner";
+import { AcademicTask } from "@/db/schema";
 import { CourseSessionInfo } from "@/lib/types/db/course-session-info";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
 import { useEffect, useState } from "react";
 
@@ -17,36 +20,41 @@ import { useEffect, useState } from "react";
  - Show a current course work table for this one course session with relevant stats
  - show a widget to add new course work
 */
-export default function AdminCourseWorkPage({
-  params,
-}: {
-  params: { courseSessionId: string };
-}) {
+export default function AdminCourseWorkPage() {
   const [courseSession, setCourseSession] = useState<CourseSessionInfo | null>(
     null
   );
-
-  const [stateCourseSessionId, setStateCourseSessionId] = useState<
-    string | null
-  >(null);
+  const [courseWork, setCourseWork] = useState<AcademicTask[]>([]); // Adjust type as needed
 
   const router = useRouter();
   const { data: session, status } = useSession();
+  const params = useParams<{ courseSessionId: string }>();
 
   useEffect(() => {
     fetchCourseSession();
+    fetchCourseWorkForSession();
   }, []);
 
   const fetchCourseSession = async () => {
-    const { courseSessionId } = await params;
     try {
       const res = await CourseSessionClient.fetchCourseSessionByIdAdmin(
-        courseSessionId
+        params.courseSessionId
       );
-      setStateCourseSessionId(courseSessionId);
+
       setCourseSession(res.courseSessionData);
     } catch (error) {
       console.error("Error fetching course session data:", error);
+    }
+  };
+
+  const fetchCourseWorkForSession = async () => {
+    try {
+      const res = await CourseWorkClient.getCourseWorkForSession(
+        params.courseSessionId
+      );
+      setCourseWork(res);
+    } catch (error) {
+      console.error("Error fetching course work for session:", error);
     }
   };
 
@@ -69,18 +77,18 @@ export default function AdminCourseWorkPage({
 
   return (
     <div>
-      <h1 className="text-3xl py-4">Class Work Manager(Admin)</h1>
-      <ClassesSessionsList classesSessions={[courseSession]} />
-      {stateCourseSessionId && (
-        <div className="flex justify-end mx-4">
-          <Link
-            className="flatStyle"
-            href={`/dashboard/classes-sessions/${stateCourseSessionId}/admin/course-work/new`}
-          >
-            Create
-          </Link>
-        </div>
-      )}
+      <h1 className="text-3xl py-4">Course Work Manager(Admin)</h1>
+      <CoursesSessionsList coursesSessions={[courseSession]} />
+      <h2 className="text-2xl py-4">Tasks for this course</h2>
+      <CourseWorkList courseWork={courseWork} />
+      <div className="flex justify-end mx-4">
+        <Link
+          className="flatStyle"
+          href={`/dashboard/courses-sessions/${params.courseSessionId}/admin/course-work/new`}
+        >
+          Create New
+        </Link>
+      </div>
     </div>
   );
 }

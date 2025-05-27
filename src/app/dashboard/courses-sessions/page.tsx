@@ -1,5 +1,5 @@
 "use client";
-import { ClassesSessionsMain } from "@/components/classes-sessions/Classes-sessions-main";
+import { CoursesSessionsMain } from "@/components/courses-sessions/Courses-sessions-main";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 /**
@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
  *
  * Admins and teachers should be able to create new classes
  */
-export default function ClassesSessionsPage() {
+export default function CoursesSessionsPage() {
   const router = useRouter();
   const { data: session, status } = useSession();
 
@@ -18,7 +18,7 @@ export default function ClassesSessionsPage() {
   }
   return (
     <>
-      <ClassesSessionsMain
+      <CoursesSessionsMain
         isAdmin={["admin", "teacher"].includes(session?.user?.role as string)}
       />
     </>

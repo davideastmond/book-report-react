@@ -2,7 +2,7 @@
 "use client";
 
 import { CourseSessionClient } from "@/clients/course-session-client";
-import { ClassesSessionsList } from "@/components/classes-sessions/classes-sessions-list/Classes-sessions-list";
+import { CoursesSessionsList } from "@/components/courses-sessions/courses-sessions-list/Courses-sessions-list";
 import { CourseSessionsNavToolbar } from "@/components/nav/admin/course-sessions-nav-toolbar/Course-sessions-nav-toolbar";
 import { Spinner } from "@/components/spinner/Spinner";
 import { StudentList } from "@/components/student-list/Student-list";
@@ -89,8 +89,8 @@ export default function CourseSessionPage() {
         )}
       <h1 className="text-3xl py-4">Session Details</h1>
       {courseSession.description && <p>{courseSession.description}</p>}
-      <ClassesSessionsList
-        classesSessions={[courseSession]}
+      <CoursesSessionsList
+        coursesSessions={[courseSession]}
         enrolled={{ show: true, count: courseSession.allotmentCount }}
       />
       {["admin", "teacher"].includes(session?.user?.role as string) && (

@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 
 import { useEffect, useState } from "react";
 import z from "zod";
-export function ClassesSessionsCreateForm() {
+export function CoursesSessionsCreateForm() {
   const [courses, setCourses] = useState<Partial<Course>[]>([]);
   const [formErrors, setFormErrors] = useState<Record<string, string | null>>({
     courseId: null,
@@ -30,7 +30,6 @@ export function ClassesSessionsCreateForm() {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     const data = Object.fromEntries(formData.entries());
-    console.log("Form data:", data);
     clearFormErrors();
     try {
       createCourseSessionValidator.parse(data);
@@ -48,7 +47,7 @@ export function ClassesSessionsCreateForm() {
     }
     try {
       await CourseSessionClient.createCourseSession(data);
-      router.push("/dashboard/classes-sessions");
+      router.push("/dashboard/courses-sessions");
     } catch (error) {
       console.error("Error creating course:", (error as Error).message);
     }
