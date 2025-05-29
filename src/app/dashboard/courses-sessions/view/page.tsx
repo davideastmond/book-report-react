@@ -12,7 +12,7 @@ import {
   EnrolledStudent,
 } from "@/lib/types/db/course-session-info";
 import { useSession } from "next-auth/react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function CourseSessionPage() {
@@ -22,10 +22,13 @@ export default function CourseSessionPage() {
   const [students, setStudents] = useState<EnrolledStudent[]>([]);
   const [isEnrolled, setIsEnrolled] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
-  const { data: session } = useSession();
+  const [isBusy, setIsBusy] = useState(false);
+  const [isLocked, setIsLocked] = useState(false);
+  const { status, data: session } = useSession();
   const searchParams = useSearchParams();
 
   const courseSessionId = searchParams.get("id");
+  const router = useRouter();
   useEffect(() => {
     fetchCourseSessionById();
   }, []);
@@ -34,7 +37,19 @@ export default function CourseSessionPage() {
     studentId: string,
     customError: string
   ) => {
-    console.error("Not implemented yet", studentId, customError);
+    try {
+      await CourseSessionClient.removeStudentFromCourseSession({
+        courseSessionId: courseSessionId as string,
+        studentId,
+      });
+      await fetchCourseSessionById();
+    } catch (error) {
+      if (customError) {
+        setApiError(customError);
+        return;
+      }
+      setApiError((error as Error).message);
+    }
   };
 
   const handleStudentAddToRoster = async (
@@ -47,12 +62,14 @@ export default function CourseSessionPage() {
     }
     setApiError(null);
     try {
+      setIsBusy(true);
       await CourseSessionClient.addStudentToCourseSession({
         courseSessionId: courseSessionId,
         studentId,
       });
 
       // Refresh and update
+      setIsBusy(false);
       await fetchCourseSessionById();
     } catch (error) {
       if (customError) {
@@ -60,18 +77,41 @@ export default function CourseSessionPage() {
         return;
       }
       setApiError((error as Error).message);
+      setIsBusy(false);
     }
   };
   async function fetchCourseSessionById() {
     if (courseSessionId) {
+      setIsBusy(true);
       const res = await CourseSessionClient.fetchCourseSessionByIdAdmin(
         courseSessionId
       );
       setCourseSession(res.courseSessionData);
       setStudents(res.students);
-      console.log("isENrolled", res.isEnrolled);
       setIsEnrolled(res.isEnrolled);
+      setIsBusy(false);
+
+      setIsLocked(res.courseSessionData.isLocked || false);
     }
+  }
+
+  async function toggleLockState() {
+    setApiError(null);
+    try {
+      setIsBusy(true);
+      await CourseSessionClient.toggleLockedStatusForCourseSession(
+        courseSessionId as string
+      );
+      setIsBusy(false);
+      await fetchCourseSessionById();
+    } catch (error) {
+      setApiError("Error toggling lock state: " + (error as Error).message);
+    }
+  }
+
+  if (status === "unauthenticated") {
+    router.replace("/login");
+    return null;
   }
 
   if (!courseSession) {
@@ -93,6 +133,22 @@ export default function CourseSessionPage() {
         coursesSessions={[courseSession]}
         enrolled={{ show: true, count: courseSession.allotmentCount }}
       />
+      <section className="text-xl mb-4 font-thin mt-4 flex justify-end">
+        {["admin", "teacher"].includes(session?.user?.role as string) && (
+          <>
+            <input
+              type="checkbox"
+              id="isLocked"
+              name="isLocked"
+              checked={isLocked}
+              onChange={toggleLockState}
+              disabled={isBusy}
+              className="customStyledCheckbox"
+            />
+            <label htmlFor="isLocked">Locked</label>
+          </>
+        )}
+      </section>
       {["admin", "teacher"].includes(session?.user?.role as string) && (
         <div className="mt-10">
           <h3 className="text-2xl">Student Roster</h3>
@@ -105,18 +161,22 @@ export default function CourseSessionPage() {
         </div>
       )}
       {["student"].includes(session?.user?.role as string) && (
-        <div className="flex justify-end px-4">
+        <div className="flex justify-end px-4 mt-4">
           {!isEnrolled && (
             <button
               onClick={() =>
                 handleStudentAddToRoster(
                   session?.user?.id as string,
-                  "We're unable to add you. The course could be full or there was an error. Please contact your registrar or administrator."
+                  "We're unable to enroll you. The course could be full or there was an error. Please contact your registrar or administrator."
                 )
               }
               className="flatStyle"
+              disabled={isBusy}
             >
-              Enroll in this course
+              <span className="flex items-center gap-2">
+                {isBusy && <Spinner />}
+                Enroll in this course
+              </span>
             </button>
           )}
           {isEnrolled && (
@@ -128,8 +188,12 @@ export default function CourseSessionPage() {
                 )
               }
               className="flatStyle"
+              disabled={isBusy}
             >
-              I am enrolled in this course. Click to remove me.
+              <span className="flex items-center gap-2">
+                {isBusy && <Spinner />}I am enrolled in this course. Click to
+                remove me.
+              </span>
             </button>
           )}
         </div>
