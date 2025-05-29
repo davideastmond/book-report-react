@@ -4,6 +4,7 @@ import { CourseSessionClient } from "@/clients/course-session-client";
 import { CourseWorkClient } from "@/clients/course-work-client";
 import { CourseWorkList } from "@/components/course-work-list/Course-work-list";
 import { CoursesSessionsList } from "@/components/courses-sessions/courses-sessions-list/Courses-sessions-list";
+import { CourseSessionsNavToolbar } from "@/components/nav/admin/course-sessions-nav-toolbar/Course-sessions-nav-toolbar";
 import { Spinner } from "@/components/spinner/Spinner";
 import { AcademicTask } from "@/db/schema";
 import { CourseSessionInfo } from "@/lib/types/db/course-session-info";
@@ -77,6 +78,7 @@ export default function AdminCourseWorkPage() {
 
   return (
     <div>
+      <CourseSessionsNavToolbar courseSessionId={params.courseSessionId} />
       <h1 className="text-3xl py-4">Course Work Manager(Admin)</h1>
       <CoursesSessionsList coursesSessions={[courseSession]} />
       <h2 className="text-2xl py-4">Tasks for this course</h2>
