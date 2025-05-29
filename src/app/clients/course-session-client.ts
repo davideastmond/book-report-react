@@ -96,6 +96,29 @@ export const CourseSessionClient = {
       throw new Error("Failed to add user to course session");
     }
   },
+  removeStudentFromCourseSession: async ({
+    courseSessionId,
+    studentId,
+  }: {
+    courseSessionId: string;
+    studentId: string;
+  }): Promise<void> => {
+    const res = await fetch(
+      `/api/courses/sessions/${courseSessionId}/student`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          studentId,
+        }),
+      }
+    );
+    if (!res.ok) {
+      throw new Error("Failed to remove user from session");
+    }
+  },
   fetchAvailableCourses: async (): Promise<CourseSessionInfo[]> => {
     const res = await fetch("/api/courses/sessions", {
       method: "GET",
@@ -135,6 +158,19 @@ export const CourseSessionClient = {
     });
     if (!res.ok) {
       throw new Error("Failed to submit grade updates for course session");
+    }
+  },
+  toggleLockedStatusForCourseSession: async (
+    courseSessionId: string
+  ): Promise<void> => {
+    const res = await fetch(`/api/courses/sessions/${courseSessionId}/lock`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (!res.ok) {
+      throw new Error("Failed to toggle locked status for course session");
     }
   },
 };
