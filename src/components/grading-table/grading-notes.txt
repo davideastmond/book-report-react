@@ -1,0 +1,11 @@
+
+[assignmentId]: {
+  [studentId]: {
+    percentageGrade: number,
+    letterGrade:string,
+    instructorFeedback: string
+  }
+  [studentId2]: {
+    ...//
+  }
+}
