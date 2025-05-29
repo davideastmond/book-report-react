@@ -89,7 +89,7 @@ export function CourseGradingMain({
     studentId,
     courseWorkId,
   }: {
-    data: Record<string, any>;
+    data: Record<string, object | string | number | boolean>;
     studentId: string;
     courseWorkId: string;
   }) => {

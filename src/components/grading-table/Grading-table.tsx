@@ -42,8 +42,14 @@ export function GradingTable({
     const name = (
       event as ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>
     ).target.name;
-    onTableDataChange &&
-      onTableDataChange({ data: { [name]: value }, studentId, courseWorkId });
+
+    if (onTableDataChange) {
+      onTableDataChange({
+        data: { [name]: value },
+        studentId,
+        courseWorkId,
+      });
+    }
   }
 
   return (

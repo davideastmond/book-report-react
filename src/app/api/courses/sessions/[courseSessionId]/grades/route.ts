@@ -56,7 +56,7 @@ export async function PATCH(
   try {
     const data = (await req.json()) as TableData;
     // Validate data structure here if necessary
-    const taskedPromises: any[] = [];
+    const taskedPromises: Promise<void>[] = [];
     Object.entries(data).forEach(([academicTaskId, studentGradeData]) => {
       taskedPromises.push(
         updateGradeByTask({
@@ -135,7 +135,7 @@ async function updateGradeByTask({
       courseSessionId,
       academicTaskId,
       userId: studentId,
-      ...(gradeData as any),
+      ...(gradeData as any) /* eslint-disable-line @typescript-eslint/no-explicit-any */,
     });
   }
 
@@ -149,7 +149,7 @@ async function updateGradeByTask({
   ) {
     await db
       .update(academicGrade)
-      .set(gradeData as any)
+      .set(gradeData as object)
       .where(
         and(
           eq(academicGrade.courseSessionId, courseSessionId),
