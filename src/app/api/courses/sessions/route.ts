@@ -86,6 +86,7 @@ export async function GET() {
         instructorLastName: user.lastName,
         description: courseSession.description,
         studentAllotment: courseSession.studentAllotment,
+        isLocked: courseSession.isLocked,
       })
       .from(courseSession)
       .where(eq(courseSession.isCompleted, false))

@@ -69,6 +69,7 @@ export const courseSession = pgTable("course_session", {
   sessionStart: date("session_start", { mode: "date" }).notNull(),
   sessionEnd: date("session_end", { mode: "date" }).notNull(),
   isCompleted: boolean("is_completed").default(false),
+  isLocked: boolean("is_locked").default(false),
   description: text("description"),
   studentAllotment: integer("student_allotment").default(20),
 });
