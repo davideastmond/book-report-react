@@ -1,5 +1,6 @@
 "use client";
 import { CoursesSessionsMain } from "@/components/courses-sessions/Courses-sessions-main";
+import { CourseSessionsNavToolbar } from "@/components/nav/student/course-sessions-nav-toolbar";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 /**
@@ -18,6 +19,7 @@ export default function CoursesSessionsPage() {
   }
   return (
     <>
+      <CourseSessionsNavToolbar />
       <CoursesSessionsMain
         isAdmin={["admin", "teacher"].includes(session?.user?.role as string)}
       />

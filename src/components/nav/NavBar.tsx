@@ -31,7 +31,7 @@ export function NavBar() {
                 href="/dashboard/courses-sessions"
                 className="text-white hover:text-gray-300"
               >
-                Courses
+                My Courses
               </a>
             </li>
             <li style={styles.navMenuItem}>
