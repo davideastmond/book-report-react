@@ -33,7 +33,7 @@ export function CourseGradingMain({
       await CourseSessionClient.fetchGradesForCourseSession(
         courseData.courseSessionData.courseSessionId as string
       );
-    console.log("Fetched course grades:", courseSessionGrades);
+
     const convertedTableData = convertToTableData(courseSessionGrades);
     setTableData(convertedTableData);
   }
