@@ -2,6 +2,7 @@
 
 import { CourseSessionClient } from "@/clients/course-session-client";
 import { CourseWorkClient } from "@/clients/course-work-client";
+import { AcademicTask } from "@/db/schema";
 import { TaskType } from "@/lib/types/course-work/task-type";
 import { CourseSessionInfo } from "@/lib/types/db/course-session-info";
 import { newCourseWorkValidator } from "@/lib/validators/course-work/new-course-work-validator";
@@ -11,10 +12,14 @@ import { z } from "zod";
 
 type FormFields = "name" | "description" | "taskType" | "dueDate";
 
-export function CourseWorkCreateForm({
+export function CourseWorkCreateUpdateForm({
   courseSessionId,
+  courseWorkId,
+  isEditing = false,
 }: {
   courseSessionId: string;
+  courseWorkId?: string;
+  isEditing?: boolean;
 }) {
   const [formErrors, setFormErrors] = useState<
     Record<FormFields, string | null>
@@ -27,6 +32,10 @@ export function CourseWorkCreateForm({
   const [apiError, setApiError] = useState<string | null>(null);
   const [courseSessionInfo, setCourseSessionInfo] =
     useState<CourseSessionInfo | null>(null);
+  const [courseWorkData, setCourseWorkData] = useState<AcademicTask | null>(
+    null
+  );
+  const [isBusy, setIsBusy] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -36,16 +45,56 @@ export function CourseWorkCreateForm({
   }, []);
 
   async function loadCourseSessionData() {
+    setIsBusy(true);
     const data = await CourseSessionClient.fetchCourseSessionByIdAdmin(
       courseSessionId
     );
     setCourseSessionInfo(data.courseSessionData);
+    if (isEditing && courseWorkId) {
+      // If editing, fetch the course work data by ID
+      await fetchCourseWorkDataById();
+    }
+    setIsBusy(false);
+  }
+
+  async function fetchCourseWorkDataById() {
+    const data = await CourseWorkClient.getCourseWorkById({
+      courseSessionId: courseSessionId,
+      courseWorkId: courseWorkId as string,
+    });
+
+    const nameInputField = document.getElementById("name") as HTMLInputElement;
+    const descriptionInputField = document.getElementById(
+      "description"
+    ) as HTMLTextAreaElement;
+    const taskTypeInputField = document.getElementById(
+      "taskType"
+    ) as HTMLSelectElement;
+    const dueDateInputField = document.getElementById(
+      "dueDate"
+    ) as HTMLInputElement;
+    if (nameInputField) {
+      nameInputField.value = data.name || "";
+    }
+    if (descriptionInputField) {
+      descriptionInputField.value = data.description || "";
+    }
+    if (taskTypeInputField) {
+      taskTypeInputField.value = data.taskType || "";
+    }
+    if (dueDateInputField) {
+      dueDateInputField.value = data.dueDate
+        ? new Date(data.dueDate).toISOString().split("T")[0]
+        : "";
+    }
+    setCourseWorkData(data);
   }
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     const data = Object.fromEntries(formData.entries());
+    console.log("Form data submitted:", data);
     clearFormErrors();
     try {
       newCourseWorkValidator.parse(data);
@@ -62,11 +111,24 @@ export function CourseWorkCreateForm({
       return;
     }
     // Send the data
+    if (isEditing) {
+      // Patch request to update course work
+      updateCourseWork(data);
+      return;
+    }
+    await createCourseWork(data);
+  };
+
+  async function createCourseWork(data: Partial<AcademicTask>) {
+    // Send the data
     try {
+      setIsBusy(true);
       await CourseWorkClient.createCourseWork({
         courseSessionId: courseSessionId,
         data,
       });
+
+      setIsBusy(false);
       // Redirect to the course work page after successful creation
       router.push(
         `/dashboard/courses-sessions/${courseSessionId}/admin/course-work`
@@ -79,7 +141,26 @@ export function CourseWorkCreateForm({
         setApiError("An unknown error occurred while creating course work.");
       }
     }
-  };
+  }
+
+  async function updateCourseWork(data: Partial<AcademicTask>) {
+    try {
+      setIsBusy(true);
+      CourseWorkClient.updateCourseWorkAttributesById(
+        courseSessionId,
+        courseWorkId!,
+        data
+      );
+      setIsBusy(false);
+    } catch (error) {
+      console.error("Error updating course work:", error);
+      if (error instanceof Error) {
+        setApiError(error.message);
+      } else {
+        setApiError("An unknown error occurred while updating course work.");
+      }
+    }
+  }
 
   const clearFormErrors = () => {
     setFormErrors({
@@ -89,6 +170,7 @@ export function CourseWorkCreateForm({
       dueDate: null,
     });
   };
+
   return (
     <div className="p-4">
       {courseSessionInfo && (
@@ -99,7 +181,7 @@ export function CourseWorkCreateForm({
         </h2>
       )}
       <h1 className="text-2xl text-center mb-4 font-bold">
-        Create Academic Task
+        {isEditing ? "Edit Course Work details" : "Create Course Work"}
       </h1>
       <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
         <div>
@@ -112,6 +194,7 @@ export function CourseWorkCreateForm({
               id="name"
               className="border border-gray-300 rounded p-2 mb-4 w-full"
               required
+              disabled={isBusy}
             />
             {formErrors.name && (
               <p className="text-red-500 text-sm">{formErrors.name}</p>
@@ -121,8 +204,9 @@ export function CourseWorkCreateForm({
             <label htmlFor="taskType">* Course</label>
             <select
               className="border rounded p-2 mb-4 w-full"
-              name="courseId"
-              id="courseId"
+              name="taskType"
+              id="taskType"
+              disabled={isBusy}
             >
               {Object.values(TaskType).map((taskType) => (
                 <option
@@ -149,6 +233,7 @@ export function CourseWorkCreateForm({
                 rows={4}
                 placeholder="Description academic task"
                 maxLength={1000}
+                disabled={isBusy}
               ></textarea>
               {formErrors.description && (
                 <p className="text-red-500 text-sm">{formErrors.description}</p>
@@ -167,6 +252,7 @@ export function CourseWorkCreateForm({
                 data-lpignore="true"
                 onKeyDown={() => false}
                 required
+                disabled={isBusy}
               ></input>
               {formErrors.dueDate && (
                 <p className="text-red-500 text-sm">{formErrors.dueDate}</p>
@@ -176,9 +262,10 @@ export function CourseWorkCreateForm({
         </div>
         <button
           type="submit"
+          disabled={isBusy}
           className="flatStyle inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
         >
-          Create Course Work
+          {isEditing ? "Update" : "Create Course Work"}
         </button>
         <div>
           {apiError && <p className="text-red-500 text-sm">{apiError}</p>}
