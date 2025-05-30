@@ -1,4 +1,6 @@
+"use client";
 import { AcademicTask } from "@/db/schema";
+import { useRouter } from "next/navigation";
 
 export function CourseWorkList({
   courseWork,
@@ -7,6 +9,7 @@ export function CourseWorkList({
   courseWork: AcademicTask[];
   linkable?: boolean;
 }) {
+  const router = useRouter();
   return (
     <table className="table-auto w-full">
       <thead className="text-left">
@@ -26,7 +29,13 @@ export function CourseWorkList({
             } hover:bg-list-hover/20 ${
               index % 2 === 0 ? "bg-slate-400/10" : "bg-background"
             }`}
-            onClick={() => {}}
+            onClick={() => {
+              if (linkable) {
+                router.push(
+                  `/dashboard/courses-sessions/${work.courseSessionId}/admin/course-work/${work.id}/edit`
+                );
+              }
+            }}
           >
             <td className="p-2">{work.name}</td>
             <td className="p-2">{work.description}</td>
