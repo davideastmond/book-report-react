@@ -1,5 +1,5 @@
 "use client";
-import { ClassesSessionsCreateForm } from "@/components/classes-sessions/classes-sessions-create/ClassesSessionsCreateForm";
+import { CoursesSessionsCreateForm } from "@/components/courses-sessions/courses-sessions-create/CoursesSessionsCreateForm";
 import { useSession } from "next-auth/react";
 
 export default function NewClassSessionPage() {
@@ -10,7 +10,7 @@ export default function NewClassSessionPage() {
   }
 
   if (session?.user?.role === "teacher" || session?.user?.role === "admin") {
-    return <ClassesSessionsCreateForm />;
+    return <CoursesSessionsCreateForm />;
   }
   return <div>Unauthorized</div>;
 }

@@ -1,6 +1,6 @@
 "use client";
 import { CourseSessionClient } from "@/clients/course-session-client";
-import { ClassesSessionsList } from "@/components/classes-sessions/classes-sessions-list/Classes-sessions-list";
+import { CoursesSessionsList } from "@/components/courses-sessions/courses-sessions-list/Courses-sessions-list";
 import { CourseSessionInfo } from "@/lib/types/db/course-session-info";
 import { useEffect, useState } from "react";
 
@@ -17,7 +17,7 @@ export default function BrowseCoursesPage() {
   }
   return (
     <div>
-      <ClassesSessionsList classesSessions={courseSessions} linkable />
+      <CoursesSessionsList coursesSessions={courseSessions} linkable />
     </div>
   );
 }

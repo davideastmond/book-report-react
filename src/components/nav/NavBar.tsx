@@ -28,10 +28,10 @@ export function NavBar() {
           <ul className="flex space-x-4">
             <li style={styles.navMenuItem}>
               <a
-                href="/dashboard/classes-sessions"
+                href="/dashboard/courses-sessions"
                 className="text-white hover:text-gray-300"
               >
-                Classes
+                My Courses
               </a>
             </li>
             <li style={styles.navMenuItem}>

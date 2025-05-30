@@ -11,6 +11,7 @@ export type CourseSessionInfo = {
   description: string | null;
   studentAllotment: number;
   allotmentCount: number;
+  isLocked: boolean;
 };
 
 export type EnrolledStudent = {

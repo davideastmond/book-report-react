@@ -2,12 +2,12 @@ import { CourseSessionClient } from "@/clients/course-session-client";
 import { CourseSessionsAPIResponse } from "@/lib/types/db/course-session-info";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { ClassesSessionsList } from "./classes-sessions-list/Classes-sessions-list";
+import { CoursesSessionsList } from "./courses-sessions-list/Courses-sessions-list";
 
-type ClassesSessionsMainProps = {
+type CoursesSessionsMainProps = {
   isAdmin?: boolean;
 };
-export function ClassesSessionsMain({ isAdmin }: ClassesSessionsMainProps) {
+export function CoursesSessionsMain({ isAdmin }: CoursesSessionsMainProps) {
   const [courseSessions, setCourseSessions] =
     useState<CourseSessionsAPIResponse>([]);
   useEffect(() => {
@@ -29,12 +29,12 @@ export function ClassesSessionsMain({ isAdmin }: ClassesSessionsMainProps) {
     return (
       <>
         <div className="mt-4 flex justify-end">
-          <Link href="/dashboard/classes-sessions/new" className="flatStyle">
+          <Link href="/dashboard/courses-sessions/new" className="flatStyle">
             + New Class Session
           </Link>
         </div>
         <div className="flex justify-end p-4">
-          <ClassesSessionsList classesSessions={courseSessions} linkable />
+          <CoursesSessionsList coursesSessions={courseSessions} linkable />
         </div>
       </>
     );
@@ -42,7 +42,7 @@ export function ClassesSessionsMain({ isAdmin }: ClassesSessionsMainProps) {
   return (
     <>
       <div className="flex justify-end p-4">
-        <ClassesSessionsList classesSessions={courseSessions} linkable />
+        <CoursesSessionsList coursesSessions={courseSessions} linkable />
       </div>
     </>
   );
