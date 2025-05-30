@@ -4,6 +4,24 @@
 
 This is a web app platform to manage academics for a school or university, allowing instructors to manages courses, students and grades, and allowing students to manage their courses and grades.
 
+## Features
+
+### Authentication
+
+- Sign up and log in with email and password.
+- Student and Admin/Teacher security access
+
+### Courses and Course Work
+
+- Admins/Teachers can create courses.
+- Admins/Teachers can create/update course work (assignments, quizzes, etc.) for courses.
+- Admins/Teachers can enroll students in courses.
+- Students can enroll themselves in courses.
+
+### Grading
+
+- Admins/Teachers can assign numerical and letter grades to students for course work.
+
 ## Tech Stack
 
 - [React](https://reactjs.org/) - A JavaScript library for building user interfaces
@@ -15,6 +33,10 @@ This is a web app platform to manage academics for a school or university, allow
 - [Amazon RDS](https://aws.amazon.com/rds/) - Amazon Relational Database Service (Postgres)
 
 ## Environment Variables
+
+DATABASE_URL=#the connection string for your postgres instance
+NEXT_AUTH_SECRET=#Required for auth - it can be any string
+ADMIN_PASSWORD=#Create an admin password to allow for admin tasks. It can be any string. It needs to be included in the Bearer token for admin tasks.
 
 ## Getting Started
 
