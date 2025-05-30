@@ -1,8 +1,58 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Book Report
+
+## About
+
+This is a web app platform to manage academics for a school or university, allowing instructors to manages courses, students and grades, and allowing students to manage their courses and grades.
+
+## Features
+
+### Authentication
+
+- Sign up and log in with email and password.
+- Student and Admin/Teacher security access
+
+### Courses and Course Work
+
+- Admins/Teachers can create courses.
+- Admins/Teachers can create/update course work (assignments, quizzes, etc.) for courses.
+- Admins/Teachers can enroll students in courses.
+- Students can enroll themselves in courses.
+
+### Grading
+
+- Admins/Teachers can assign numerical and letter grades to students for course work.
+
+## Tech Stack
+
+- [React](https://reactjs.org/) - A JavaScript library for building user interfaces
+- [Next.js and Vercel](https://nextjs.org/) - The React Framework for Production
+- [TypeScript](https://www.typescriptlang.org/) - A superset of JavaScript that compiles to clean JavaScript output
+- [Tailwind CSS](https://tailwindcss.com/) - A utility-first CSS framework for creating custom designs
+- [Drizzle ORM](https://orm.drizzle.team/) - TypeScript ORM for Postgres databases
+- [PostgreSQL](https://www.postgresql.org/) - The world's most advanced open source relational database
+- [Amazon RDS](https://aws.amazon.com/rds/) - Amazon Relational Database Service (Postgres)
+
+## Environment Variables
+
+DATABASE_URL=#the connection string for your postgres instance
+NEXT_AUTH_SECRET=#Required for auth - it can be any string
+ADMIN_PASSWORD=#Create an admin password to allow for admin tasks. It can be any string. It needs to be included in the Bearer token for admin tasks.
 
 ## Getting Started
 
-First, run the development server:
+- Clone the repository.
+- Create a `.env.local` file in the root directory of the project and add the following environment variables, using `sample.env` as a reference:
+- install the dependencies by running:
+
+```bash
+npm install
+# or
+yarn install
+# or
+pnpm install
+```
+
+- Run the development server:
 
 ```bash
 npm run dev
@@ -10,8 +60,6 @@ npm run dev
 yarn dev
 # or
 pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.

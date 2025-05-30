@@ -30,14 +30,20 @@ export async function GET(
       studentId: authSession.user.id,
     });
     // This should return one result. We also need to get the students that are in this course session
-    return NextResponse.json({
+    const dataBeforeSending = {
       courseSessionData: {
         ...courseSessionData[0],
         allotmentCount: students.length,
       },
       isEnrolled,
       students,
-    });
+    };
+
+    // For privacy concerns, we do not send student data to students
+    if (["student"].includes(authSession.user.role)) {
+      dataBeforeSending.students = [];
+    }
+    return NextResponse.json(dataBeforeSending);
   }
   return NextResponse.json(
     {
@@ -61,11 +67,16 @@ async function doAdminQuery(courseSessionId: string) {
       instructorLastName: user.lastName,
       description: courseSession.description,
       studentAllotment: courseSession.studentAllotment,
+      isLocked: courseSession.isLocked,
     })
     .from(courseSession)
     .where(eq(courseSession.id, courseSessionId))
     .leftJoin(user, eq(user.id, courseSession.instructorId))
     .leftJoin(course, eq(course.id, courseSession.courseId));
+
+  if (courseSessionData.length === 0) {
+    throw new Error("Course session not found");
+  }
 
   const studentsEnrolledInCourse = await db
     .select({

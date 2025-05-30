@@ -1,0 +1,15 @@
+export const LETTER_GRADES = [
+  "a+",
+  "a",
+  "a-",
+  "b+",
+  "b",
+  "b-",
+  "c+",
+  "c",
+  "c-",
+  "d+",
+  "d",
+  "d-",
+  "f",
+];

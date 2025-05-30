@@ -2,21 +2,20 @@
 import { CourseSessionsAPIResponse } from "@/lib/types/db/course-session-info";
 import { useRouter } from "next/navigation";
 
-type ClassesSessionsListProps = {
-  classesSessions?: CourseSessionsAPIResponse;
+type CoursesSessionsListProps = {
+  coursesSessions?: CourseSessionsAPIResponse;
   linkable?: boolean;
   enrolled?: {
     show: boolean;
     count: number;
   };
 };
-export function ClassesSessionsList({
-  classesSessions,
+export function CoursesSessionsList({
+  coursesSessions,
   linkable,
   enrolled,
-}: ClassesSessionsListProps) {
+}: CoursesSessionsListProps) {
   const router = useRouter();
-
   return (
     <table className="table-auto w-full">
       <thead className="text-left">
@@ -30,8 +29,15 @@ export function ClassesSessionsList({
           {enrolled && enrolled.show && <th>Enrolled</th>}
         </tr>
       </thead>
-      <tbody className="">
-        {classesSessions?.map((session, index) => (
+      <tbody>
+        {coursesSessions && coursesSessions.length === 0 && (
+          <tr>
+            <td colSpan={7} className="text-center p-4">
+              No course sessions found.
+            </td>
+          </tr>
+        )}
+        {coursesSessions?.map((session, index) => (
           <tr
             key={session.courseSessionId}
             className={`${
@@ -42,7 +48,7 @@ export function ClassesSessionsList({
             onClick={() => {
               if (!linkable) return;
               router.push(
-                `/dashboard/classes-sessions/view?id=${session.courseSessionId}`
+                `/dashboard/courses-sessions/view?id=${session.courseSessionId}`
               );
             }}
           >
