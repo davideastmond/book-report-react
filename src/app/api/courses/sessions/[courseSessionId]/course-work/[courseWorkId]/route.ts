@@ -24,7 +24,7 @@ export async function GET(
   }
 
   const { courseSessionId, courseWorkId } = await urlData.params;
-  console.log(courseSessionId, courseWorkId);
+
   if (!courseSessionId || !courseWorkId) {
     return NextResponse.json(
       {
