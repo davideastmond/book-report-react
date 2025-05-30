@@ -32,9 +32,6 @@ export function CourseWorkCreateUpdateForm({
   const [apiError, setApiError] = useState<string | null>(null);
   const [courseSessionInfo, setCourseSessionInfo] =
     useState<CourseSessionInfo | null>(null);
-  const [courseWorkData, setCourseWorkData] = useState<AcademicTask | null>(
-    null
-  );
   const [isBusy, setIsBusy] = useState(false);
   const router = useRouter();
 
@@ -87,7 +84,6 @@ export function CourseWorkCreateUpdateForm({
         ? new Date(data.dueDate).toISOString().split("T")[0]
         : "";
     }
-    setCourseWorkData(data);
   }
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
