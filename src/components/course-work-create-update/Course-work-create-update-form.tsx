@@ -94,8 +94,8 @@ export function CourseWorkCreateUpdateForm({
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     const data = Object.fromEntries(formData.entries());
-    console.log("Form data submitted:", data);
     clearFormErrors();
+
     try {
       newCourseWorkValidator.parse(data);
     } catch (error) {

@@ -1,5 +1,5 @@
 "use client";
-import { CourseWorkCreateForm } from "@/components/course-work-create/Course-work-create-form";
+import { CourseWorkCreateUpdateForm } from "@/components/course-work-create-update/Course-work-create-update-form";
 import { useParams } from "next/navigation";
 
 export default function NewCourseWorkPage() {
@@ -7,7 +7,7 @@ export default function NewCourseWorkPage() {
   return (
     <div>
       <h1 className="text-3xl py-4">New Course Work</h1>
-      <CourseWorkCreateForm courseSessionId={params.courseSessionId} />
+      <CourseWorkCreateUpdateForm courseSessionId={params.courseSessionId} />
     </div>
   );
 }

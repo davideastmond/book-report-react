@@ -82,7 +82,7 @@ export default function AdminCourseWorkPage() {
       <h1 className="text-3xl py-4">Course Work Manager(Admin)</h1>
       <CoursesSessionsList coursesSessions={[courseSession]} />
       <h2 className="text-2xl py-4">Tasks for this course</h2>
-      <CourseWorkList courseWork={courseWork} />
+      <CourseWorkList courseWork={courseWork} linkable />
       <div className="flex justify-end mx-4 mt-4">
         <Link
           className="flatStyle"
