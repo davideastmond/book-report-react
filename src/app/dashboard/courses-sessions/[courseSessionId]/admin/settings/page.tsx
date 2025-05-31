@@ -109,6 +109,11 @@ export default function CourseSessionSettingsPage() {
           )}
         </div>
       </section>
+      {apiError && (
+        <div className="text-red-500 mt-4">
+          <p>Error: {apiError}</p>
+        </div>
+      )}
     </div>
   );
 }
