@@ -23,7 +23,7 @@ export default function CourseSessionPage() {
   const [isEnrolled, setIsEnrolled] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
   const [isBusy, setIsBusy] = useState(false);
-  const [isLocked, setIsLocked] = useState(false);
+
   const { status, data: session } = useSession();
   const searchParams = useSearchParams();
 
@@ -91,22 +91,6 @@ export default function CourseSessionPage() {
       setStudents(res.students);
       setIsEnrolled(res.isEnrolled);
       setIsBusy(false);
-
-      setIsLocked(res.courseSessionData.isLocked || false);
-    }
-  }
-
-  async function toggleLockState() {
-    setApiError(null);
-    try {
-      setIsBusy(true);
-      await CourseSessionClient.toggleLockedStatusForCourseSession(
-        courseSessionId as string
-      );
-      setIsBusy(false);
-      await fetchCourseSessionById();
-    } catch (error) {
-      setApiError("Error toggling lock state: " + (error as Error).message);
     }
   }
 
@@ -134,24 +118,6 @@ export default function CourseSessionPage() {
         coursesSessions={[courseSession]}
         enrolled={{ show: true, count: courseSession.allotmentCount }}
       />
-      {!courseSession.isCompleted && (
-        <section className="text-xl mb-4 font-thin mt-4 flex justify-end">
-          {["admin", "teacher"].includes(session?.user?.role as string) && (
-            <>
-              <input
-                type="checkbox"
-                id="isLocked"
-                name="isLocked"
-                checked={isLocked}
-                onChange={toggleLockState}
-                disabled={isBusy}
-                className="customStyledCheckbox"
-              />
-              <label htmlFor="isLocked">Locked</label>
-            </>
-          )}
-        </section>
-      )}
       {courseSession.isCompleted && (
         <p className="text-amber-300">Course session completed.</p>
       )}
