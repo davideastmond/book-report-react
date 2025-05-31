@@ -6,30 +6,28 @@ type StudentListProps = {
   students: EnrolledStudent[];
   onStudentClick?: (studentId: string) => void;
   suppressLink?: boolean;
+  disabled?: boolean;
 };
 export function StudentList({
   students,
   linkable,
   onStudentClick,
   suppressLink,
+  disabled = false,
 }: StudentListProps) {
   const handleStudentClick = (studentId: string) => {
+    if (disabled) return;
     if (onStudentClick) {
       onStudentClick(studentId);
     }
-    if (linkable) {
-      // router.push(`/dashboard/user/${studentId}`);
-      if (suppressLink) return;
-      console.error("not implemented yet");
-    }
+    if (suppressLink) return;
   };
   return (
     <table className="table-auto w-full">
       <thead className="text-left">
         <tr>
-          <th>Id</th>
-          <th>Email</th>
           <th>Name</th>
+          <th>Email</th>
           <th>DOB</th>
         </tr>
       </thead>
@@ -51,11 +49,10 @@ export function StudentList({
             }`}
             onClick={() => handleStudentClick(student.studentId)}
           >
-            <td>{student.studentId}</td>
-            <td>{student.studentEmail}</td>
             <td>
               {student.studentLastName} {student.studentFirstName?.slice(0, 1)}
             </td>
+            <td>{student.studentEmail}</td>
             <td>{new Date(student.studentDob!).toLocaleDateString()}</td>
           </tr>
         ))}

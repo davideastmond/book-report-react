@@ -26,6 +26,7 @@ export function CoursesSessionsList({
           <th>Session Start</th>
           <th>Session End</th>
           <th>Allotment</th>
+          <th>Finished</th>
           {enrolled && enrolled.show && <th>Enrolled</th>}
         </tr>
       </thead>
@@ -61,6 +62,7 @@ export function CoursesSessionsList({
             <td>{new Date(session.sessionStart!).toLocaleDateString()}</td>
             <td>{new Date(session.sessionEnd!).toLocaleDateString()}</td>
             <td>{session.studentAllotment}</td>
+            <td className="text-amber-300">{session.isCompleted ? "Y" : ""}</td>
             {enrolled && enrolled.show && <td>{enrolled.count}</td>}
           </tr>
         ))}

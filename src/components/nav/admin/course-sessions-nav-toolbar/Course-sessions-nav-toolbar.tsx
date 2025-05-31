@@ -5,7 +5,7 @@ export const CourseSessionsNavToolbar = ({
 }) => {
   return (
     <div className="bg-green-900 p-1 text-sm">
-      <ul className="flex justify-around">
+      <ul className="flex justify-start gap-12">
         <li>
           <a
             href={`/dashboard/courses-sessions/${courseSessionId}/admin/course-work`}
@@ -20,6 +20,14 @@ export const CourseSessionsNavToolbar = ({
             className="text-white hover:text-gray-300"
           >
             Grading
+          </a>
+        </li>
+        <li>
+          <a
+            href={`/dashboard/courses-sessions/view?id=${courseSessionId}`}
+            className="text-white hover:text-gray-300"
+          >
+            Main
           </a>
         </li>
       </ul>

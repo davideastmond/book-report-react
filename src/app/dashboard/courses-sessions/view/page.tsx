@@ -60,6 +60,7 @@ export default function CourseSessionPage() {
       console.error("No course session ID provided");
       return;
     }
+
     setApiError(null);
     try {
       setIsBusy(true);
@@ -133,36 +134,46 @@ export default function CourseSessionPage() {
         coursesSessions={[courseSession]}
         enrolled={{ show: true, count: courseSession.allotmentCount }}
       />
-      <section className="text-xl mb-4 font-thin mt-4 flex justify-end">
-        {["admin", "teacher"].includes(session?.user?.role as string) && (
-          <>
-            <input
-              type="checkbox"
-              id="isLocked"
-              name="isLocked"
-              checked={isLocked}
-              onChange={toggleLockState}
-              disabled={isBusy}
-              className="customStyledCheckbox"
-            />
-            <label htmlFor="isLocked">Locked</label>
-          </>
-        )}
-      </section>
+      {!courseSession.isCompleted && (
+        <section className="text-xl mb-4 font-thin mt-4 flex justify-end">
+          {["admin", "teacher"].includes(session?.user?.role as string) && (
+            <>
+              <input
+                type="checkbox"
+                id="isLocked"
+                name="isLocked"
+                checked={isLocked}
+                onChange={toggleLockState}
+                disabled={isBusy}
+                className="customStyledCheckbox"
+              />
+              <label htmlFor="isLocked">Locked</label>
+            </>
+          )}
+        </section>
+      )}
+      {courseSession.isCompleted && (
+        <p className="text-amber-300">Course session completed.</p>
+      )}
       {["admin", "teacher"].includes(session?.user?.role as string) && (
         <div className="mt-10">
           <h3 className="text-2xl">Student Roster</h3>
-          <StudentList linkable students={students} />
+          <StudentList
+            linkable
+            students={students}
+            disabled={courseSession.isCompleted}
+          />
 
           <UserSearch
             onUserSelect={handleStudentAddToRoster}
             alreadyEnrolledStudents={students}
+            disabled={courseSession.isCompleted}
           />
         </div>
       )}
       {["student"].includes(session?.user?.role as string) && (
         <div className="flex justify-end px-4 mt-4">
-          {!isEnrolled && (
+          {!isEnrolled && !courseSession.isCompleted && (
             <button
               onClick={() =>
                 handleStudentAddToRoster(
@@ -179,7 +190,7 @@ export default function CourseSessionPage() {
               </span>
             </button>
           )}
-          {isEnrolled && (
+          {isEnrolled && !courseSession.isCompleted && (
             <button
               onClick={() =>
                 removeStudentFromCourse(
