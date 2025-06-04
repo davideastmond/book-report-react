@@ -7,7 +7,7 @@ export function GradesNavMain() {
   */
   return (
     <div className="bg-green-900 p-1 text-sm">
-      <ul className="flex justify-start">
+      <ul className="flex justify-start gap-12">
         <li>
           <a
             href={`/dashboard/student/grades`}
