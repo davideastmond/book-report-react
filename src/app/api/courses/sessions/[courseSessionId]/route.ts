@@ -94,3 +94,56 @@ async function doAdminQuery(courseSessionId: string) {
     students: studentsEnrolledInCourse,
   };
 }
+
+export async function PATCH(
+  req: NextRequest,
+  urlData: { params: Promise<{ courseSessionId: string }> }
+) {
+  const authSession = await getServerSession(authOptions);
+  if (!authSession || !authSession.user) {
+    return NextResponse.json(
+      {
+        error: "Unauthorized",
+      },
+      { status: 401 }
+    );
+  }
+  const { courseSessionId } = await urlData.params;
+  if (!["admin", "teacher"].includes(authSession.user.role)) {
+    return NextResponse.json(
+      {
+        error: "Unauthorized access.",
+      },
+      { status: 403 }
+    );
+  }
+  const data = (await req.json()) as {
+    sessionStart?: string;
+    sessionEnd?: string;
+    description?: string;
+    studentAllotment?: number;
+  };
+
+  try {
+    // Validate data structure here if necessary
+    await db
+      .update(courseSession)
+      .set({
+        sessionStart: data.sessionStart
+          ? new Date(data.sessionStart)
+          : undefined,
+        sessionEnd: data.sessionEnd ? new Date(data.sessionEnd) : undefined,
+        description: data.description,
+        studentAllotment: data.studentAllotment,
+      })
+      .where(eq(courseSession.id, courseSessionId));
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    return NextResponse.json(
+      {
+        error: "Error updating course session: " + (error as Error).message,
+      },
+      { status: 500 }
+    );
+  }
+}
