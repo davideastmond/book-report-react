@@ -10,3 +10,27 @@ export type GradeData = {
 };
 
 export type TableData = Record<AcademicTaskId, StudentGradeData>;
+
+export type GradeControllerCourseAverageAPIResponse = CourseGradeAverage;
+
+export type CourseGradeAverage = {
+  courseAverage: number | string | null;
+  studentId: string | null;
+  studentFirstName: string | null;
+  studentLastName: string | null;
+  courseName: string | null;
+  courseCode: string | null;
+};
+
+export type GradeSummaryData = {
+  studentFirstName: string | null;
+  studentLastName: string | null;
+  studentId: string | null;
+  courseName: string | null;
+  courseCode: string | null;
+  coursePercentageAverage: string | null;
+  courseLetterGradeAverage: string | null | unknown;
+  isCourseCompleted: boolean | null;
+  sessionStart: Date | null;
+  sessionEnd: Date | null;
+};
