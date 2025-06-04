@@ -45,7 +45,7 @@ export const CourseSessionClient = {
     if (sessionEnd) {
       content = { ...content, sessionEnd };
     }
-    const res = await fetch(`/api/courses/sessions/${courseSessionId}`, {
+    await fetch(`/api/courses/sessions/${courseSessionId}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
