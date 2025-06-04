@@ -6,50 +6,10 @@ import {
   roster,
   user,
 } from "@/db/schema";
-import {
-  CourseGradeAverage,
-  GradeSummaryData,
-} from "@/lib/types/grading/definitions";
+import { GradeSummaryData } from "@/lib/types/grading/definitions";
 import { and, avg, eq, gte, lte, sql } from "drizzle-orm";
 
 export const GradeController = {
-  /**
-   * Gets a grade for a specific course session for a student.
-   * @param {param.studentId} studentId - The ID of the student.
-   * @param {param.courseSessionId} courseSessionId - The ID of the course session.
-   */
-  getGradeForCourseSession: async ({
-    studentId,
-    courseSessionId,
-  }: {
-    studentId: string;
-    courseSessionId: string;
-  }): Promise<CourseGradeAverage | null> => {
-    const query = await db
-      .select({
-        courseAverage: avg(academicGrade.percentageGrade),
-        studentId: user.id,
-        studentFirstName: user.firstName,
-        studentLastName: user.lastName,
-        courseName: course.name,
-        courseCode: course.course_code,
-      })
-      .from(academicGrade)
-      .where(
-        and(
-          eq(academicGrade.userId, studentId),
-          eq(academicGrade.courseSessionId, courseSessionId)
-        )
-      )
-      .fullJoin(user, eq(user.id, academicGrade.userId))
-      .fullJoin(
-        courseSession,
-        eq(courseSession.id, academicGrade.courseSessionId)
-      )
-      .fullJoin(course, eq(course.id, courseSession.courseId));
-
-    return query.length > 0 ? query[0] : null;
-  },
   getGradeSummaryByDate: async ({
     studentId,
     startDate,
