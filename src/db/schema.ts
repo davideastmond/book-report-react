@@ -50,6 +50,7 @@ export const academicTask = pgTable("academic_task", {
   courseSessionId: text("course_session_id")
     .notNull()
     .references(() => courseSession.id),
+  gradeValueType: text("grade_value_type", { enum: ["p", "l"] }),
 });
 
 export const course = pgTable("course", {
