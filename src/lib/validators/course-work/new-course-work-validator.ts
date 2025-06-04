@@ -8,4 +8,5 @@ export const newCourseWorkValidator = z.object({
   description: z.string().optional(),
   taskType: z.enum(["assignment", "exam", "other"]).default("assignment"),
   dueDate: z.string().date(),
+  gradeValueType: z.enum(["p", "l"]).default("p"),
 });
