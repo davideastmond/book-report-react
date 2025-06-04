@@ -70,6 +70,14 @@ export function CourseWorkCreateUpdateForm({
     const dueDateInputField = document.getElementById(
       "dueDate"
     ) as HTMLInputElement;
+
+    const gradeValueTypeInputField = document.getElementById(
+      "gradeValueType"
+    ) as HTMLSelectElement;
+
+    if (gradeValueTypeInputField) {
+      gradeValueTypeInputField.value = data.gradeValueType || "p";
+    }
     if (nameInputField) {
       nameInputField.value = data.name || "";
     }
@@ -217,6 +225,18 @@ export function CourseWorkCreateUpdateForm({
             {formErrors.taskType && (
               <p className="text-red-500 text-sm">{formErrors.taskType}</p>
             )}
+          </div>
+          <div>
+            <label htmlFor="gradeValueType">Grade Value Type</label>
+            <select
+              className="border rounded p-2 mb-4 w-full"
+              name="gradeValueType"
+              id="gradeValueType"
+              disabled={isBusy}
+            >
+              <option value="p">Percentage</option>
+              <option value="l">Letter</option>
+            </select>
           </div>
           <div className="mt-4">
             <label htmlFor="description">Description:</label>
