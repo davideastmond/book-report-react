@@ -31,7 +31,7 @@ export function StudentList({
           <th>DOB</th>
         </tr>
       </thead>
-      <tbody className="">
+      <tbody>
         {students.length === 0 && (
           <tr>
             <td colSpan={4} className="text-center text-gray-500">
