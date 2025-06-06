@@ -1,3 +1,4 @@
+/* eslint  @typescript-eslint/no-explicit-any: "off" */
 import { describe, expect, test } from "vitest";
 import { isParsable } from "./is-parsable";
 
