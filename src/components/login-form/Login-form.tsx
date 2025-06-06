@@ -1,5 +1,6 @@
 "use client";
 import { signIn } from "next-auth/react";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -45,6 +46,17 @@ export function LoginForm() {
 
   return (
     <div className="p-4">
+      <div className="flex justify-center mb-4">
+        <Link href="/dashboard" className="self-center">
+          <Image
+            src="/images/app-logo/large-app-logo.png"
+            className="rounded-full"
+            alt="app-logo"
+            width={200}
+            height={200}
+          />
+        </Link>
+      </div>
       <h1 className="text-2xl text-center mb-4 font-bold">Log In</h1>
       <form onSubmit={handleSubmit}>
         <div>

@@ -129,7 +129,6 @@ export default function CourseSessionPage() {
             students={students}
             disabled={courseSession.isCompleted}
           />
-
           <UserSearch
             onUserSelect={handleStudentAddToRoster}
             alreadyEnrolledStudents={students}

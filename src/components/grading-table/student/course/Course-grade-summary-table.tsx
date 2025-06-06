@@ -3,19 +3,13 @@ The responsibility of this component is to display a table for a course, with th
 */
 
 import { GradeSummaryData } from "@/lib/types/grading/definitions";
+import { isParsable } from "@/lib/utils/parsing/is-parsable";
 
 export function CourseGradeSummaryTable({
   gradeSummaryData,
 }: {
   gradeSummaryData: GradeSummaryData;
 }) {
-  const isParsable = (lg: string): boolean => {
-    if (!lg || isNaN(parseInt(lg, 10))) {
-      return false;
-    }
-    return true;
-  };
-
   const calculatePercentageGrade = (): string | number => {
     const numericParsable = isParsable(
       gradeSummaryData.coursePercentageAverage as string

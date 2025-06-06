@@ -2,6 +2,7 @@
 
 import { registrationValidatorWithConfirmPassword } from "@/lib/validators/registration/registration-validator";
 import { signIn } from "next-auth/react";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -49,7 +50,6 @@ export function RegistrationForm() {
     });
 
     if (response.ok) {
-      console.log("Registration successful");
       const { email, password1 } = data;
       await signInFromRegistration(email as string, password1 as string);
     } else {
@@ -82,6 +82,17 @@ export function RegistrationForm() {
   };
   return (
     <div className="p-4">
+      <div className="flex justify-center mb-4">
+        <Link href="/dashboard" className="self-center">
+          <Image
+            src="/images/app-logo/large-app-logo.png"
+            className="rounded-full"
+            alt="app-logo"
+            width={200}
+            height={200}
+          />
+        </Link>
+      </div>
       <h1 className="text-2xl text-center mb-4 font-bold">Create Account</h1>
       <form onSubmit={handleSubmit}>
         <div>
