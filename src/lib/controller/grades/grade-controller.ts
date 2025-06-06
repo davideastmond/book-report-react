@@ -70,6 +70,7 @@ export const GradeController = {
         courseSession,
         and(
           eq(courseSession.id, academicGrade.courseSessionId),
+          eq(courseSession.isCompleted, true),
           gte(courseSession.sessionStart, startDate),
           lte(courseSession.sessionEnd, endDate)
         )

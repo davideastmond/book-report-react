@@ -68,6 +68,7 @@ async function doAdminQuery(courseSessionId: string) {
       description: courseSession.description,
       studentAllotment: courseSession.studentAllotment,
       isLocked: courseSession.isLocked,
+      isCompleted: courseSession.isCompleted,
     })
     .from(courseSession)
     .where(eq(courseSession.id, courseSessionId))

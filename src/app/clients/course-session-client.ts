@@ -195,4 +195,20 @@ export const CourseSessionClient = {
       throw new Error("Failed to toggle locked status for course session");
     }
   },
+  markCourseSessionAsCompleted: async (
+    courseSessionId: string
+  ): Promise<void> => {
+    const res = await fetch(
+      `/api/courses/sessions/${courseSessionId}/complete`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    if (!res.ok) {
+      throw new Error("Failed to mark course session as completed");
+    }
+  },
 };
