@@ -33,4 +33,6 @@ export type GradeSummaryData = {
   isCourseCompleted: boolean | null;
   sessionStart: Date | null;
   sessionEnd: Date | null;
+  instructorFirstName: string | null;
+  instructorLastName: string | null;
 };

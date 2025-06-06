@@ -7,7 +7,7 @@ import {
   user,
 } from "@/db/schema";
 import { GradeSummaryData } from "@/lib/types/grading/definitions";
-import { and, avg, eq, gte, lte, sql } from "drizzle-orm";
+import { aliasedTable, and, avg, eq, gte, lte, sql } from "drizzle-orm";
 
 export const GradeController = {
   getGradeSummaryByDate: async ({
@@ -19,6 +19,7 @@ export const GradeController = {
     startDate: Date;
     endDate?: Date;
   }): Promise<GradeSummaryData[]> => {
+    const aliasedUserTable = aliasedTable(user, "aliased_user_table");
     return db
       .select({
         studentFirstName: user.firstName,
@@ -47,6 +48,8 @@ export const GradeController = {
         isCourseCompleted: courseSession.isCompleted,
         sessionStart: courseSession.sessionStart,
         sessionEnd: courseSession.sessionEnd,
+        instructorFirstName: aliasedUserTable.firstName,
+        instructorLastName: aliasedUserTable.lastName,
       })
       .from(roster)
       .where(eq(roster.studentId, studentId))
@@ -56,6 +59,8 @@ export const GradeController = {
         roster.studentId,
         user.firstName,
         user.lastName,
+        aliasedUserTable.firstName,
+        aliasedUserTable.lastName,
         courseSession.isCompleted,
         courseSession.sessionStart,
         courseSession.sessionEnd
@@ -70,6 +75,10 @@ export const GradeController = {
         )
       )
       .innerJoin(course, eq(course.id, courseSession.courseId))
-      .fullJoin(user, eq(user.id, roster.studentId));
+      .fullJoin(user, eq(user.id, roster.studentId))
+      .fullJoin(
+        aliasedUserTable,
+        eq(aliasedUserTable.id, courseSession.instructorId)
+      );
   },
 };

@@ -42,6 +42,7 @@ export function CourseGradeSummaryTable({
         <tr className="border bg-slate-400/10">
           <th>Course Code</th>
           <th>Course Name</th>
+          <th>Instr.</th>
           <th>Session Start</th>
           <th>Session End</th>
           <th>Student Name</th>
@@ -52,6 +53,10 @@ export function CourseGradeSummaryTable({
         <tr>
           <td>{gradeSummaryData.courseCode}</td>
           <td>{gradeSummaryData.courseName}</td>
+          <td>
+            {gradeSummaryData.instructorLastName}{" "}
+            {gradeSummaryData.instructorFirstName?.slice(0, 1)}
+          </td>
           <td>
             {new Date(gradeSummaryData.sessionStart!).toLocaleDateString()}
           </td>
