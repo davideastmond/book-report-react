@@ -136,6 +136,22 @@ export default function CourseSessionSettingsPage() {
       );
     }
   }
+
+  async function handleMarkSessionCourseComplete() {
+    setApiError(null);
+    try {
+      setIsBusy(true);
+      await CourseSessionClient.markCourseSessionAsCompleted(
+        params.courseSessionId
+      );
+      setIsBusy(false);
+      await fetchCourseSessionById();
+    } catch (error) {
+      setApiError(
+        "Error marking course session as complete: " + (error as Error).message
+      );
+    }
+  }
   if (status === "unauthenticated") {
     router.replace("/login");
     return null;
@@ -264,16 +280,23 @@ export default function CourseSessionSettingsPage() {
           <p>
             When grading is completed and ready to be official, close this by
             marking it as complete. This will prevent any further changes to the
-            course session.
+            course session. This will also allow students to see their finale
+            grades.
           </p>
           <p></p>
         </article>
         <div>
           {courseSession?.isCompleted && (
-            <p className="text-amber-300">This course is completed.</p>
+            <div>
+              <p className="text-amber-300">This course is completed.</p>
+            </div>
           )}
           {!courseSession?.isCompleted && (
-            <button className="flatStyle" onClick={() => {}}>
+            <button
+              className="flatStyle flex justify-center"
+              onClick={handleMarkSessionCourseComplete}
+              disabled={isBusy}
+            >
               Complete this course
             </button>
           )}
