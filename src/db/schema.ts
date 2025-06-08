@@ -43,9 +43,16 @@ export const academicTask = pgTable("academic_task", {
   id: text("id").primaryKey(),
   name: text("name").notNull(),
   description: text("description"),
-  taskType: text({ enum: ["assignment", "exam", "other"] }).default(
-    "assignment"
-  ),
+  taskType: text({
+    enum: [
+      "assignment",
+      "exam",
+      "essay",
+      "presentation",
+      "research_paper",
+      "other",
+    ],
+  }).default("assignment"),
   dueDate: date("due_date", { mode: "date" }),
   courseSessionId: text("course_session_id")
     .notNull()
