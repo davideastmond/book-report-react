@@ -280,7 +280,7 @@ export default function CourseSessionSettingsPage() {
           <p>
             When grading is completed and ready to be official, close this by
             marking it as complete. This will prevent any further changes to the
-            course session. This will also allow students to see their finale
+            course session. This will also allow students to see their final
             grades.
           </p>
           <p></p>
