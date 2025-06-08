@@ -168,7 +168,7 @@ export default function CourseSessionPage() {
             >
               <span className="flex items-center gap-2">
                 {isBusy && <Spinner />}I am enrolled in this course. Click to
-                remove me.
+                un-enroll.
               </span>
             </button>
           )}
