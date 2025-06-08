@@ -7,11 +7,13 @@ import { StudentList } from "../student-list/Student-list";
 type UserSearchProps = {
   onUserSelect?: (userId: string) => void;
   alreadyEnrolledStudents?: EnrolledStudent[];
+  disabled?: boolean;
 };
 
 export function UserSearch({
   onUserSelect,
   alreadyEnrolledStudents = [],
+  disabled = false,
 }: UserSearchProps) {
   const [students, setStudents] = useState<EnrolledStudent[]>([]);
   const [filteredResults, setFilteredResults] = useState<EnrolledStudent[]>([]);
@@ -62,6 +64,7 @@ export function UserSearch({
         onChange={(e) => {
           handleSearch(e.target.value);
         }}
+        disabled={disabled}
       />
       <div>
         <h4 className="text-lg">Search Results</h4>
@@ -69,7 +72,6 @@ export function UserSearch({
           students={filteredResults}
           onStudentClick={handleStudentSelected}
           linkable
-          suppressLink
         />
       </div>
     </div>

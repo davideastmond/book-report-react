@@ -54,7 +54,7 @@ export async function POST(
       );
     }
   }
-  const { name, description, taskType, dueDate } = requestBody;
+  const { name, description, taskType, dueDate, gradeValueType } = requestBody;
   try {
     const insertedDocument = await db
       .insert(academicTask)
@@ -65,6 +65,7 @@ export async function POST(
         description,
         taskType,
         dueDate: dueDate ? new Date(dueDate) : null,
+        gradeValueType,
       })
       .returning({ insertedId: academicTask.id });
     return NextResponse.json(

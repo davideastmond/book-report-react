@@ -12,6 +12,7 @@ export type CourseSessionInfo = {
   studentAllotment: number;
   allotmentCount: number;
   isLocked: boolean;
+  isCompleted: boolean;
 };
 
 export type EnrolledStudent = {

@@ -31,6 +31,8 @@ export async function GET() {
         instructorId: courseSession.instructorId,
         instructorFirstName: user.firstName,
         instructorLastName: user.lastName,
+        studentAllotment: courseSession.studentAllotment,
+        isCompleted: courseSession.isCompleted,
       })
       .from(user)
       .where(eq(user.id, authSession?.user.id))

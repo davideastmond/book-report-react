@@ -1,6 +1,7 @@
 "use client";
 import { CourseSessionClient } from "@/clients/course-session-client";
 import { CourseGradingMain } from "@/components/course-grading/Course-grading-main";
+import { CourseSessionsNavToolbar } from "@/components/nav/admin/course-sessions-nav-toolbar/Course-sessions-nav-toolbar";
 import { CourseSessionDataAPIResponse } from "@/lib/types/db/course-session-info";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -26,6 +27,7 @@ export default function AdminGradingPage() {
 
   return (
     <div>
+      <CourseSessionsNavToolbar courseSessionId={params.courseSessionId} />
       <h1 className="text-3xl">Admin Grading Page</h1>
       {courseData && <CourseGradingMain courseData={courseData} />}
     </div>
