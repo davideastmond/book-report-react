@@ -57,21 +57,19 @@ export function NavBar() {
               </a>
             </li>
             <li style={styles.navMenuItem}>
-              <button
-                className="text-white hover:text-gray-300"
-                onClick={async () => await signOut()}
-              >
-                Log Out
-              </button>
-            </li>
-            <li style={styles.navMenuItem}>
               <a href="/help" className="text-white hover:text-gray-300">
                 Help❔
               </a>
             </li>
             {session?.user?.email && (
-              <li style={styles.finalItem}>
+              <li style={styles.finalItem} className="flex gap-4">
                 {session.user.email} {displayAdminRole(session.user.role)}
+                <button
+                  className="text-white hover:text-gray-300 hover:underline hover:cursor-pointer"
+                  onClick={async () => await signOut()}
+                >
+                  Log Out
+                </button>
               </li>
             )}
           </ul>
