@@ -31,6 +31,30 @@ export const CourseSessionClient = {
       throw new Error("Failed to create course");
     }
   },
+  patchCourseSession: async (
+    courseSessionId: string,
+    { description, sessionStart, sessionEnd }: Partial<CourseSession>
+  ) => {
+    let content = {};
+    if (description) {
+      content = { description };
+    }
+    if (sessionStart) {
+      content = { ...content, sessionStart };
+    }
+    if (sessionEnd) {
+      content = { ...content, sessionEnd };
+    }
+    await fetch(`/api/courses/sessions/${courseSessionId}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        ...content,
+      }),
+    });
+  },
   fetchCourseSessionsAdmin: async (): Promise<CourseSessionsAPIResponse> => {
     const res = await fetch("/api/user/admin/me/course-sessions", {
       method: "GET",
@@ -54,9 +78,7 @@ export const CourseSessionClient = {
     if (!res.ok) {
       throw new Error("Failed to fetch course sessions");
     }
-    const retVals = await res.json();
-    console.log("students courses", retVals);
-    return retVals;
+    return res.json();
   },
   fetchCourseSessionByIdAdmin: async (
     id: string
@@ -171,6 +193,22 @@ export const CourseSessionClient = {
     });
     if (!res.ok) {
       throw new Error("Failed to toggle locked status for course session");
+    }
+  },
+  markCourseSessionAsCompleted: async (
+    courseSessionId: string
+  ): Promise<void> => {
+    const res = await fetch(
+      `/api/courses/sessions/${courseSessionId}/complete`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    if (!res.ok) {
+      throw new Error("Failed to mark course session as completed");
     }
   },
 };

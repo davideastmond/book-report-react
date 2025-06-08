@@ -1,6 +1,6 @@
 "use client";
 import { CoursesSessionsMain } from "@/components/courses-sessions/Courses-sessions-main";
-import { CourseSessionsNavToolbar } from "@/components/nav/student/course-sessions-nav-toolbar";
+import { CourseSessionsNavToolbar } from "@/components/nav/student/Course-sessions-nav-toolbar";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 /**
