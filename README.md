@@ -11,16 +11,24 @@ This is a web app platform to manage academics for a school or university, allow
 - Sign up and log in with email and password.
 - Student and Admin/Teacher security access
 
+### User Management
+
+- User can update their password.
+- User can update their name.
+
 ### Courses and Course Work
 
 - Admins/Teachers can create courses.
-- Admins/Teachers can create/update course work (assignments, quizzes, etc.) for courses.
+- Admins/Teachers can create/update course work (assignments, quizzes, exams, essays...) for courses.
 - Admins/Teachers can enroll students in courses.
-- Students can enroll themselves in courses.
+- Students can enroll and de-enroll themselves in/from courses.
+- Admins/Teachers can lock a course, preventing students from enrolling or de-enrolling.
+- Admins/Teachers can set a course as completed.
 
 ### Grading
 
 - Admins/Teachers can assign numerical and letter grades to students for course work.
+- Students can view their grades for courses that are completed.
 
 ## Tech Stack
 
@@ -36,7 +44,7 @@ This is a web app platform to manage academics for a school or university, allow
 
 DATABASE_URL=#the connection string for your postgres instance
 NEXT_AUTH_SECRET=#Required for auth - it can be any string
-ADMIN_PASSWORD=#Create an admin password to allow for admin tasks. It can be any string. It needs to be included in the Bearer token for admin tasks.
+ADMIN_PASSWORD=#Create an admin password to allow for admin tasks. It can be any string. It needs to be included in the Authorization headers as a Bearer token for admin tasks.
 
 ## Getting Started
 
