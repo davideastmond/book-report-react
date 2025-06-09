@@ -81,16 +81,22 @@ export default function AdminCourseWorkPage() {
       <CourseSessionsNavToolbar courseSessionId={params.courseSessionId} />
       <h1 className="text-3xl py-4">Course Work Manager(Admin)</h1>
       <CoursesSessionsList coursesSessions={[courseSession]} />
+      {courseSession.isCompleted && (
+        <p className="text-amber-300 my-4">This course session is completed.</p>
+      )}
       <h2 className="text-2xl py-4">Tasks for this course</h2>
       <CourseWorkList courseWork={courseWork} linkable />
-      <div className="flex justify-end mx-4 mt-4">
-        <Link
-          className="flatStyle"
-          href={`/dashboard/courses-sessions/${params.courseSessionId}/admin/course-work/new`}
-        >
-          New Course Work...
-        </Link>
-      </div>
+
+      {!courseSession.isCompleted && (
+        <div className="flex justify-end mx-4 mt-4">
+          <Link
+            className="flatStyle"
+            href={`/dashboard/courses-sessions/${params.courseSessionId}/admin/course-work/new`}
+          >
+            New Course Work...
+          </Link>
+        </div>
+      )}
     </div>
   );
 }

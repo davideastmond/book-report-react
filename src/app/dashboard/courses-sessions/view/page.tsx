@@ -119,7 +119,7 @@ export default function CourseSessionPage() {
         enrolled={{ show: true, count: courseSession.allotmentCount }}
       />
       {courseSession.isCompleted && (
-        <p className="text-amber-300">Course session completed.</p>
+        <p className="text-amber-300 my-4">Course session completed.</p>
       )}
       {["admin", "teacher"].includes(session?.user?.role as string) && (
         <div className="mt-10">

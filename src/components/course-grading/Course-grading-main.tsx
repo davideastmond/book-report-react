@@ -140,6 +140,9 @@ export function CourseGradingMain({
           ))}
         </select>
       </section>
+      {courseData.courseSessionData.isCompleted && (
+        <p className="text-amber-300 my-4">Course session completed.</p>
+      )}
       <section className="flex justify-end my-4 px-2">
         {courseData.students && courseData.students.length > 0 ? (
           <button
@@ -159,6 +162,7 @@ export function CourseGradingMain({
           courseWorkId={selectedCourseWorkId}
           tableData={tableData}
           onTableDataChange={handleTableDataChange}
+          disabled={courseData.courseSessionData.isCompleted}
         />
       </section>
     </div>
