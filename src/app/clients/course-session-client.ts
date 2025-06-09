@@ -28,7 +28,7 @@ export const CourseSessionClient = {
       }),
     });
     if (!res.ok) {
-      throw new Error("Failed to create course");
+      throw Error("Failed to create course");
     }
   },
   patchCourseSession: async (
@@ -63,7 +63,7 @@ export const CourseSessionClient = {
       },
     });
     if (!res.ok) {
-      throw new Error("Failed to fetch course sessions");
+      throw Error("Failed to fetch course sessions");
     }
 
     return res.json();
@@ -76,7 +76,7 @@ export const CourseSessionClient = {
       },
     });
     if (!res.ok) {
-      throw new Error("Failed to fetch course sessions");
+      throw Error("Failed to fetch course sessions");
     }
     return res.json();
   },
@@ -90,7 +90,7 @@ export const CourseSessionClient = {
       },
     });
     if (!res.ok) {
-      throw new Error("Failed to fetch course sessions");
+      throw Error("Failed to fetch course sessions");
     }
 
     return res.json();
@@ -115,7 +115,7 @@ export const CourseSessionClient = {
       }
     );
     if (!res.ok) {
-      throw new Error("Failed to add user to course session");
+      throw Error("Failed to add user to course session");
     }
   },
   removeStudentFromCourseSession: async ({
@@ -138,7 +138,7 @@ export const CourseSessionClient = {
       }
     );
     if (!res.ok) {
-      throw new Error("Failed to remove user from session");
+      throw Error("Failed to remove user from session");
     }
   },
   fetchAvailableCourses: async (): Promise<CourseSessionInfo[]> => {
@@ -150,7 +150,7 @@ export const CourseSessionClient = {
     });
 
     if (!res.ok) {
-      throw new Error("Failed to fetch available courses");
+      throw Error("Failed to fetch available courses");
     }
     return await res.json();
   },
@@ -160,7 +160,7 @@ export const CourseSessionClient = {
     const res = await fetch(`/api/courses/sessions/${courseSessionId}/grades`);
 
     if (!res.ok) {
-      throw new Error("Failed to fetch grades for course session");
+      throw Error("Failed to fetch grades for course session");
     }
     return await res.json();
   },
@@ -179,7 +179,7 @@ export const CourseSessionClient = {
       body: JSON.stringify(data),
     });
     if (!res.ok) {
-      throw new Error("Failed to submit grade updates for course session");
+      throw Error("Failed to submit grade updates for course session");
     }
   },
   toggleLockedStatusForCourseSession: async (
@@ -192,7 +192,7 @@ export const CourseSessionClient = {
       },
     });
     if (!res.ok) {
-      throw new Error("Failed to toggle locked status for course session");
+      throw Error("Failed to toggle locked status for course session");
     }
   },
   markCourseSessionAsCompleted: async (
@@ -208,7 +208,7 @@ export const CourseSessionClient = {
       }
     );
     if (!res.ok) {
-      throw new Error("Failed to mark course session as completed");
+      throw Error("Failed to mark course session as completed");
     }
   },
 };

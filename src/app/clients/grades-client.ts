@@ -19,7 +19,7 @@ export const GradesClient = {
       }
     );
     if (!res.ok) {
-      throw new Error("Failed to fetch grades");
+      throw Error("Failed to fetch grades");
     }
     return res.json();
   },

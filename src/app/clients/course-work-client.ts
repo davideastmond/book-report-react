@@ -20,7 +20,7 @@ export const CourseWorkClient = {
     );
     if (!res.ok) {
       const errorData = await res.json();
-      throw new Error(
+      throw Error(
         `Failed to create course work: ${errorData.error || "Unknown error"}`
       );
     }
@@ -33,7 +33,7 @@ export const CourseWorkClient = {
     );
     if (!res.ok) {
       const errorData = await res.json();
-      throw new Error(
+      throw Error(
         `Failed to fetch course work: ${errorData.error || "Unknown error"}`
       );
     }
@@ -51,7 +51,7 @@ export const CourseWorkClient = {
     );
     if (!res.ok) {
       const errorData = await res.json();
-      throw new Error(
+      throw Error(
         `Failed to fetch course work by ID: ${
           errorData.error || "Unknown error"
         }`
@@ -76,7 +76,7 @@ export const CourseWorkClient = {
     );
     if (!res.ok) {
       const errorData = await res.json();
-      throw new Error(
+      throw Error(
         `Failed to update course work attributes: ${
           errorData.error || "Unknown error"
         }`
