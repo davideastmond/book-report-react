@@ -136,7 +136,10 @@ export function UserSettingsForm() {
           <span className="flex gap-2">
             <p>Birth Date:</p>
             <p className="font-thin">
-              {new Date(userContext?.dob!).toLocaleDateString("en-US", {})}
+              {new Date(userContext?.dob as Date).toLocaleDateString(
+                "en-US",
+                {}
+              )}
             </p>
           </span>
         </article>
