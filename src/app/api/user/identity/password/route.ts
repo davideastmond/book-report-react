@@ -9,25 +9,31 @@ import { NextRequest, NextResponse } from "next/server";
 export async function PUT(req: NextRequest) {
   const authSession = await getServerSession(authOptions);
   if (!authSession || !authSession.user) {
-    return new Response(JSON.stringify({ error: "Unauthorized" }), {
-      status: 401,
-      headers: { "Content-Type": "application/json" },
-    });
+    return NextResponse.json(
+      { error: "Unauthorized" },
+      {
+        status: 401,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
   }
 
   const userId = req.nextUrl.searchParams.get("userId");
   if (!userId) {
-    return new Response(
-      JSON.stringify({ error: "Missing userId query parameter" }),
+    return NextResponse.json(
+      { error: "Missing userId query parameter" },
       { status: 400, headers: { "Content-Type": "application/json" } }
     );
   }
 
   if (authSession.user.role === "student" && authSession.user.id !== userId) {
-    return new Response(JSON.stringify({ error: "Forbidden" }), {
-      status: 403,
-      headers: { "Content-Type": "application/json" },
-    });
+    return NextResponse.json(
+      { error: "Forbidden" },
+      {
+        status: 403,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
   }
 
   const body = await req.json();
@@ -52,10 +58,13 @@ export async function PUT(req: NextRequest) {
     });
 
     if (!existingUser) {
-      return new Response(JSON.stringify({ error: "User not found" }), {
-        status: 404,
-        headers: { "Content-Type": "application/json" },
-      });
+      return NextResponse.json(
+        { error: "User not found" },
+        {
+          status: 404,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
     }
 
     // A user is found, update the user's password, using bcrypt to hash the password
@@ -68,8 +77,8 @@ export async function PUT(req: NextRequest) {
     );
   } catch (error) {
     console.error("Failed to update password:", error);
-    return new Response(
-      JSON.stringify({ error: "Failed to update password" }),
+    return NextResponse.json(
+      { error: "Failed to update password" },
       { status: 500, headers: { "Content-Type": "application/json" } }
     );
   }
