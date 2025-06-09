@@ -16,6 +16,7 @@ type GradingTableProps = {
     studentId: string;
     courseWorkId: string;
   }) => void;
+  disabled?: boolean; // Optional prop to disable the table
 };
 
 type TableDataChangeEvent<T> = {
@@ -29,6 +30,7 @@ export function GradingTable({
   courseWorkId,
   tableData,
   onTableDataChange,
+  disabled,
 }: GradingTableProps) {
   function handleTableDataChange<T>({
     event,
@@ -83,6 +85,7 @@ export function GradingTable({
                 min={0}
                 name="percentageGrade"
                 className="text-sky-500 appearance-none"
+                disabled={disabled}
                 onChange={(event) =>
                   handleTableDataChange({
                     event,
@@ -102,6 +105,7 @@ export function GradingTable({
             <td className="border border-gray-300 p-2">
               <select
                 name="letterGrade"
+                disabled={disabled}
                 value={
                   extractData({
                     studentId: student.studentId,
@@ -134,6 +138,7 @@ export function GradingTable({
                 className="w-full"
                 name="instructorFeedback"
                 maxLength={500}
+                disabled={disabled}
                 onChange={(event) =>
                   handleTableDataChange({
                     event,
