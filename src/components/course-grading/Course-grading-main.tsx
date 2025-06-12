@@ -35,8 +35,8 @@ export function CourseGradingMain({
         courseData.courseSessionData.courseSessionId as string
       );
 
-    const convertedTableData = convertToTableData(courseSessionGrades);
-    setTableData(convertedTableData);
+    const tableData = convertToTableData(courseSessionGrades);
+    setTableData(tableData);
   }
 
   async function fetchCourseWork(assignSelected: boolean) {
