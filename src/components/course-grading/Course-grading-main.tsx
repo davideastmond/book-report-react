@@ -1,6 +1,7 @@
 import { CourseSessionClient } from "@/clients/course-session-client";
 import { CourseWorkClient } from "@/clients/course-work-client";
-import { AcademicGrade, AcademicTask } from "@/db/schema";
+import { AcademicGrade } from "@/db/schema";
+import { AcademicTaskWithWeighting } from "@/lib/types/course-work/definitions";
 import { CourseSessionDataAPIResponse } from "@/lib/types/db/course-session-info";
 import { TableData } from "@/lib/types/grading/definitions";
 import { useParams } from "next/navigation";
@@ -13,7 +14,7 @@ export function CourseGradingMain({
 }: {
   courseData: CourseSessionDataAPIResponse;
 }) {
-  const [courseWork, setCourseWork] = useState<AcademicTask[]>([]);
+  const [courseWork, setCourseWork] = useState<AcademicTaskWithWeighting[]>([]);
   const [selectedCourseWorkId, setSelectedCourseWorkId] = useState<
     string | null
   >(null);
@@ -45,7 +46,7 @@ export function CourseGradingMain({
     setCourseWork(courseWork);
     // If there is courseWork and assignSelected is true, set the first assignment as selected
     if (courseWork.length > 0 && assignSelected) {
-      setSelectedCourseWorkId(courseWork[0].id); // Set the first work as selected by default
+      setSelectedCourseWorkId(courseWork[0].id as string); // Set the first work as selected by default
     }
   }
 

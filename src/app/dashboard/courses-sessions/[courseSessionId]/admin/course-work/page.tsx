@@ -86,7 +86,6 @@ export default function AdminCourseWorkPage() {
       )}
       <h2 className="text-2xl py-4">Tasks for this course</h2>
       <CourseWorkList courseWork={courseWork} linkable />
-
       {!courseSession.isCompleted && (
         <div className="flex justify-end mx-4 mt-4">
           <Link
