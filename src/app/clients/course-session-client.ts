@@ -1,10 +1,11 @@
-import { AcademicGrade, CourseSession } from "@/db/schema";
+import { AcademicGrade, CourseSession, GradeWeight } from "@/db/schema";
 import {
   CourseSessionDataAPIResponse,
   CourseSessionInfo,
   CourseSessionsAPIResponse,
 } from "@/lib/types/db/course-session-info";
 import { TableData } from "@/lib/types/grading/definitions";
+import { WeightingData } from "@/lib/types/weighting/weighting-data";
 
 export const CourseSessionClient = {
   createCourseSession: async ({
@@ -210,5 +211,40 @@ export const CourseSessionClient = {
     if (!res.ok) {
       throw Error("Failed to mark course session as completed");
     }
+  },
+  createCourseWeighting: async (
+    courseSessionId: string,
+    payload: WeightingData
+  ): Promise<void> => {
+    const res = await fetch(
+      `/api/courses/sessions/${courseSessionId}/weighting`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      }
+    );
+    if (!res.ok) {
+      throw Error("Failed to create course weighting");
+    }
+  },
+  getCourseWeightings: async (
+    courseSessionId: string
+  ): Promise<GradeWeight[]> => {
+    const res = await fetch(
+      `/api/courses/sessions/${courseSessionId}/weighting`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    if (!res.ok) {
+      throw Error("Failed to fetch course weightings");
+    }
+    return res.json();
   },
 };

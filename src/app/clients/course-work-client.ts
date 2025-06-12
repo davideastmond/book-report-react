@@ -1,4 +1,5 @@
 import { AcademicTask } from "@/db/schema";
+import { AcademicTaskWithWeighting } from "@/lib/types/course-work/definitions";
 
 export const CourseWorkClient = {
   createCourseWork: async ({
@@ -27,7 +28,7 @@ export const CourseWorkClient = {
   },
   getCourseWorkForSession: async (
     courseSessionId: string
-  ): Promise<AcademicTask[]> => {
+  ): Promise<AcademicTaskWithWeighting[]> => {
     const res = await fetch(
       `/api/courses/sessions/${courseSessionId}/course-work`
     );
