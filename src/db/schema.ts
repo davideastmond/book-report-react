@@ -58,9 +58,7 @@ export const academicTask = pgTable("academic_task", {
     .notNull()
     .references(() => courseSession.id),
   gradeValueType: text("grade_value_type", { enum: ["p", "l"] }),
-  gradeWeightId: text("grade_weight_id")
-    .notNull()
-    .references(() => gradeWeight.id),
+  gradeWeightId: text("grade_weight_id").references(() => gradeWeight.id),
 });
 
 export const course = pgTable("course", {

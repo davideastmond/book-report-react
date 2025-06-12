@@ -13,6 +13,7 @@ export type CourseSessionInfo = {
   allotmentCount: number;
   isLocked: boolean;
   isCompleted: boolean;
+  greatWeightId: string | null;
 };
 
 export type EnrolledStudent = {
