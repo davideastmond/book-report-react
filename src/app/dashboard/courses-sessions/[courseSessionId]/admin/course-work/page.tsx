@@ -6,7 +6,7 @@ import { CourseWorkList } from "@/components/course-work-list/Course-work-list";
 import { CoursesSessionsList } from "@/components/courses-sessions/courses-sessions-list/Courses-sessions-list";
 import { CourseSessionsNavToolbar } from "@/components/nav/admin/course-sessions-nav-toolbar/Course-sessions-nav-toolbar";
 import { Spinner } from "@/components/spinner/Spinner";
-import { AcademicTask } from "@/db/schema";
+import { AcademicTaskWithWeighting } from "@/lib/types/course-work/definitions";
 import { CourseSessionInfo } from "@/lib/types/db/course-session-info";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
@@ -25,7 +25,7 @@ export default function AdminCourseWorkPage() {
   const [courseSession, setCourseSession] = useState<CourseSessionInfo | null>(
     null
   );
-  const [courseWork, setCourseWork] = useState<AcademicTask[]>([]); // Adjust type as needed
+  const [courseWork, setCourseWork] = useState<AcademicTaskWithWeighting[]>([]); // Adjust type as needed
 
   const router = useRouter();
   const { data: session, status } = useSession();
