@@ -39,7 +39,7 @@ export function CourseGradingMain({
     setTableData(convertedTableData);
   }
 
-  async function fetchCourseWork(assignSelected: boolean = false) {
+  async function fetchCourseWork(assignSelected: boolean) {
     const courseWork = await CourseWorkClient.getCourseWorkForSession(
       courseData.courseSessionData.courseSessionId as string
     );
