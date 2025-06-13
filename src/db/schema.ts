@@ -20,23 +20,6 @@ export const academicGrade = pgTable("academic_grade", {
     .references(() => courseSession.id),
   percentageGrade: integer("percentage_grade"),
   instructorFeedback: text("instructor_feedback"),
-  letterGrade: text("letter_grade", {
-    enum: [
-      "a+",
-      "a",
-      "a-",
-      "b+",
-      "b",
-      "b-",
-      "c+",
-      "c",
-      "c-",
-      "d+",
-      "d",
-      "d-",
-      "f",
-    ],
-  }),
 });
 
 export const academicTask = pgTable("academic_task", {

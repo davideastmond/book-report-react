@@ -1,6 +1,5 @@
 import { EnrolledStudent } from "@/lib/types/db/course-session-info";
 import { GradeData, TableData } from "@/lib/types/grading/definitions";
-import { LETTER_GRADES } from "@/lib/types/letter-grades/letter-grades";
 import { ChangeEvent } from "react";
 
 type GradingTableProps = {
@@ -61,7 +60,6 @@ export function GradingTable({
           <th className="border border-gray-300 p-2">Student</th>
           <th className="border border-gray-300 p-2">DOB</th>
           <th className="border border-gray-300 p-2">N. Grade</th>
-          <th className="border border-gray-300 p-2">L. Grade</th>
           <th className="border border-gray-300 p-2">Ins. Feedback</th>
         </tr>
       </thead>
@@ -101,36 +99,6 @@ export function GradingTable({
                   })?.percentageGrade || 0
                 }
               />
-            </td>
-            <td className="border border-gray-300 p-2">
-              <select
-                name="letterGrade"
-                disabled={disabled}
-                value={
-                  extractData({
-                    studentId: student.studentId,
-                    courseWorkId: courseWorkId!,
-                    tableData,
-                  })?.letterGrade || "-"
-                }
-                onChange={(event) =>
-                  handleTableDataChange({
-                    event: event,
-                    studentId: student.studentId,
-                    courseWorkId: courseWorkId!,
-                  })
-                }
-              >
-                {["-", ...LETTER_GRADES].map((letter_grade) => (
-                  <option
-                    className="bg-amber-background"
-                    key={letter_grade}
-                    value={letter_grade}
-                  >
-                    {letter_grade.toLocaleUpperCase()}
-                  </option>
-                ))}
-              </select>
             </td>
             <td className="border border-gray-300 p-2">
               <input

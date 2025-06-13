@@ -7,7 +7,7 @@ import {
   user,
 } from "@/db/schema";
 import { GradeSummaryData } from "@/lib/types/grading/definitions";
-import { aliasedTable, and, avg, eq, gte, lte, sql } from "drizzle-orm";
+import { aliasedTable, and, avg, eq, gte, lte } from "drizzle-orm";
 
 export const GradeController = {
   getGradeSummaryByDate: async ({
@@ -28,23 +28,6 @@ export const GradeController = {
         courseName: course.name,
         courseCode: course.course_code,
         coursePercentageAverage: avg(academicGrade.percentageGrade),
-        courseLetterGradeAverage: sql`avg(
-          CASE
-            WHEN academic_grade.letter_grade = 'a+' THEN 100
-            WHEN academic_grade.letter_grade = 'a' THEN 85
-            WHEN academic_grade.letter_grade = 'a-' THEN 80
-            WHEN academic_grade.letter_grade = 'b+' THEN 79
-            WHEN academic_grade.letter_grade = 'b' THEN 75
-            WHEN academic_grade.letter_grade = 'b-' THEN 70
-            WHEN academic_grade.letter_grade = 'c+' THEN 69
-            WHEN academic_grade.letter_grade = 'c' THEN 65
-            WHEN academic_grade.letter_grade = 'c-' THEN 60
-            WHEN academic_grade.letter_grade = 'd+' THEN 59
-            WHEN academic_grade.letter_grade = 'd' THEN 55
-            WHEN academic_grade.letter_grade = 'd-' THEN 50
-            ELSE 0
-          END
-        )`,
         isCourseCompleted: courseSession.isCompleted,
         sessionStart: courseSession.sessionStart,
         sessionEnd: courseSession.sessionEnd,

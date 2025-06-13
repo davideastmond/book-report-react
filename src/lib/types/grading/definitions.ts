@@ -29,7 +29,6 @@ export type GradeSummaryData = {
   courseName: string | null;
   courseCode: string | null;
   coursePercentageAverage: string | null;
-  courseLetterGradeAverage: string | null | unknown;
   isCourseCompleted: boolean | null;
   sessionStart: Date | null;
   sessionEnd: Date | null;
