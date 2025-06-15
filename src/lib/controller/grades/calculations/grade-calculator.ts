@@ -80,7 +80,7 @@ export class GradeCalculator {
       groupedInput
     )) {
       let gradeSum = 0;
-      for (const [_, gradeData] of Object.entries(weightedGrades)) {
+      for (const [, gradeData] of Object.entries(weightedGrades)) {
         gradeSum +=
           (gradeData.sum * gradeData.percentageWeight) /
           (gradeData.totalElements * 100);
