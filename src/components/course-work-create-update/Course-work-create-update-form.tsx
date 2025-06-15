@@ -275,9 +275,6 @@ export function CourseWorkCreateUpdateForm({
               <option value="p" className="bg-amber-background">
                 Percentage
               </option>
-              <option value="l" className="bg-amber-background">
-                Letter
-              </option>
             </select>
           </div>
           <div>
