@@ -3,39 +3,12 @@ The responsibility of this component is to display a table for a course, with th
 */
 
 import { GradeSummaryData } from "@/lib/types/grading/definitions";
-import { isParsable } from "@/lib/utils/parsing/is-parsable";
 
 export function CourseGradeSummaryTable({
   gradeSummaryData,
 }: {
   gradeSummaryData: GradeSummaryData;
 }) {
-  const calculatePercentageGrade = (): string | number => {
-    const numericParsable = isParsable(
-      gradeSummaryData.coursePercentageAverage as string
-    );
-    const letterParsable = isParsable(
-      gradeSummaryData.courseLetterGradeAverage as string
-    );
-
-    if (!numericParsable && !letterParsable) {
-      return "N/A";
-    }
-    if (numericParsable && letterParsable) {
-      return (
-        parseFloat(gradeSummaryData.coursePercentageAverage as string).toFixed(
-          1
-        ) +
-        parseFloat(gradeSummaryData.courseLetterGradeAverage as string) / 2
-      );
-    }
-
-    return numericParsable
-      ? parseFloat(gradeSummaryData.coursePercentageAverage as string).toFixed(
-          1
-        )
-      : parseFloat(gradeSummaryData.courseLetterGradeAverage as string);
-  };
   return (
     <table className="table-fixed w-full">
       <thead className="text-left min-w-[200px]">
@@ -65,7 +38,7 @@ export function CourseGradeSummaryTable({
             {gradeSummaryData.studentLastName}{" "}
             {gradeSummaryData.studentFirstName?.slice(0, 1)}
           </td>
-          <td>{calculatePercentageGrade()}</td>
+          <td>{gradeSummaryData.coursePercentageAverage}</td>
         </tr>
       </tbody>
     </table>
