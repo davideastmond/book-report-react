@@ -136,7 +136,7 @@ export async function GET(
       })
       .from(academicTask)
       .where(eq(academicTask.courseSessionId, courseSessionId))
-      .innerJoin(gradeWeight, eq(academicTask.gradeWeightId, gradeWeight.id));
+      .fullJoin(gradeWeight, eq(academicTask.gradeWeightId, gradeWeight.id));
     return NextResponse.json(courseWorks);
   } catch (error) {
     return NextResponse.json(
