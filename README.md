@@ -2,7 +2,7 @@
 
 ## About
 
-This is a web app platform to manage academics for a school or university, allowing instructors to manages courses, students and grades, and allowing students to manage their courses and grades.
+This is a web app platform to manage academic grades for a school or university, allowing instructors to manages courses, course work, students and grades, and allowing students to manage their courses and grades.
 
 ## Features
 
@@ -11,16 +11,32 @@ This is a web app platform to manage academics for a school or university, allow
 - Sign up and log in with email and password.
 - Student and Admin/Teacher security access
 
+### User Management
+
+- User can update their password.
+- User can update their name.
+
 ### Courses and Course Work
 
 - Admins/Teachers can create courses.
-- Admins/Teachers can create/update course work (assignments, quizzes, etc.) for courses.
+- Admins/Teachers can create/update course work (assignments, quizzes, exams, essays...) for courses.
 - Admins/Teachers can enroll students in courses.
-- Students can enroll themselves in courses.
+- Students can enroll and de-enroll themselves in/from courses.
+- Admins/Teachers can lock a course, preventing students from enrolling or de-enrolling.
+- Admins/Teachers can set a course as completed.
+
+### Grade Weighting
+
+- Admins/Teachers can allocate weights to course work to emphasize importance of particular assignments, quizzes or final exams.
 
 ### Grading
 
-- Admins/Teachers can assign numerical and letter grades to students for course work.
+- Admins/Teachers can assign numerical grades (0 - 100) for course work.
+
+### Final Grade Calculation
+
+- All course final grades are calculated using the define weights.
+- Students can search for courses that are completed within a time frame, and the system will calculate the final grade for all courses.
 
 ## Tech Stack
 
@@ -36,7 +52,7 @@ This is a web app platform to manage academics for a school or university, allow
 
 DATABASE_URL=#the connection string for your postgres instance
 NEXT_AUTH_SECRET=#Required for auth - it can be any string
-ADMIN_PASSWORD=#Create an admin password to allow for admin tasks. It can be any string. It needs to be included in the Bearer token for admin tasks.
+ADMIN_PASSWORD=#Create an admin password to allow for admin tasks. It can be any string. It needs to be included in the Authorization headers as a Bearer token for admin tasks.
 
 ## Getting Started
 

@@ -20,23 +20,6 @@ export const academicGrade = pgTable("academic_grade", {
     .references(() => courseSession.id),
   percentageGrade: integer("percentage_grade"),
   instructorFeedback: text("instructor_feedback"),
-  letterGrade: text("letter_grade", {
-    enum: [
-      "a+",
-      "a",
-      "a-",
-      "b+",
-      "b",
-      "b-",
-      "c+",
-      "c",
-      "c-",
-      "d+",
-      "d",
-      "d-",
-      "f",
-    ],
-  }),
 });
 
 export const academicTask = pgTable("academic_task", {
@@ -58,6 +41,7 @@ export const academicTask = pgTable("academic_task", {
     .notNull()
     .references(() => courseSession.id),
   gradeValueType: text("grade_value_type", { enum: ["p", "l"] }),
+  gradeWeightId: text("grade_weight_id").references(() => gradeWeight.id),
 });
 
 export const course = pgTable("course", {
@@ -115,6 +99,14 @@ export const user = pgTable("user", {
   dob: date("dob", { mode: "date" }).notNull(),
 });
 
+export const gradeWeight = pgTable("grade_weight", {
+  id: text("id").primaryKey(),
+  name: text("name").notNull(),
+  keyTag: text("key_tag").notNull().unique(),
+  percentage: integer("percentage").notNull(),
+  courseSessionId: text("course_session_id").references(() => courseSession.id),
+});
+
 export type AcademicGrade = typeof academicGrade.$inferSelect;
 export type AcademicTask = typeof academicTask.$inferSelect;
 export type Course = typeof course.$inferSelect;
@@ -122,3 +114,4 @@ export type CourseSession = typeof courseSession.$inferSelect;
 export type Roster = typeof roster.$inferSelect;
 export type Session = typeof session.$inferSelect;
 export type User = typeof user.$inferSelect;
+export type GradeWeight = typeof gradeWeight.$inferSelect;

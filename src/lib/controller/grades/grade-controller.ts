@@ -1,16 +1,19 @@
 import { db } from "@/db/index";
 import {
   academicGrade,
+  academicTask,
   course,
   courseSession,
+  gradeWeight,
   roster,
   user,
 } from "@/db/schema";
-import { GradeSummaryData } from "@/lib/types/grading/definitions";
-import { aliasedTable, and, avg, eq, gte, lte, sql } from "drizzle-orm";
+import { RawGradeReportData } from "@/lib/types/grading/definitions";
+import { and, eq, gte, lte } from "drizzle-orm";
+import { alias } from "drizzle-orm/pg-core";
 
 export const GradeController = {
-  getGradeSummaryByDate: async ({
+  getRawGradeReportData: async ({
     studentId,
     startDate,
     endDate = new Date(),
@@ -18,68 +21,51 @@ export const GradeController = {
     studentId: string;
     startDate: Date;
     endDate?: Date;
-  }): Promise<GradeSummaryData[]> => {
-    const aliasedUserTable = aliasedTable(user, "aliased_user_table");
+  }): Promise<RawGradeReportData[]> => {
+    const aliasedUser = alias(user, "alias_user_table");
     return db
       .select({
+        academicTaskId: academicTask.id,
+        academicTaskName: academicTask.name,
+        academicTaskType: academicTask.taskType,
+        courseSessionId: courseSession.id,
+        studentId: roster.studentId,
         studentFirstName: user.firstName,
         studentLastName: user.lastName,
-        studentId: roster.studentId,
-        courseName: course.name,
-        courseCode: course.course_code,
-        coursePercentageAverage: avg(academicGrade.percentageGrade),
-        courseLetterGradeAverage: sql`avg(
-          CASE
-            WHEN academic_grade.letter_grade = 'a+' THEN 100
-            WHEN academic_grade.letter_grade = 'a' THEN 85
-            WHEN academic_grade.letter_grade = 'a-' THEN 80
-            WHEN academic_grade.letter_grade = 'b+' THEN 79
-            WHEN academic_grade.letter_grade = 'b' THEN 75
-            WHEN academic_grade.letter_grade = 'b-' THEN 70
-            WHEN academic_grade.letter_grade = 'c+' THEN 69
-            WHEN academic_grade.letter_grade = 'c' THEN 65
-            WHEN academic_grade.letter_grade = 'c-' THEN 60
-            WHEN academic_grade.letter_grade = 'd+' THEN 59
-            WHEN academic_grade.letter_grade = 'd' THEN 55
-            WHEN academic_grade.letter_grade = 'd-' THEN 50
-            ELSE 0
-          END
-        )`,
-        isCourseCompleted: courseSession.isCompleted,
+        gradeWeightId: gradeWeight.id,
+        gradeWeightName: gradeWeight.name,
+        gradeWeightPercentage: gradeWeight.percentage,
+        percentageGrade: academicGrade.percentageGrade,
+        instructorFirstName: aliasedUser.firstName,
+        instructorLastName: aliasedUser.lastName,
         sessionStart: courseSession.sessionStart,
         sessionEnd: courseSession.sessionEnd,
-        instructorFirstName: aliasedUserTable.firstName,
-        instructorLastName: aliasedUserTable.lastName,
+        isCourseCompleted: courseSession.isCompleted,
+        courseName: course.name,
+        courseCode: course.course_code,
       })
       .from(roster)
       .where(eq(roster.studentId, studentId))
-      .groupBy(
-        course.course_code,
-        course.name,
-        roster.studentId,
-        user.firstName,
-        user.lastName,
-        aliasedUserTable.firstName,
-        aliasedUserTable.lastName,
-        courseSession.isCompleted,
-        courseSession.sessionStart,
-        courseSession.sessionEnd
-      )
-      .innerJoin(academicGrade, eq(roster.studentId, academicGrade.userId))
       .innerJoin(
         courseSession,
         and(
-          eq(courseSession.id, academicGrade.courseSessionId),
+          eq(roster.courseSessionId, courseSession.id),
           eq(courseSession.isCompleted, true),
           gte(courseSession.sessionStart, startDate),
           lte(courseSession.sessionEnd, endDate)
         )
       )
       .innerJoin(course, eq(course.id, courseSession.courseId))
-      .fullJoin(user, eq(user.id, roster.studentId))
-      .fullJoin(
-        aliasedUserTable,
-        eq(aliasedUserTable.id, courseSession.instructorId)
-      );
+      .innerJoin(
+        academicTask,
+        eq(academicTask.courseSessionId, courseSession.id)
+      )
+      .innerJoin(
+        academicGrade,
+        eq(academicGrade.academicTaskId, academicTask.id)
+      )
+      .innerJoin(gradeWeight, eq(gradeWeight.id, academicTask.gradeWeightId))
+      .innerJoin(user, eq(user.id, roster.studentId))
+      .innerJoin(aliasedUser, eq(aliasedUser.id, courseSession.instructorId));
   },
 };

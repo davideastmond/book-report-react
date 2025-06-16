@@ -6,6 +6,7 @@ export const newCourseWorkValidator = z.object({
     .min(1, "Title is required")
     .max(200, "Title must be less than 200 characters"),
   description: z.string().optional(),
+  gradeWeightId: z.string().min(1, "Grade weight ID is required"),
   taskType: z
     .enum([
       "assignment",

@@ -76,7 +76,7 @@ async function doAdminQuery(courseSessionId: string) {
     .leftJoin(course, eq(course.id, courseSession.courseId));
 
   if (courseSessionData.length === 0) {
-    throw new Error("Course session not found");
+    throw Error("Course session not found");
   }
 
   const studentsEnrolledInCourse = await db

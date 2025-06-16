@@ -1,6 +1,6 @@
 import { authOptions } from "@/auth/auth";
 import { db } from "@/db/index";
-import { courseSession } from "@/db/schema";
+import { academicTask, courseSession } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
@@ -53,7 +53,42 @@ export async function PATCH(
         { status: 400 }
       );
     }
-
+  } catch (error) {
+    console.error("Error fetching course session:", error);
+    return NextResponse.json(
+      {
+        error: "Error fetching course session: " + (error as Error).message,
+      },
+      { status: 500 }
+    );
+  }
+  // As a validation measure, all course-work should have a weight percentage
+  try {
+    const results = await db.query.academicTask.findMany({
+      where: eq(academicTask.courseSessionId, courseSessionId),
+    });
+    if (results.length > 0) {
+      const allWeightsPresent = results.every(
+        (task) => task.gradeWeightId !== null
+      );
+      if (!allWeightsPresent) {
+        return NextResponse.json(
+          {
+            error: "All course work must have a weight percentage.",
+          },
+          { status: 400 }
+        );
+      }
+    }
+  } catch (error) {
+    return NextResponse.json(
+      {
+        error: "Error fetching course work: " + (error as Error).message,
+      },
+      { status: 500 }
+    );
+  }
+  try {
     await db
       .update(courseSession)
       .set({ isCompleted: true })

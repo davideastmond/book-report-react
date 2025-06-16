@@ -1,6 +1,6 @@
 import { authOptions } from "@/auth/auth";
 import { db } from "@/db/index";
-import { academicTask } from "@/db/schema";
+import { academicTask, gradeWeight } from "@/db/schema";
 import { newCourseWorkValidator } from "@/lib/validators/course-work/new-course-work-validator";
 import { eq } from "drizzle-orm";
 import { getServerSession } from "next-auth";
@@ -54,7 +54,14 @@ export async function POST(
       );
     }
   }
-  const { name, description, taskType, dueDate, gradeValueType } = requestBody;
+  const {
+    name,
+    description,
+    taskType,
+    dueDate,
+    gradeValueType,
+    gradeWeightId,
+  } = requestBody;
   try {
     const insertedDocument = await db
       .insert(academicTask)
@@ -66,6 +73,7 @@ export async function POST(
         taskType,
         dueDate: dueDate ? new Date(dueDate) : null,
         gradeValueType,
+        gradeWeightId,
       })
       .returning({ insertedId: academicTask.id });
     return NextResponse.json(
@@ -114,13 +122,23 @@ export async function GET(
   }
 
   try {
-    // Query the database for all course work related to the course session
-    const courseWorks = await db.query.academicTask.findMany({
-      where: eq(academicTask.courseSessionId, courseSessionId),
-    });
+    const courseWorks = await db
+      .select({
+        id: academicTask.id,
+        name: academicTask.name,
+        description: academicTask.description,
+        taskType: academicTask.taskType,
+        dueDate: academicTask.dueDate,
+        gradeWeightPercentage: gradeWeight.percentage,
+        gradeWeightId: academicTask.gradeWeightId,
+        gradeWeightName: gradeWeight.name,
+        courseSessionId: academicTask.courseSessionId,
+      })
+      .from(academicTask)
+      .where(eq(academicTask.courseSessionId, courseSessionId))
+      .fullJoin(gradeWeight, eq(academicTask.gradeWeightId, gradeWeight.id));
     return NextResponse.json(courseWorks);
   } catch (error) {
-    console.error("Error fetching course work:", error);
     return NextResponse.json(
       {
         error: "Failed to fetch course work: " + (error as Error).message,

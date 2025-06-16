@@ -6,7 +6,7 @@ import { CourseWorkList } from "@/components/course-work-list/Course-work-list";
 import { CoursesSessionsList } from "@/components/courses-sessions/courses-sessions-list/Courses-sessions-list";
 import { CourseSessionsNavToolbar } from "@/components/nav/admin/course-sessions-nav-toolbar/Course-sessions-nav-toolbar";
 import { Spinner } from "@/components/spinner/Spinner";
-import { AcademicTask } from "@/db/schema";
+import { AcademicTaskWithWeighting } from "@/lib/types/course-work/definitions";
 import { CourseSessionInfo } from "@/lib/types/db/course-session-info";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
@@ -25,7 +25,7 @@ export default function AdminCourseWorkPage() {
   const [courseSession, setCourseSession] = useState<CourseSessionInfo | null>(
     null
   );
-  const [courseWork, setCourseWork] = useState<AcademicTask[]>([]); // Adjust type as needed
+  const [courseWork, setCourseWork] = useState<AcademicTaskWithWeighting[]>([]); // Adjust type as needed
 
   const router = useRouter();
   const { data: session, status } = useSession();
@@ -81,16 +81,21 @@ export default function AdminCourseWorkPage() {
       <CourseSessionsNavToolbar courseSessionId={params.courseSessionId} />
       <h1 className="text-3xl py-4">Course Work Manager(Admin)</h1>
       <CoursesSessionsList coursesSessions={[courseSession]} />
+      {courseSession.isCompleted && (
+        <p className="text-amber-300 my-4">This course session is completed.</p>
+      )}
       <h2 className="text-2xl py-4">Tasks for this course</h2>
       <CourseWorkList courseWork={courseWork} linkable />
-      <div className="flex justify-end mx-4 mt-4">
-        <Link
-          className="flatStyle"
-          href={`/dashboard/courses-sessions/${params.courseSessionId}/admin/course-work/new`}
-        >
-          New Course Work...
-        </Link>
-      </div>
+      {!courseSession.isCompleted && (
+        <div className="flex justify-end mx-4 mt-4">
+          <Link
+            className="flatStyle"
+            href={`/dashboard/courses-sessions/${params.courseSessionId}/admin/course-work/new`}
+          >
+            New Course Work...
+          </Link>
+        </div>
+      )}
     </div>
   );
 }

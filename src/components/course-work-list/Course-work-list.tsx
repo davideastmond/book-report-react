@@ -1,12 +1,12 @@
 "use client";
-import { AcademicTask } from "@/db/schema";
+import { AcademicTaskWithWeighting } from "@/lib/types/course-work/definitions";
 import { useRouter } from "next/navigation";
 
 export function CourseWorkList({
   courseWork,
   linkable = true,
 }: {
-  courseWork: AcademicTask[];
+  courseWork: AcademicTaskWithWeighting[];
   linkable?: boolean;
 }) {
   const router = useRouter();
@@ -17,6 +17,7 @@ export function CourseWorkList({
           <th>Name</th>
           <th>Description</th>
           <th>Type</th>
+          <th>Gr. P%</th>
           <th>Due Date</th>
         </tr>
       </thead>
@@ -39,7 +40,16 @@ export function CourseWorkList({
           >
             <td className="p-2">{work.name}</td>
             <td className="p-2">{work.description}</td>
-            <td className="p-2">{work.taskType}</td>
+            <td className="p-2 font-thin">{work.taskType}</td>
+            <td>
+              {work.gradeWeightId ? (
+                <p>
+                  {work.gradeWeightName}({work.gradeWeightPercentage}%)
+                </p>
+              ) : (
+                <p className="text-amber-400">N.A</p>
+              )}
+            </td>
             <td className="p-2">
               {work.dueDate
                 ? new Date(work.dueDate).toLocaleDateString()

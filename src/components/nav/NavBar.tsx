@@ -63,7 +63,9 @@ export function NavBar() {
             </li>
             {session?.user?.email && (
               <li style={styles.finalItem} className="flex gap-4">
-                {session.user.email} {displayAdminRole(session.user.role)}
+                <Link href="/dashboard/user/settings">
+                  {session.user.email} {displayAdminRole(session.user.role)}
+                </Link>
                 <button
                   className="text-white hover:text-gray-300 hover:underline hover:cursor-pointer"
                   onClick={async () => await signOut()}

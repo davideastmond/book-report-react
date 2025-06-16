@@ -119,7 +119,7 @@ export default function CourseSessionPage() {
         enrolled={{ show: true, count: courseSession.allotmentCount }}
       />
       {courseSession.isCompleted && (
-        <p className="text-amber-300">Course session completed.</p>
+        <p className="text-amber-300 my-4">Course session completed.</p>
       )}
       {["admin", "teacher"].includes(session?.user?.role as string) && (
         <div className="mt-10">
@@ -168,7 +168,7 @@ export default function CourseSessionPage() {
             >
               <span className="flex items-center gap-2">
                 {isBusy && <Spinner />}I am enrolled in this course. Click to
-                remove me.
+                un-enroll.
               </span>
             </button>
           )}

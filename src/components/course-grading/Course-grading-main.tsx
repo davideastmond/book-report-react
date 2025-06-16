@@ -1,6 +1,7 @@
 import { CourseSessionClient } from "@/clients/course-session-client";
 import { CourseWorkClient } from "@/clients/course-work-client";
-import { AcademicGrade, AcademicTask } from "@/db/schema";
+import { AcademicGrade } from "@/db/schema";
+import { AcademicTaskWithWeighting } from "@/lib/types/course-work/definitions";
 import { CourseSessionDataAPIResponse } from "@/lib/types/db/course-session-info";
 import { TableData } from "@/lib/types/grading/definitions";
 import { useParams } from "next/navigation";
@@ -13,7 +14,7 @@ export function CourseGradingMain({
 }: {
   courseData: CourseSessionDataAPIResponse;
 }) {
-  const [courseWork, setCourseWork] = useState<AcademicTask[]>([]);
+  const [courseWork, setCourseWork] = useState<AcademicTaskWithWeighting[]>([]);
   const [selectedCourseWorkId, setSelectedCourseWorkId] = useState<
     string | null
   >(null);
@@ -34,18 +35,18 @@ export function CourseGradingMain({
         courseData.courseSessionData.courseSessionId as string
       );
 
-    const convertedTableData = convertToTableData(courseSessionGrades);
-    setTableData(convertedTableData);
+    const tableData = convertToTableData(courseSessionGrades);
+    setTableData(tableData);
   }
 
-  async function fetchCourseWork(assignSelected: boolean = false) {
+  async function fetchCourseWork(assignSelected: boolean) {
     const courseWork = await CourseWorkClient.getCourseWorkForSession(
       courseData.courseSessionData.courseSessionId as string
     );
     setCourseWork(courseWork);
     // If there is courseWork and assignSelected is true, set the first assignment as selected
     if (courseWork.length > 0 && assignSelected) {
-      setSelectedCourseWorkId(courseWork[0].id); // Set the first work as selected by default
+      setSelectedCourseWorkId(courseWork[0].id as string); // Set the first work as selected by default
     }
   }
 
@@ -140,6 +141,9 @@ export function CourseGradingMain({
           ))}
         </select>
       </section>
+      {courseData.courseSessionData.isCompleted && (
+        <p className="text-amber-300 my-4">Course session completed.</p>
+      )}
       <section className="flex justify-end my-4 px-2">
         {courseData.students && courseData.students.length > 0 ? (
           <button
@@ -159,6 +163,7 @@ export function CourseGradingMain({
           courseWorkId={selectedCourseWorkId}
           tableData={tableData}
           onTableDataChange={handleTableDataChange}
+          disabled={courseData.courseSessionData.isCompleted}
         />
       </section>
     </div>

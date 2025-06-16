@@ -2,7 +2,7 @@
 
 import { CourseSessionClient } from "@/clients/course-session-client";
 import { CourseWorkClient } from "@/clients/course-work-client";
-import { AcademicTask } from "@/db/schema";
+import { AcademicTask, GradeWeight } from "@/db/schema";
 import { TaskType } from "@/lib/types/course-work/task-type";
 import { CourseSessionInfo } from "@/lib/types/db/course-session-info";
 import { newCourseWorkValidator } from "@/lib/validators/course-work/new-course-work-validator";
@@ -10,7 +10,12 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { z } from "zod";
 
-type FormFields = "name" | "description" | "taskType" | "dueDate";
+type FormFields =
+  | "name"
+  | "description"
+  | "taskType"
+  | "dueDate"
+  | "gradeWeightId";
 
 export function CourseWorkCreateUpdateForm({
   courseSessionId,
@@ -28,17 +33,22 @@ export function CourseWorkCreateUpdateForm({
     description: null,
     taskType: null,
     dueDate: null,
+    gradeWeightId: null,
   });
   const [apiError, setApiError] = useState<string | null>(null);
   const [courseSessionInfo, setCourseSessionInfo] =
     useState<CourseSessionInfo | null>(null);
   const [isBusy, setIsBusy] = useState(false);
+  const [gradeWeightOptions, setGradeWeightOptions] = useState<GradeWeight[]>(
+    []
+  );
   const router = useRouter();
 
   useEffect(() => {
     // Load course session data when the component mounts
     // This helps to give context to the form, such as the course name
     loadCourseSessionData();
+    loadGradeWeightOptions();
   }, []);
 
   async function loadCourseSessionData() {
@@ -52,6 +62,25 @@ export function CourseWorkCreateUpdateForm({
       await fetchCourseWorkDataById();
     }
     setIsBusy(false);
+  }
+
+  async function loadGradeWeightOptions() {
+    try {
+      setIsBusy(true);
+      const data = await CourseSessionClient.getCourseWeightings(
+        courseSessionId
+      );
+      setGradeWeightOptions(data);
+    } catch (error) {
+      console.error("Error fetching grade weight options:", error);
+      if (error instanceof Error) {
+        setApiError(error.message);
+      } else {
+        setApiError("An unknown error occurred while fetching grade weights.");
+      }
+    } finally {
+      setIsBusy(false);
+    }
   }
 
   async function fetchCourseWorkDataById() {
@@ -75,6 +104,10 @@ export function CourseWorkCreateUpdateForm({
       "gradeValueType"
     ) as HTMLSelectElement;
 
+    const greatWeightsInput = document.getElementById(
+      "gradeWeightId"
+    ) as HTMLSelectElement;
+
     if (gradeValueTypeInputField) {
       gradeValueTypeInputField.value = data.gradeValueType || "p";
     }
@@ -91,6 +124,10 @@ export function CourseWorkCreateUpdateForm({
       dueDateInputField.value = data.dueDate
         ? new Date(data.dueDate).toISOString().split("T")[0]
         : "";
+    }
+
+    if (greatWeightsInput) {
+      greatWeightsInput.value = data.gradeWeightId || "";
     }
   }
 
@@ -172,6 +209,7 @@ export function CourseWorkCreateUpdateForm({
       description: null,
       taskType: null,
       dueDate: null,
+      gradeWeightId: null,
     });
   };
 
@@ -234,9 +272,43 @@ export function CourseWorkCreateUpdateForm({
               id="gradeValueType"
               disabled={isBusy}
             >
-              <option value="p">Percentage</option>
-              <option value="l">Letter</option>
+              <option value="p" className="bg-amber-background">
+                Percentage
+              </option>
             </select>
+          </div>
+          <div>
+            <label htmlFor="gradeWeightId">* Grade Weight Group</label>
+            {gradeWeightOptions.length === 0 && (
+              <p className="text-yellow-400">
+                You have no grade weights defined. Tap on the grade weightings
+                menu option to define some first.
+              </p>
+            )}
+            <select
+              className="border rounded p-2 mb-4 w-full"
+              name="gradeWeightId"
+              id="gradeWeightId"
+              disabled={isBusy}
+            >
+              <option value="" className="bg-amber-background" disabled>
+                Select Grade Weight
+              </option>
+              {/* Options will be populated dynamically */}
+              {gradeWeightOptions.map((gw) => (
+                <option
+                  key={gw.id}
+                  value={gw.id}
+                  className="bg-amber-background"
+                >
+                  {gw.name} ({gw.percentage}%)
+                </option>
+              ))}
+            </select>
+
+            {formErrors.gradeWeightId && (
+              <p className="text-red-500 text-sm">{formErrors.gradeWeightId}</p>
+            )}
           </div>
           <div className="mt-4">
             <label htmlFor="description">Description:</label>
