@@ -2,7 +2,7 @@
 
 ## About
 
-This is a web app platform to manage academics for a school or university, allowing instructors to manages courses, students and grades, and allowing students to manage their courses and grades.
+This is a web app platform to manage academic grades for a school or university, allowing instructors to manages courses, course work, students and grades, and allowing students to manage their courses and grades.
 
 ## Features
 
@@ -25,10 +25,18 @@ This is a web app platform to manage academics for a school or university, allow
 - Admins/Teachers can lock a course, preventing students from enrolling or de-enrolling.
 - Admins/Teachers can set a course as completed.
 
+### Grade Weighting
+
+- Admins/Teachers can allocate weights to course work to emphasize importance of particular assignments, quizzes or final exams.
+
 ### Grading
 
-- Admins/Teachers can assign numerical and letter grades to students for course work.
-- Students can view their grades for courses that are completed.
+- Admins/Teachers can assign numerical grades (0 - 100) for course work.
+
+### Final Grade Calculation
+
+- All course final grades are calculated using the define weights.
+- Students can search for courses that are completed within a time frame, and the system will calculate the final grade for all courses.
 
 ## Tech Stack
 
