@@ -24,6 +24,7 @@ export function GradeWeightingComponentMain({
   >([]);
   const [weightSums, setWeightSums] = useState<number>(0);
   const [errors, setErrors] = useState<string | null>(null);
+  const [isBusy, setIsBusy] = useState(false);
   const [currentWeights, setCurrentWeights] = useState<GradeWeight[]>([]);
 
   const handleRemoveWeighting = (name: string) => {
@@ -63,12 +64,15 @@ export function GradeWeightingComponentMain({
 
   async function fetchCurrentWeights() {
     try {
+      setIsBusy(true);
       const weights = await CourseSessionClient.getCourseWeightings(
         courseSessionId
       );
       setCurrentWeights(weights);
     } catch (error) {
       console.error("Error fetching current weights:", error);
+    } finally {
+      setIsBusy(false);
     }
   }
 
@@ -110,14 +114,18 @@ export function GradeWeightingComponentMain({
     }
 
     try {
+      setIsBusy(true);
       await CourseSessionClient.createCourseWeighting(
         courseSessionId,
         weightData
       );
+      await fetchCurrentWeights(); // Refresh
     } catch (error) {
       console.error("Error saving weightings:", error);
       setErrors("Failed to save weightings. Please try again.");
       return;
+    } finally {
+      setIsBusy(false);
     }
     // Get the form data for each weight component
   }
@@ -154,7 +162,7 @@ export function GradeWeightingComponentMain({
           <button
             type="submit"
             className="mt-4 bg-green-500 text-white px-4 py-2 rounded hover:cursor-pointer hover:enabled:bg-green-600/40 disabled:opacity-50"
-            disabled={weightComponents.length === 0}
+            disabled={weightComponents.length === 0 || isBusy}
             onClick={handleSaveWeightings}
           >
             Save Weightings

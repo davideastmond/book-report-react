@@ -279,6 +279,14 @@ export function CourseWorkCreateUpdateForm({
           </div>
           <div>
             <label htmlFor="gradeWeightId">* Grade Weight Group</label>
+            {gradeWeightOptions.length === 0 && (
+              <p className="text-yellow-400">
+                You don't have any grade weights defined. You won't be able to
+                update or define anything on this page until you create
+                weightings. Tap on the grade weightings menu option to define
+                some first.
+              </p>
+            )}
             <select
               className="border rounded p-2 mb-4 w-full"
               name="gradeWeightId"
@@ -299,6 +307,7 @@ export function CourseWorkCreateUpdateForm({
                 </option>
               ))}
             </select>
+
             {formErrors.gradeWeightId && (
               <p className="text-red-500 text-sm">{formErrors.gradeWeightId}</p>
             )}
