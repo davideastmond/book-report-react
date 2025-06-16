@@ -38,7 +38,9 @@ export function CourseGradeSummaryTable({
             {gradeSummaryData.studentLastName}{" "}
             {gradeSummaryData.studentFirstName?.slice(0, 1)}
           </td>
-          <td>{gradeSummaryData.coursePercentageAverage}</td>
+          <td className="text-blue-500">
+            {gradeSummaryData.coursePercentageAverage}
+          </td>
         </tr>
       </tbody>
     </table>
