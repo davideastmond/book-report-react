@@ -281,10 +281,8 @@ export function CourseWorkCreateUpdateForm({
             <label htmlFor="gradeWeightId">* Grade Weight Group</label>
             {gradeWeightOptions.length === 0 && (
               <p className="text-yellow-400">
-                You don't have any grade weights defined. You won't be able to
-                update or define anything on this page until you create
-                weightings. Tap on the grade weightings menu option to define
-                some first.
+                You have no grade weights defined. Tap on the grade weightings
+                menu option to define some first.
               </p>
             )}
             <select
