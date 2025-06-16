@@ -85,7 +85,7 @@ export class GradeCalculator {
           (gradeData.sum * gradeData.percentageWeight) /
           (gradeData.totalElements * 100);
       }
-      weightedFinalGrades[courseSessionId] = gradeSum;
+      weightedFinalGrades[courseSessionId] = Math.ceil(gradeSum);
     }
     return weightedFinalGrades;
   }
