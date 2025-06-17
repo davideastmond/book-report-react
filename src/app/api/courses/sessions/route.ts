@@ -2,7 +2,7 @@ import { authOptions } from "@/auth/auth";
 import { db } from "@/db/index";
 import { course, courseSession, user } from "@/db/schema";
 import { createCourseSessionValidator } from "@/lib/validators/course-session/create-course-session-validator";
-import { eq } from "drizzle-orm";
+import { eq, or } from "drizzle-orm";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 import z from "zod";
@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
 }
 
 // This route gets all available courses for browsing purposes
-export async function GET() {
+export async function GET(req: NextRequest) {
   const authSession = await getServerSession(authOptions);
 
   if (!authSession || !authSession.user) {
@@ -71,6 +71,15 @@ export async function GET() {
       { status: 401 }
     );
   }
+
+  const showCompleted = req.nextUrl.searchParams.get("showCompleted");
+  const conditionalQuery =
+    showCompleted === "true"
+      ? or(
+          eq(courseSession.isCompleted, true),
+          eq(courseSession.isCompleted, false)
+        )
+      : eq(courseSession.isCompleted, false);
 
   try {
     const availableCourses = await db
@@ -89,7 +98,7 @@ export async function GET() {
         isLocked: courseSession.isLocked,
       })
       .from(courseSession)
-      .where(eq(courseSession.isCompleted, false))
+      .where(conditionalQuery)
       .innerJoin(course, eq(course.id, courseSession.courseId))
       .innerJoin(user, eq(user.id, courseSession.instructorId));
     return NextResponse.json(availableCourses);
