@@ -11,6 +11,7 @@ import {
   CourseSessionInfo,
   EnrolledStudent,
 } from "@/lib/types/db/course-session-info";
+import { useAdmin } from "app/hooks/use-admin";
 import { useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -29,6 +30,10 @@ export default function CourseSessionPage() {
 
   const courseSessionId = searchParams.get("id");
   const router = useRouter();
+
+  const { isAdminEditable } = useAdmin(
+    courseSession?.courseSessionId as string
+  );
   useEffect(() => {
     fetchCourseSessionById();
   }, []);
@@ -50,16 +55,6 @@ export default function CourseSessionPage() {
       }
       setApiError((error as Error).message);
     }
-  };
-
-  const isAdminEditable = () => {
-    if (session?.user?.role === "admin") return true;
-    if (
-      session?.user?.role === "teacher" &&
-      session.user.id === courseSession?.instructorId
-    )
-      return true;
-    return false;
   };
 
   const handleStudentAddToRoster = async (
@@ -142,7 +137,7 @@ export default function CourseSessionPage() {
           <UserSearch
             onUserSelect={handleStudentAddToRoster}
             alreadyEnrolledStudents={students}
-            disabled={courseSession.isCompleted || !isAdminEditable()}
+            disabled={courseSession.isCompleted || !isAdminEditable}
           />
         </div>
       )}

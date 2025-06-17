@@ -3,6 +3,7 @@
 import { CourseSessionClient } from "@/clients/course-session-client";
 import { CourseSessionsNavToolbar } from "@/components/nav/admin/course-sessions-nav-toolbar/Course-sessions-nav-toolbar";
 import { CourseSessionInfo } from "@/lib/types/db/course-session-info";
+import { useAdmin } from "app/hooks/use-admin";
 import { useSession } from "next-auth/react";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -23,9 +24,14 @@ export default function CourseSessionSettingsPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
 
+  const { isAdminEditable } = useAdmin(
+    courseSession?.courseSessionId as string
+  );
+
   useEffect(() => {
     fetchCourseSessionById();
   }, []);
+
   async function fetchCourseSessionById() {
     setIsBusy(true);
     const res = await CourseSessionClient.fetchCourseSessionByIdAdmin(
@@ -152,6 +158,7 @@ export default function CourseSessionSettingsPage() {
       );
     }
   }
+
   if (status === "unauthenticated") {
     router.replace("/login");
     return null;
@@ -181,16 +188,20 @@ export default function CourseSessionSettingsPage() {
                 <textarea
                   id="description"
                   name="description"
-                  className="w-full p-2"
+                  className="w-full p-2 responsiveStyle"
                   autoComplete="off"
                   rows={4}
                   placeholder="Description of the class session"
                   maxLength={500}
+                  disabled={!isAdminEditable}
                 ></textarea>
               </div>
             </div>
             <div>
-              <button type="submit" className="flatStyle bg-green-900">
+              <button
+                type="submit"
+                className="flatStyle bg-green-900 responsiveStyle"
+              >
                 Update
               </button>
             </div>
@@ -213,6 +224,7 @@ export default function CourseSessionSettingsPage() {
                   autoComplete="off"
                   data-lpignore="true"
                   onKeyDown={() => false}
+                  disabled={!isAdminEditable}
                   required
                 ></input>
                 {sessionDateFormErrors.sessionStart && (
@@ -232,6 +244,7 @@ export default function CourseSessionSettingsPage() {
                   className="w-full p-2"
                   autoComplete="off"
                   data-lpignore="true"
+                  disabled={!isAdminEditable}
                   required
                   onKeyDown={() => false}
                 ></input>
@@ -243,7 +256,10 @@ export default function CourseSessionSettingsPage() {
               </div>
             </div>
             <div>
-              <button type="submit" className="flatStyle bg-green-900">
+              <button
+                type="submit"
+                className="flatStyle bg-green-900 responsiveStyle"
+              >
                 Update
               </button>
             </div>
@@ -267,8 +283,8 @@ export default function CourseSessionSettingsPage() {
               name="isLocked"
               checked={isLocked}
               onChange={toggleLockState}
-              disabled={isBusy}
-              className="customStyledCheckbox"
+              disabled={!isAdminEditable || isBusy}
+              className="customStyledCheckbox responsiveStyle"
             />
             <label htmlFor="isLocked">Locked</label>
           </>
@@ -295,7 +311,7 @@ export default function CourseSessionSettingsPage() {
             <button
               className="flatStyle flex justify-center"
               onClick={handleMarkSessionCourseComplete}
-              disabled={isBusy}
+              disabled={!isAdminEditable || isBusy}
             >
               Complete this course
             </button>

@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { z } from "zod";
 
 import { GradeWeight } from "@/db/schema";
+import { useAdmin } from "app/hooks/use-admin";
 import { GradeWeight as GradeWeightComponent } from "./Grade-Weight";
 import { GradeWeightTable } from "./Grade-Weight-table";
 
@@ -41,6 +42,8 @@ export function GradeWeightingComponentMain({
   useEffect(() => {
     fetchCurrentWeights();
   }, []);
+
+  const { isAdminEditable } = useAdmin(courseSessionId);
 
   function handleAddWeighting() {
     // The id and name will be unique for each component.
@@ -139,8 +142,9 @@ export function GradeWeightingComponentMain({
       <h2 className="text-2xl mt-6">Add Weightings</h2>
       <div className="flex px-4 mt-6">
         <button
-          className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:cursor-pointer hover:bg-blue-600/40"
+          className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:cursor-pointer hover:bg-blue-600/40 responsiveStyle "
           onClick={handleAddWeighting}
+          disabled={!isAdminEditable}
         >
           + Add
         </button>
@@ -161,8 +165,10 @@ export function GradeWeightingComponentMain({
         <div>
           <button
             type="submit"
-            className="mt-4 bg-green-500 text-white px-4 py-2 rounded hover:cursor-pointer hover:enabled:bg-green-600/40 disabled:opacity-50"
-            disabled={weightComponents.length === 0 || isBusy}
+            className="mt-4 responsiveStyle bg-green-500 text-white px-4 py-2 rounded hover:cursor-pointer hover:enabled:bg-green-600/40 disabled:opacity-50"
+            disabled={
+              isAdminEditable || weightComponents.length === 0 || isBusy
+            }
             onClick={handleSaveWeightings}
           >
             Save Weightings
