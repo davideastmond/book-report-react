@@ -61,6 +61,12 @@ button.flatSTyle:disabled:hover {
   cursor: not-allowed;
 }
 
+button.responsiveStyle {
+  background-color: var(--greyed-out);
+  opacity: 0.2;
+  cursor: not-allowed;
+}
+
 a:link.flatStyle {
   border: 1px solid var(--foreground);
   border-radius: 5px;
