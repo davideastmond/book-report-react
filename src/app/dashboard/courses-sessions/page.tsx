@@ -1,6 +1,7 @@
 "use client";
 import { CoursesSessionsMain } from "@/components/courses-sessions/Courses-sessions-main";
 import { CourseSessionsNavToolbar } from "@/components/nav/student/Course-sessions-nav-toolbar";
+import { Spinner } from "@/components/spinner/Spinner";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 /**
@@ -17,6 +18,8 @@ export default function CoursesSessionsPage() {
   if (status === "unauthenticated") {
     router.replace("/login");
   }
+
+  if (!session?.user) return <Spinner />;
   return (
     <>
       <CourseSessionsNavToolbar />
