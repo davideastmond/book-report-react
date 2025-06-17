@@ -6,7 +6,7 @@ export function calculateGPA(
   if (totalEntries === 0) {
     return null;
   }
-  const sum = Object.entries(input).reduce((acc, [key, value]) => {
+  const sum = Object.entries(input).reduce((acc, [, value]) => {
     return acc + value;
   }, 0);
 
