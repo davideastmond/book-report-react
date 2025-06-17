@@ -149,6 +149,7 @@ export function CourseGradingMain({
           <button
             className="flatStyle bg-green-950"
             onClick={handleSubmitGradeUpdates}
+            disabled={courseData.courseSessionData.isCompleted}
           >
             Update Grades
           </button>
