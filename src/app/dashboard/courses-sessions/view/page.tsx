@@ -52,6 +52,16 @@ export default function CourseSessionPage() {
     }
   };
 
+  const isAdminEditable = () => {
+    if (session?.user?.role === "admin") return true;
+    if (
+      session?.user?.role === "teacher" &&
+      session.user.id === courseSession?.instructorId
+    )
+      return true;
+    return false;
+  };
+
   const handleStudentAddToRoster = async (
     studentId: string,
     customError?: string
@@ -132,7 +142,7 @@ export default function CourseSessionPage() {
           <UserSearch
             onUserSelect={handleStudentAddToRoster}
             alreadyEnrolledStudents={students}
-            disabled={courseSession.isCompleted}
+            disabled={courseSession.isCompleted || !isAdminEditable()}
           />
         </div>
       )}
