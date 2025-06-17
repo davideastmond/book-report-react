@@ -9,7 +9,7 @@ export const GradesClient = {
     studentId: string;
     startDate: Date;
     endDate: Date;
-  }): Promise<GradeSummaryData[]> => {
+  }): Promise<{ data: GradeSummaryData[]; gpa: string | number }> => {
     const res = await fetch(
       `/api/user/grades?studentId=${studentId}&filter=allCourses&startDate=${
         startDate.toISOString().split("T")[0]

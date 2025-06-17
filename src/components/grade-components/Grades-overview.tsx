@@ -16,6 +16,7 @@ export function GradesOverviewComponent() {
   const [gradesOverviewData, setGradesOverviewData] = useState<
     GradeSummaryData[]
   >([]);
+  const [gpaValue, setGpaValue] = useState<number | string | null>(null);
 
   useEffect(() => {
     fetchGrades();
@@ -45,7 +46,8 @@ export function GradesOverviewComponent() {
       startDate,
       endDate,
     });
-    setGradesOverviewData(overViewData);
+    setGradesOverviewData(overViewData.data);
+    setGpaValue(overViewData.gpa);
   }
 
   async function handleDateRangeChange() {
@@ -103,6 +105,24 @@ export function GradesOverviewComponent() {
           </div>
         ))}
       </div>
+      {gpaValue && (
+        <div className="flex justify-end px-4">
+          <table>
+            <thead>
+              <tr className="border bg-slate-400/10 block px-4">
+                <th>Cumulative GPA</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td className="text-blue-400 flex justify-end pr-1">
+                  {gpaValue}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 }
