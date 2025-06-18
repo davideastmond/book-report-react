@@ -2,8 +2,10 @@
 
 import { CourseSessionClient } from "@/clients/course-session-client";
 import { CourseSessionsNavToolbar } from "@/components/nav/admin/course-sessions-nav-toolbar/Course-sessions-nav-toolbar";
+import { Spinner } from "@/components/spinner/Spinner";
 import { CourseSessionInfo } from "@/lib/types/db/course-session-info";
 import { useAdmin } from "app/hooks/use-admin";
+import { useAdminAuthorized } from "app/hooks/use-admin-authorized";
 import { useSession } from "next-auth/react";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -27,6 +29,7 @@ export default function CourseSessionSettingsPage() {
   const { isAdminEditable } = useAdmin(
     courseSession?.courseSessionId as string
   );
+  const { isAdminAuthorized } = useAdminAuthorized();
 
   useEffect(() => {
     fetchCourseSessionById();
@@ -74,13 +77,20 @@ export default function CourseSessionSettingsPage() {
       "description"
     ) as HTMLTextAreaElement | null;
 
-    sessionStartInput!.value = courseSession.sessionStart
-      ? new Date(courseSession.sessionStart).toISOString().split("T")[0]
-      : "";
-    sessionEndInput!.value = courseSession.sessionEnd
-      ? new Date(courseSession.sessionEnd).toISOString().split("T")[0]
-      : "";
-    courseDescriptionInput!.value = courseSession.description || "";
+    if (sessionStartInput) {
+      sessionStartInput.value = courseSession.sessionStart
+        ? new Date(courseSession.sessionStart)?.toISOString()?.split("T")[0]
+        : "";
+    }
+
+    if (sessionEndInput) {
+      sessionEndInput.value = courseSession.sessionEnd
+        ? new Date(courseSession.sessionEnd)?.toISOString()?.split("T")[0]
+        : "";
+    }
+    if (courseDescriptionInput) {
+      courseDescriptionInput!.value = courseSession.description || "";
+    }
   }
 
   async function handleUpdateSessionDescription(
@@ -164,8 +174,9 @@ export default function CourseSessionSettingsPage() {
     return null;
   }
 
-  if (["student"].includes(session?.user?.role as string)) {
-    return null;
+  if (!isAdminAuthorized) {
+    if (isAdminAuthorized === null) return <Spinner />;
+    router.replace("/dashboard");
   }
 
   return (

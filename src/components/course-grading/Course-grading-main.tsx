@@ -4,6 +4,7 @@ import { AcademicGrade } from "@/db/schema";
 import { AcademicTaskWithWeighting } from "@/lib/types/course-work/definitions";
 import { CourseSessionDataAPIResponse } from "@/lib/types/db/course-session-info";
 import { TableData } from "@/lib/types/grading/definitions";
+import { useAdmin } from "app/hooks/use-admin";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { GradingTable } from "../grading-table/Grading-table";
@@ -21,6 +22,10 @@ export function CourseGradingMain({
   const [tableData, setTableData] = useState<TableData>({});
 
   const params = useParams<{ courseSessionId: string }>();
+
+  const { isAdminEditable } = useAdmin(
+    courseData.courseSessionData.courseSessionId as string
+  );
   useEffect(() => {
     fetchCourseWork(true);
   }, []);
@@ -128,6 +133,7 @@ export function CourseGradingMain({
           name="courseId"
           id="courseId"
           onChange={(e) => handleSelectedWorkChange(e.target.value)}
+          disabled={!isAdminEditable}
         >
           {courseWork.map((work) => (
             <option
@@ -149,7 +155,9 @@ export function CourseGradingMain({
           <button
             className="flatStyle bg-green-950"
             onClick={handleSubmitGradeUpdates}
-            disabled={courseData.courseSessionData.isCompleted}
+            disabled={
+              !isAdminEditable || courseData.courseSessionData.isCompleted
+            }
           >
             Update Grades
           </button>
@@ -164,7 +172,9 @@ export function CourseGradingMain({
           courseWorkId={selectedCourseWorkId}
           tableData={tableData}
           onTableDataChange={handleTableDataChange}
-          disabled={courseData.courseSessionData.isCompleted}
+          disabled={
+            !isAdminEditable || courseData.courseSessionData.isCompleted
+          }
         />
       </section>
     </div>
