@@ -61,7 +61,7 @@ button.flatSTyle:disabled:hover {
   cursor: not-allowed;
 }
 
-button.responsiveStyle {
+button.responsiveStyle:disabled {
   background-color: var(--greyed-out);
   opacity: 0.2;
   cursor: not-allowed;
