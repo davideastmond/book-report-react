@@ -130,7 +130,6 @@ export function GradeWeightingComponentMain({
     } finally {
       setIsBusy(false);
     }
-    // Get the form data for each weight component
   }
 
   return (
