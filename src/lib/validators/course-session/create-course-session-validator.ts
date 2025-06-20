@@ -13,10 +13,13 @@ export const createCourseSessionValidator = z
       .number()
       .min(1, "Student allotment must be at least 1"),
   })
-  .refine((data) => {
-    const startDate = new Date(data.sessionStart);
-    const endDate = new Date(data.sessionEnd);
+  .refine(
+    (data) => {
+      const startDate = new Date(data.sessionStart);
+      const endDate = new Date(data.sessionEnd);
 
-    console.log("studentAllotment", data.studentAllotment);
-    return startDate < endDate;
-  });
+      console.log("studentAllotment", data.studentAllotment);
+      return startDate < endDate;
+    },
+    { message: "Ensure dates are valid", path: ["sessionStart", "sessionEnd"] }
+  );

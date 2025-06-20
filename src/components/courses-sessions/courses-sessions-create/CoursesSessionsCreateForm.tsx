@@ -42,6 +42,7 @@ export function CoursesSessionsCreateForm() {
           }));
         });
       }
+
       console.error("Error parsing form data:", error);
       return;
     }
