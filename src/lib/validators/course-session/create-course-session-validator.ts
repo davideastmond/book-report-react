@@ -18,7 +18,6 @@ export const createCourseSessionValidator = z
       const startDate = new Date(data.sessionStart);
       const endDate = new Date(data.sessionEnd);
 
-      console.log("studentAllotment", data.studentAllotment);
       return startDate < endDate;
     },
     { message: "Ensure dates are valid", path: ["sessionStart", "sessionEnd"] }
