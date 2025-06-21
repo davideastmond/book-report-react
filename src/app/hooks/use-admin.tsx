@@ -24,8 +24,9 @@ export function useAdmin(courseSessionId: string) {
     if (
       session?.user?.role === "teacher" &&
       session.user.id === courseSessionContext?.courseSessionData.instructorId
-    )
+    ) {
       return true;
+    }
     return false;
   }, [courseSessionId, session?.user, courseSessionContext]);
 
