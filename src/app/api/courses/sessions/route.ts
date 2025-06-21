@@ -96,6 +96,7 @@ export async function GET(req: NextRequest) {
         description: courseSession.description,
         studentAllotment: courseSession.studentAllotment,
         isLocked: courseSession.isLocked,
+        isCompleted: courseSession.isCompleted,
       })
       .from(courseSession)
       .where(conditionalQuery)
