@@ -1,3 +1,4 @@
+import { LandingPageLinks } from "@/components/landing-page-links/Landing-page-links";
 import Image from "next/image";
 import Link from "next/link";
 export default function Home() {
@@ -14,14 +15,7 @@ export default function Home() {
           />
         </Link>
       </main>
-      <div className="flex flex-col justify-center gap-4 mt-10">
-        <Link href="/login" className="self-center">
-          Log in
-        </Link>
-        <Link href="/register" className="self-center">
-          New Account
-        </Link>
-      </div>
+      <LandingPageLinks />
     </div>
   );
 }
