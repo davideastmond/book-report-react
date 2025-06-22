@@ -2,5 +2,6 @@
   "cSpell.words": [
     "lpignore",
     "Vercel"
-  ]
+  ],
+  "typescript.tsdk": "node_modules/typescript/lib"
 }
