@@ -2,6 +2,7 @@
 
 import { UserClient } from "@/clients/user-client";
 import { User } from "@/db/schema";
+import { useToast } from "app/hooks/use-toast";
 import { useSession } from "next-auth/react";
 import { FormEvent, useEffect, useState } from "react";
 
@@ -24,6 +25,16 @@ export function UserSettingsForm() {
     password1: "",
     password2: "",
   });
+
+  const {
+    showToast: showNameChangedToast,
+    ToastElement: NameChangedToastElement,
+  } = useToast();
+  const {
+    showToast: showPasswordChangedToast,
+    ToastElement: PasswordChangedToastElement,
+  } = useToast();
+
   useEffect(() => {
     getUserIdentity();
   }, [session?.user?.id]);
@@ -85,6 +96,7 @@ export function UserSettingsForm() {
     try {
       await UserClient.updatePassword(session?.user?.id as string, password1);
       // Optionally, you can show a success message or update the UI
+      showPasswordChangedToast("Password updated successfully.");
     } catch (error) {
       console.error("Failed to update user password:", error);
     } finally {
@@ -117,6 +129,7 @@ export function UserSettingsForm() {
         lastName,
       });
       // Optionally, you can show a success message or update the UI
+      showNameChangedToast("Name updated successfully.");
     } catch (error) {
       console.error("Failed to update user identity:", error);
     } finally {
@@ -181,11 +194,15 @@ export function UserSettingsForm() {
             <button
               type="submit"
               className="bg-blue-500 text-white p-2 rounded"
+              disabled={isBusy}
             >
               Update Name
             </button>
           </div>
         </form>
+        <div>
+          <NameChangedToastElement />
+        </div>
       </section>
       <section className="p-4 mt-10">
         <h2 className="text-2xl">Your Password</h2>
@@ -228,12 +245,16 @@ export function UserSettingsForm() {
             <div>
               <button
                 type="submit"
+                disabled={isBusy}
                 className="bg-blue-500 text-white p-2 rounded"
               >
                 Update Password
               </button>
             </div>
           </form>
+          <div>
+            <PasswordChangedToastElement />
+          </div>
         </article>
       </section>
     </div>

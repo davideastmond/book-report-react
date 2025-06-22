@@ -5,6 +5,7 @@ import { AcademicTaskWithWeighting } from "@/lib/types/course-work/definitions";
 import { CourseSessionDataAPIResponse } from "@/lib/types/db/course-session-info";
 import { TableData } from "@/lib/types/grading/definitions";
 import { useAdmin } from "app/hooks/use-admin";
+import { useToast } from "app/hooks/use-toast";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { GradingTable } from "../grading-table/Grading-table";
@@ -26,6 +27,8 @@ export function CourseGradingMain({
   const { isAdminEditable } = useAdmin(
     courseData.courseSessionData.courseSessionId as string
   );
+
+  const { showToast, ToastElement } = useToast();
   useEffect(() => {
     fetchCourseWork(true);
   }, []);
@@ -70,6 +73,7 @@ export function CourseGradingMain({
         data: tableData,
       });
       //At some point, you might want to fetch the updated grades again
+      showToast("Grade updates submitted successfully.");
     } catch (error) {
       console.error(
         "Error submitting grade updates:",
@@ -111,6 +115,7 @@ export function CourseGradingMain({
       return updatedData;
     });
   };
+
   return (
     <div>
       <section className="text-xl mb-4 font-thin mt-4">
@@ -164,6 +169,9 @@ export function CourseGradingMain({
         ) : (
           <button disabled>No students to grade.</button>
         )}
+      </section>
+      <section>
+        <ToastElement />
       </section>
       <section>
         {/* The grading table component goes here */}
