@@ -6,6 +6,7 @@ import { Spinner } from "@/components/spinner/Spinner";
 import { CourseSessionInfo } from "@/lib/types/db/course-session-info";
 import { useAdmin } from "app/hooks/use-admin";
 import { useAdminAuthorized } from "app/hooks/use-admin-authorized";
+import { useToast } from "app/hooks/use-toast";
 import { useSession } from "next-auth/react";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -30,6 +31,15 @@ export default function CourseSessionSettingsPage() {
     courseSession?.courseSessionId as string
   );
   const { isAdminAuthorized } = useAdminAuthorized();
+  const {
+    showToast: showDescriptionUpdatedToast,
+    ToastElement: DescriptionUpdatedToast,
+  } = useToast();
+
+  const {
+    showToast: showCourseSessionDatesUpdatedToast,
+    ToastElement: CourseSessionDatesUpdatedToast,
+  } = useToast();
 
   useEffect(() => {
     fetchCourseSessionById();
@@ -108,6 +118,9 @@ export default function CourseSessionSettingsPage() {
       });
       setIsBusy(false);
       await fetchCourseSessionById();
+      showDescriptionUpdatedToast(
+        "Course session description updated successfully."
+      );
     } catch (error) {
       setApiError(
         "Error updating course session dates: " + (error as Error).message
@@ -146,6 +159,9 @@ export default function CourseSessionSettingsPage() {
       });
       setIsBusy(false);
       await fetchCourseSessionById();
+      showCourseSessionDatesUpdatedToast(
+        "Course session dates updated successfully."
+      );
     } catch (error) {
       setApiError(
         "Error updating course session dates: " + (error as Error).message
@@ -217,6 +233,9 @@ export default function CourseSessionSettingsPage() {
               </button>
             </div>
           </form>
+          <div>
+            <DescriptionUpdatedToast />
+          </div>
         </article>
       </section>
       <section className="p-4 mt-10">
@@ -275,6 +294,9 @@ export default function CourseSessionSettingsPage() {
               </button>
             </div>
           </form>
+          <div>
+            <CourseSessionDatesUpdatedToast />
+          </div>
         </article>
       </section>
       <section className="p-4 mt-10">
