@@ -148,7 +148,7 @@ export default function CourseSessionPage() {
               onClick={() =>
                 handleStudentAddToRoster(
                   session?.user?.id as string,
-                  "We're unable to enroll you. The course could be full or there was an error. Please contact your registrar or administrator."
+                  "We're unable to enroll you in this course. Please contact your registrar or administrator."
                 )
               }
               className="flatStyle"
