@@ -33,12 +33,16 @@ export async function GET(req: NextRequest) {
     });
   }
 
+  const startDate = query.get("startDate");
+  const endDate = query.get("endDate");
+  const studentId = query.get("studentId");
+
   try {
     // Create the raw report data
     const rawReportData = await GradeController.getRawGradeReportData({
-      studentId: query.get("studentId") as string,
-      startDate: new Date(query.get("startDate")!),
-      endDate: new Date(query.get("endDate") || new Date().toISOString()),
+      studentId: studentId!,
+      startDate: new Date(startDate!),
+      endDate: new Date(endDate || new Date().toISOString()),
     });
 
     // Based on the raw data, determine the weighted grade
