@@ -20,12 +20,14 @@ export function NavBar() {
       <nav className="bg-gray-800 p-2 ">
         <div className="container mx-auto flex justify-between items-center">
           <Link href="/dashboard">
-            <Image
-              src="/images/app-logo/large-app-logo.png"
-              width={50}
-              height={50}
-              alt="Logo"
-            />
+            <div className="rounded-full overflow-clip">
+              <Image
+                src="/images/app-logo/large-app-logo.png"
+                width={50}
+                height={50}
+                alt="Logo"
+              />
+            </div>
           </Link>
           <div className="text-white text-lg font-bold">Book Report</div>
           <ul className="flex space-x-4">
