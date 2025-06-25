@@ -55,10 +55,13 @@ export function UserSearch({
     setFilteredResults(results);
   };
   return (
-    <div>
+    <div className="mt-6">
+      <div>
+        <h4 className="text-lg">Search Results</h4>
+      </div>
       <input
         type="text"
-        placeholder="Search for users..."
+        placeholder="Search for students..."
         className="border rounded p-2 mb-4 w-full"
         value={searchQuery}
         onChange={(e) => {
@@ -66,14 +69,11 @@ export function UserSearch({
         }}
         disabled={disabled}
       />
-      <div>
-        <h4 className="text-lg">Search Results</h4>
-        <StudentList
-          students={filteredResults}
-          onStudentClick={handleStudentSelected}
-          linkable
-        />
-      </div>
+      <StudentList
+        students={filteredResults}
+        onStudentClick={handleStudentSelected}
+        linkable
+      />
     </div>
   );
 }
