@@ -2,11 +2,11 @@
 
 import { GradesClient } from "@/clients/grades-client";
 import { GradeSummaryData } from "@/lib/types/grading/definitions";
+import { debounce } from "lodash";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { CourseGradeSummaryTable } from "../grading-table/student/course/Course-grade-summary-table";
-
 export function GradesOverviewComponent() {
   const dateStamp = useMemo(() => new Date(), []);
 
@@ -50,9 +50,12 @@ export function GradesOverviewComponent() {
     setGpaValue(overViewData.gpa);
   }
 
-  async function handleDateRangeChange() {
+  async function handleDateRangeChange(e: React.ChangeEvent<HTMLInputElement>) {
     await fetchGrades();
+    console.info("Fetching grades...data");
   }
+
+  const debouncedFetchGrades = debounce(handleDateRangeChange, 500);
   return (
     <div>
       <h1 className="text-3xl">Grades Overview</h1>
@@ -70,12 +73,8 @@ export function GradesOverviewComponent() {
                 data-lpignore="true"
                 onKeyDown={() => false}
                 required
-                onChange={handleDateRangeChange}
-                defaultValue={
-                  new Date(dateStamp.getFullYear(), dateStamp.getMonth() - 6, 1)
-                    .toISOString()
-                    .split("T")[0]
-                }
+                onChange={debouncedFetchGrades}
+                defaultValue={new Date().toISOString().split("T")[0]}
               ></input>
             </div>
             <div className="max-w-[300px]">
@@ -87,9 +86,13 @@ export function GradesOverviewComponent() {
                 autoComplete="off"
                 data-lpignore="true"
                 onKeyDown={() => false}
-                onChange={handleDateRangeChange}
+                onChange={debouncedFetchGrades}
                 required
-                defaultValue={new Date().toISOString().split("T")[0]}
+                defaultValue={
+                  new Date(dateStamp.getFullYear(), dateStamp.getMonth() + 6, 1)
+                    .toISOString()
+                    .split("T")[0]
+                }
               ></input>
             </div>
           </div>
