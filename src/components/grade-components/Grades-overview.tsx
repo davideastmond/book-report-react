@@ -50,7 +50,7 @@ export function GradesOverviewComponent() {
     setGpaValue(overViewData.gpa);
   }
 
-  async function handleDateRangeChange(e: React.ChangeEvent<HTMLInputElement>) {
+  async function handleDateRangeChange() {
     await fetchGrades();
     console.info("Fetching grades...data");
   }
