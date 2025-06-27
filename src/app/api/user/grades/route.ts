@@ -1,8 +1,10 @@
 import { authOptions } from "@/auth/auth";
+import { calculateGPA } from "@/lib/controller/grades/calculations/gpa-calculator";
 import { GradeCalculator } from "@/lib/controller/grades/calculations/grade-calculator";
 import { GradeController } from "@/lib/controller/grades/grade-controller";
 import { GradeSummaryData } from "@/lib/types/grading/definitions";
 import { validateGradesAPIRequest } from "@/lib/validators/grades/grades-request-validator";
+
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -31,34 +33,52 @@ export async function GET(req: NextRequest) {
     });
   }
 
-  const rawReportData = await GradeController.getRawGradeReportData({
-    studentId: query.get("studentId") as string,
-    startDate: new Date(query.get("startDate")!),
-    endDate: new Date(query.get("endDate") || new Date().toISOString()),
-  });
+  const startDate = query.get("startDate");
+  const endDate = query.get("endDate");
+  const studentId = query.get("studentId");
 
-  const finalGradesByCourseSessionId = new GradeCalculator(
-    rawReportData
-  ).calculate();
-
-  const apiResponse: GradeSummaryData[] = [];
-  for (const [k, v] of Object.entries(finalGradesByCourseSessionId)) {
-    const foundData = rawReportData.find((d) => d.courseSessionId === k);
-    if (!foundData) throw Error("When referencing data, it wasn't found");
-    apiResponse.push({
-      studentFirstName: foundData.studentFirstName,
-      studentLastName: foundData.studentLastName,
-      studentId: foundData.studentId,
-      courseName: foundData.courseName,
-      courseCode: foundData.courseCode,
-      coursePercentageAverage: v,
-      isCourseCompleted: foundData.isCourseCompleted,
-      sessionStart: foundData.sessionStart,
-      sessionEnd: foundData.sessionEnd,
-      instructorFirstName: foundData.instructorFirstName,
-      instructorLastName: foundData.instructorLastName,
+  try {
+    // Create the raw report data
+    const rawReportData = await GradeController.getRawGradeReportData({
+      studentId: studentId!,
+      startDate: new Date(startDate!),
+      endDate: new Date(endDate || new Date().toISOString()),
     });
-  }
 
-  return NextResponse.json(apiResponse);
+    // Based on the raw data, determine the weighted grade
+    const finalGradesByCourseSessionId = new GradeCalculator(
+      rawReportData
+    ).calculate();
+
+    const apiResponse: GradeSummaryData[] = [];
+
+    // Collate the data for an API Response
+    for (const [k, v] of Object.entries(finalGradesByCourseSessionId)) {
+      const foundData = rawReportData.find((d) => d.courseSessionId === k);
+      if (!foundData) throw Error("When referencing data, it wasn't found");
+      apiResponse.push({
+        studentFirstName: foundData.studentFirstName,
+        studentLastName: foundData.studentLastName,
+        studentId: foundData.studentId,
+        courseName: foundData.courseName,
+        courseCode: foundData.courseCode,
+        coursePercentageAverage: v,
+        isCourseCompleted: foundData.isCourseCompleted,
+        sessionStart: foundData.sessionStart,
+        sessionEnd: foundData.sessionEnd,
+        instructorFirstName: foundData.instructorFirstName,
+        instructorLastName: foundData.instructorLastName,
+      });
+    }
+
+    const gpa = calculateGPA(finalGradesByCourseSessionId)?.toFixed(1);
+    return NextResponse.json({ data: apiResponse, gpa: gpa });
+  } catch (error) {
+    return NextResponse.json(
+      {
+        error: "Grades computation error: " + (error as Error).message,
+      },
+      { status: 400 }
+    );
+  }
 }

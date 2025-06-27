@@ -4,9 +4,12 @@ import { AcademicGrade } from "@/db/schema";
 import { AcademicTaskWithWeighting } from "@/lib/types/course-work/definitions";
 import { CourseSessionDataAPIResponse } from "@/lib/types/db/course-session-info";
 import { TableData } from "@/lib/types/grading/definitions";
+import { useAdmin } from "app/hooks/use-admin";
+import { useToast } from "app/hooks/use-toast";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { GradingTable } from "../grading-table/Grading-table";
+import { Spinner } from "../spinner/Spinner";
 
 // This is the main component rendered in the course grading page.
 export function CourseGradingMain({
@@ -15,12 +18,19 @@ export function CourseGradingMain({
   courseData: CourseSessionDataAPIResponse;
 }) {
   const [courseWork, setCourseWork] = useState<AcademicTaskWithWeighting[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [selectedCourseWorkId, setSelectedCourseWorkId] = useState<
     string | null
   >(null);
   const [tableData, setTableData] = useState<TableData>({});
 
   const params = useParams<{ courseSessionId: string }>();
+
+  const { isAdminEditable } = useAdmin(
+    courseData.courseSessionData.courseSessionId as string
+  );
+
+  const { showToast, ToastElement } = useToast();
   useEffect(() => {
     fetchCourseWork(true);
   }, []);
@@ -35,8 +45,7 @@ export function CourseGradingMain({
         courseData.courseSessionData.courseSessionId as string
       );
 
-    const tableData = convertToTableData(courseSessionGrades);
-    setTableData(tableData);
+    setTableData(convertToTableData(courseSessionGrades));
   }
 
   async function fetchCourseWork(assignSelected: boolean) {
@@ -60,11 +69,14 @@ export function CourseGradingMain({
       return;
     }
     try {
+      setIsLoading(true);
       await CourseSessionClient.submitGradeUpdatesForCourseSession({
         courseSessionId: params.courseSessionId,
         data: tableData,
       });
       //At some point, you might want to fetch the updated grades again
+      showToast("Grade updates submitted successfully.");
+      setIsLoading(false);
     } catch (error) {
       console.error(
         "Error submitting grade updates:",
@@ -106,6 +118,7 @@ export function CourseGradingMain({
       return updatedData;
     });
   };
+
   return (
     <div>
       <section className="text-xl mb-4 font-thin mt-4">
@@ -128,6 +141,7 @@ export function CourseGradingMain({
           name="courseId"
           id="courseId"
           onChange={(e) => handleSelectedWorkChange(e.target.value)}
+          disabled={!isAdminEditable}
         >
           {courseWork.map((work) => (
             <option
@@ -149,12 +163,23 @@ export function CourseGradingMain({
           <button
             className="flatStyle bg-green-950"
             onClick={handleSubmitGradeUpdates}
+            disabled={
+              isLoading ||
+              !isAdminEditable ||
+              courseData.courseSessionData.isCompleted
+            }
           >
-            Update Grades
+            <span className="flex items-center gap-2">
+              {isLoading && <Spinner />}
+              Update Grades
+            </span>
           </button>
         ) : (
           <button disabled>No students to grade.</button>
         )}
+      </section>
+      <section>
+        <ToastElement />
       </section>
       <section>
         {/* The grading table component goes here */}
@@ -163,7 +188,9 @@ export function CourseGradingMain({
           courseWorkId={selectedCourseWorkId}
           tableData={tableData}
           onTableDataChange={handleTableDataChange}
-          disabled={courseData.courseSessionData.isCompleted}
+          disabled={
+            !isAdminEditable || courseData.courseSessionData.isCompleted
+          }
         />
       </section>
     </div>

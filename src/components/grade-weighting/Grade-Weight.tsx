@@ -22,7 +22,7 @@ export function GradeWeight({ name, onRemove }: GradeWeightProps) {
         name={`num_${name}`}
         min={0}
         max={100}
-        defaultValue={100}
+        defaultValue={0}
       ></input>
       <button onClick={handleRemove}>Remove</button>
     </div>

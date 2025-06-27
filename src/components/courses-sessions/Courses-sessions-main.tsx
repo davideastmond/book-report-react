@@ -10,6 +10,7 @@ type CoursesSessionsMainProps = {
 export function CoursesSessionsMain({ isAdmin }: CoursesSessionsMainProps) {
   const [courseSessions, setCourseSessions] =
     useState<CourseSessionsAPIResponse>([]);
+
   useEffect(() => {
     fetchCourseSessions();
   }, [isAdmin]);

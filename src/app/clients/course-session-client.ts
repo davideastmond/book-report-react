@@ -142,13 +142,18 @@ export const CourseSessionClient = {
       throw Error("Failed to remove user from session");
     }
   },
-  fetchAvailableCourses: async (): Promise<CourseSessionInfo[]> => {
-    const res = await fetch("/api/courses/sessions", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+  fetchAvailableCourses: async (
+    showCompleted: boolean = false
+  ): Promise<CourseSessionInfo[]> => {
+    const res = await fetch(
+      `/api/courses/sessions?showCompleted=${showCompleted}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
     if (!res.ok) {
       throw Error("Failed to fetch available courses");

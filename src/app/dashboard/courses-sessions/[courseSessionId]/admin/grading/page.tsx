@@ -2,14 +2,19 @@
 import { CourseSessionClient } from "@/clients/course-session-client";
 import { CourseGradingMain } from "@/components/course-grading/Course-grading-main";
 import { CourseSessionsNavToolbar } from "@/components/nav/admin/course-sessions-nav-toolbar/Course-sessions-nav-toolbar";
+import { Spinner } from "@/components/spinner/Spinner";
 import { CourseSessionDataAPIResponse } from "@/lib/types/db/course-session-info";
-import { useParams } from "next/navigation";
+import { useAdminAuthorized } from "app/hooks/use-admin-authorized";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function AdminGradingPage() {
   const params = useParams<{ courseSessionId: string }>();
   const [courseData, setCourseData] =
     useState<CourseSessionDataAPIResponse | null>(null);
+
+  const { isAdminAuthorized } = useAdminAuthorized();
+  const router = useRouter();
 
   useEffect(() => {
     async function fetchCourseSessionData() {
@@ -24,6 +29,11 @@ export default function AdminGradingPage() {
     }
     fetchCourseSessionData();
   }, []);
+
+  if (!isAdminAuthorized) {
+    if (isAdminAuthorized === null) return <Spinner />;
+    return router.replace("/dashboard");
+  }
 
   return (
     <div>
