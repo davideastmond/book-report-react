@@ -46,13 +46,13 @@ export function GradesOverviewComponent() {
       startDate,
       endDate,
     });
+    console.info("Grades Overview Data Fetched", new Date().toISOString());
     setGradesOverviewData(overViewData.data);
     setGpaValue(overViewData.gpa);
   }
 
   async function handleDateRangeChange() {
     await fetchGrades();
-    console.info("Fetching grades...data");
   }
 
   const debouncedFetchGrades = debounce(handleDateRangeChange, 500);
