@@ -17,7 +17,7 @@ export function CoursesSessionsList({
 }: CoursesSessionsListProps) {
   const router = useRouter();
   return (
-    <table className="table-auto w-full">
+    <table className="table-auto w-full mt-4">
       <thead className="text-left">
         <tr>
           <th>Code</th>
