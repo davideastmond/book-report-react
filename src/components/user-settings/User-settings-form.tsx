@@ -280,6 +280,9 @@ export function UserSettingsForm() {
                 Not selected
               </option>
             </select>
+            {genderFormErrors.gender && (
+              <p className="text-red-500 text-sm">{genderFormErrors.gender}</p>
+            )}
           </div>
           <div>
             <button
