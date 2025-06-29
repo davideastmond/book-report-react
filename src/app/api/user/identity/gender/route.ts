@@ -63,7 +63,7 @@ export async function PUT(req: NextRequest) {
   } catch (err) {
     return NextResponse.json(
       {
-        error: "Failed to update gender",
+        error: "Failed to update gender:" + (err as Error).message,
       },
       { status: 500 }
     );
