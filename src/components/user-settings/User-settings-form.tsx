@@ -4,10 +4,11 @@ import { UserClient } from "@/clients/user-client";
 import { User } from "@/db/schema";
 import { useToast } from "app/hooks/use-toast";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
 
 export function UserSettingsForm() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const [userContext, setUserContext] = useState<Partial<User> | null>(null);
   const [isBusy, setIsBusy] = useState(false);
   const [nameFormErrors, setNameFormErrors] = useState<{
@@ -16,6 +17,12 @@ export function UserSettingsForm() {
   }>({
     firstName: "",
     lastName: "",
+  });
+
+  const [genderFormErrors, setGenderFormErrors] = useState<{
+    gender?: string;
+  }>({
+    gender: "",
   });
 
   const [passwordFormErrors, setPasswordFormErrors] = useState<{
@@ -35,6 +42,13 @@ export function UserSettingsForm() {
     ToastElement: PasswordChangedToastElement,
   } = useToast();
 
+  const {
+    showToast: showGenderChangedToast,
+    ToastElement: GenderChangedToastElement,
+  } = useToast();
+
+  const router = useRouter();
+
   useEffect(() => {
     getUserIdentity();
   }, [session?.user?.id]);
@@ -48,13 +62,14 @@ export function UserSettingsForm() {
           response.firstName as string,
           response.lastName as string
         );
+        loadPrepopulatedGenderData(response.gender as string);
       } catch (error) {
         console.error("Failed to fetch user identity:", error);
       }
     }
   }
 
-  async function loadPrepopulatedNameData(firstName: string, lastName: string) {
+  function loadPrepopulatedNameData(firstName: string, lastName: string) {
     const firstNameInput = document.getElementById(
       "firstName"
     ) as HTMLInputElement;
@@ -64,6 +79,12 @@ export function UserSettingsForm() {
 
     firstNameInput.value = firstName;
     lastNameInput.value = lastName;
+  }
+
+  function loadPrepopulatedGenderData(gender: string) {
+    const genderInput = document.getElementById("gender") as HTMLSelectElement;
+
+    genderInput.value = gender;
   }
 
   async function handlePasswordUpdateFormSubmit(e: FormEvent<HTMLFormElement>) {
@@ -136,6 +157,36 @@ export function UserSettingsForm() {
       setIsBusy(false);
     }
   }
+
+  async function handleGenderChangeFormSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setIsBusy(true);
+
+    const formData = new FormData(e.currentTarget);
+    const gender = formData.get("gender") as string;
+
+    // Validate the input
+    if (!gender) {
+      setIsBusy(false);
+      setGenderFormErrors({ gender: "Gender is required" });
+      return;
+    }
+
+    try {
+      await UserClient.updateUserGender(session?.user?.id as string, gender);
+      // Optionally, you can show a success message or update the UI
+      showGenderChangedToast("Gender updated successfully.");
+    } catch (error) {
+      console.error("Failed to update user gender:", error);
+    } finally {
+      setIsBusy(false);
+    }
+  }
+
+  if (status === "unauthenticated") {
+    router.replace("/login");
+    return null; // Prevent rendering while redirecting
+  }
   return (
     <div>
       <section className="p-4 mt-10">
@@ -202,6 +253,46 @@ export function UserSettingsForm() {
         </form>
         <div>
           <NameChangedToastElement />
+        </div>
+      </section>
+      <section className="p-4 mt-10">
+        <h2 className="text-2xl">Gender</h2>
+        <form onSubmit={handleGenderChangeFormSubmit}>
+          <label htmlFor="gender">* Gender:</label>
+          <div>
+            <select
+              name="gender"
+              id="gender"
+              className="border p-2 mb-4 w-full"
+              required
+              disabled={isBusy}
+            >
+              <option className="bg-amber-background" value="male">
+                Male
+              </option>
+              <option className="bg-amber-background" value="female">
+                Female
+              </option>
+              <option className="bg-amber-background" value="other">
+                Other
+              </option>
+              <option className="bg-amber-background" value="not_selected">
+                Not selected
+              </option>
+            </select>
+          </div>
+          <div>
+            <button
+              type="submit"
+              className="bg-blue-500 text-white p-2 rounded"
+              disabled={isBusy}
+            >
+              Update Gender
+            </button>
+          </div>
+        </form>
+        <div>
+          <GenderChangedToastElement />
         </div>
       </section>
       <section className="p-4 mt-10">
