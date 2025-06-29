@@ -1,4 +1,5 @@
-export const CourseSessionsNavToolbar = () => {
+export const CourseSessionsNavToolbar = ({ isAdmin }: { isAdmin: boolean }) => {
+  if (isAdmin) return null;
   return (
     <div className="bg-green-900 p-1 text-sm">
       <ul className="flex justify-start">
