@@ -15,6 +15,7 @@ const styles = {
 };
 export function NavBar() {
   const { data: session } = useSession();
+
   return (
     <div>
       <nav className="bg-gray-800 p-2 ">
@@ -41,7 +42,16 @@ export function NavBar() {
                 </Link>
               </li>
             )}
-
+            {["admin"].includes(session?.user?.role as string) && (
+              <li style={styles.navMenuItem}>
+                <Link
+                  href="/dashboard/admin"
+                  className="text-white hover:text-gray-300"
+                >
+                  Admin
+                </Link>
+              </li>
+            )}
             <li style={styles.navMenuItem}>
               <a
                 href="/dashboard/courses-sessions"
@@ -70,7 +80,9 @@ export function NavBar() {
                 </Link>
                 <button
                   className="text-white hover:text-gray-300 hover:underline hover:cursor-pointer"
-                  onClick={async () => await signOut()}
+                  onClick={async () => {
+                    await signOut();
+                  }}
                 >
                   Log Out
                 </button>
