@@ -44,4 +44,16 @@ export const UserClient = {
       throw Error("Failed to update password");
     }
   },
+  updateUserGender: async (userId: string, gender: string): Promise<void> => {
+    const res = await fetch(`/api/user/identity/gender?userId=${userId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ gender }),
+    });
+    if (!res.ok) {
+      throw Error("Failed to update gender");
+    }
+  },
 };
