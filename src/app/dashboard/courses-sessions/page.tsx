@@ -4,6 +4,7 @@ import { CourseSessionsNavToolbar } from "@/components/nav/student/Course-sessio
 import { Spinner } from "@/components/spinner/Spinner";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { useMemo } from "react";
 /**
  * This page deals with courses session. Teachers should show all of the courses they've created
  * Admins should see all of the courses created by teachers
@@ -15,6 +16,10 @@ export default function CoursesSessionsPage() {
   const router = useRouter();
   const { data: session, status } = useSession();
 
+  const isAdmin = useMemo(() => {
+    return ["admin", "teacher"].includes(session?.user?.role as string);
+  }, [session?.user]);
+
   if (status === "unauthenticated") {
     router.replace("/login");
   }
@@ -22,10 +27,8 @@ export default function CoursesSessionsPage() {
   if (!session?.user) return <Spinner />;
   return (
     <>
-      <CourseSessionsNavToolbar />
-      <CoursesSessionsMain
-        isAdmin={["admin", "teacher"].includes(session?.user?.role as string)}
-      />
+      <CourseSessionsNavToolbar isAdmin={isAdmin} />
+      <CoursesSessionsMain isAdmin={isAdmin} />
     </>
   );
 }
