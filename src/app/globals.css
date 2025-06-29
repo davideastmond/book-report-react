@@ -72,3 +72,9 @@ a:link.flatStyle {
   border-radius: 5px;
   padding: 5px
 }
+
+select {
+  background-color: #f0f0f0b8;
+  color: #0b0b0b;
+  font-weight: 200;
+}
