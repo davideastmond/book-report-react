@@ -1,6 +1,6 @@
 import { authOptions } from "@/auth/auth";
 import { calculateGPA } from "@/lib/controller/grades/calculations/gpa-calculator";
-import { GradeCalculator } from "@/lib/controller/grades/calculations/grade-calculator";
+import { StudentGradeCalculator } from "@/lib/controller/grades/calculations/student-grade-calculator";
 import { GradeController } from "@/lib/controller/grades/grade-controller";
 import { GradeSummaryData } from "@/lib/types/grading/student/definitions";
 import { validateGradesAPIRequest } from "@/lib/validators/grades/grades-request-validator";
@@ -46,7 +46,7 @@ export async function GET(req: NextRequest) {
     });
 
     // Based on the raw data, determine the weighted grade
-    const finalGradesByCourseSessionId = new GradeCalculator(
+    const finalGradesByCourseSessionId = new StudentGradeCalculator(
       rawReportData
     ).calculate();
 

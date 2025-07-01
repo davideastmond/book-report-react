@@ -1,5 +1,5 @@
 import { EnrolledStudent } from "@/lib/types/db/course-session-info";
-import { GradeData, TableData } from "@/lib/types/grading/definitions";
+import { GradeData, TableData } from "@/lib/types/grading/student/definitions";
 import { ChangeEvent } from "react";
 
 type GradingTableProps = {

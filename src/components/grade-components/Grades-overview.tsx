@@ -1,7 +1,7 @@
 "use client";
 
 import { GradesClient } from "@/clients/grades-client";
-import { GradeSummaryData } from "@/lib/types/grading/definitions";
+import { GradeSummaryData } from "@/lib/types/grading/student/definitions";
 import { debounce } from "lodash";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";

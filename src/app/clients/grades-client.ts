@@ -1,4 +1,4 @@
-import { GradeSummaryData } from "@/lib/types/grading/definitions";
+import { GradeSummaryData } from "@/lib/types/grading/student/definitions";
 
 export const GradesClient = {
   getGradesForStudentWithDateRange: async ({
