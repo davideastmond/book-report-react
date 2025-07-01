@@ -2,7 +2,7 @@ import { authOptions } from "@/auth/auth";
 import { calculateGPA } from "@/lib/controller/grades/calculations/gpa-calculator";
 import { GradeCalculator } from "@/lib/controller/grades/calculations/grade-calculator";
 import { GradeController } from "@/lib/controller/grades/grade-controller";
-import { GradeSummaryData } from "@/lib/types/grading/definitions";
+import { GradeSummaryData } from "@/lib/types/grading/student/definitions";
 import { validateGradesAPIRequest } from "@/lib/validators/grades/grades-request-validator";
 
 import { getServerSession } from "next-auth";
