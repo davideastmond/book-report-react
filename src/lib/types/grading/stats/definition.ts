@@ -12,4 +12,9 @@ export type CourseGradingStats = {
   isCourseCompleted: boolean | null;
   courseName: string | null;
   courseCode: string | null;
+  studentId: string | null;
+  studentFirstName: string | null;
+  studentLastName: string | null;
+  studentGender: string | null;
+  studentDob: Date | null;
 };
