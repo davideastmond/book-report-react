@@ -39,11 +39,12 @@ export async function GET(req: NextRequest) {
 
   try {
     // Create the raw report data
-    const rawReportData = await GradeController.getRawGradeReportData({
-      studentId: studentId!,
-      startDate: new Date(startDate!),
-      endDate: new Date(endDate || new Date().toISOString()),
-    });
+    const rawReportData =
+      await GradeController.getRawGradeReportDataByDateRange({
+        studentId: studentId!,
+        startDate: new Date(startDate!),
+        endDate: new Date(endDate || new Date().toISOString()),
+      });
 
     // Based on the raw data, determine the weighted grade
     const finalGradesByCourseSessionId = new StudentGradeCalculator(
