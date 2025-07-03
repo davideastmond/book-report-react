@@ -40,6 +40,14 @@ export const CourseSessionsNavToolbar = ({
         </li>
         <li>
           <a
+            href={`/dashboard/courses-sessions/${courseSessionId}/admin/final-grade-report`}
+            className="text-white hover:text-gray-300"
+          >
+            Final Grade Report
+          </a>
+        </li>
+        <li>
+          <a
             href={`/dashboard/courses-sessions/view?id=${courseSessionId}`}
             className="text-white hover:text-gray-300"
           >
