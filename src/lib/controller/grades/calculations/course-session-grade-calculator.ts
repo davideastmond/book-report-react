@@ -80,9 +80,11 @@ export class CourseSessionGradeCalculator {
     // This will hold the final grade for each student and be returned
     const studentFinalGradeData: Record<string, SummarizedData> = {};
 
-    for (const [studentId, v] of Object.entries(this.summedWeights)) {
+    for (const [studentId, summedWeightData] of Object.entries(
+      this.summedWeights
+    )) {
       let studentFinalGrade = 0;
-      for (const [weightId, sumPercentageData] of v.entries()) {
+      for (const [weightId, sumPercentageData] of summedWeightData.entries()) {
         // Grab the info
         const assignmentDataByStudent = this.assignmentCount.get(studentId);
 
