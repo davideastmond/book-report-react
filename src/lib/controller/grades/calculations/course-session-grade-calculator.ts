@@ -85,7 +85,6 @@ export class CourseSessionGradeCalculator {
     )) {
       let studentFinalGrade = 0;
       for (const [weightId, sumPercentageData] of summedWeightData.entries()) {
-        // Grab the info
         const assignmentDataByStudent = this.assignmentCount.get(studentId);
 
         const calculation =
