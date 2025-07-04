@@ -1,3 +1,4 @@
+import { CourseGradingStats } from "@/lib/types/grading/stats/definition";
 import { describe, expect, it } from "vitest";
 import { CourseSessionGradeCalculator } from "./course-session-grade-calculator";
 
@@ -6,7 +7,7 @@ describe("CourseSessionGradeCalculator", () => {
     it("should return the average student grade", () => {
       // Test implementation for average student grade
 
-      const sampleData: any[] = [
+      const sampleData: Partial<CourseGradingStats>[] = [
         {
           studentId: "1",
           studentFirstName: "student1FirstName",
@@ -57,7 +58,9 @@ describe("CourseSessionGradeCalculator", () => {
         },
       ];
 
-      const calculator = new CourseSessionGradeCalculator(sampleData);
+      const calculator = new CourseSessionGradeCalculator(
+        sampleData! as CourseGradingStats[]
+      );
       const average = calculator.getAverageStudentGrade();
       expect(average).toBe(87);
     });
@@ -66,7 +69,7 @@ describe("CourseSessionGradeCalculator", () => {
     it("should return the highest and lowest grade", () => {
       // Test implementation for highest and lowest grade
 
-      const sampleData: any[] = [
+      const sampleData: Partial<CourseGradingStats>[] = [
         {
           studentId: "1",
           studentFirstName: "student1FirstName",
@@ -93,7 +96,9 @@ describe("CourseSessionGradeCalculator", () => {
         },
       ];
 
-      const calculator = new CourseSessionGradeCalculator(sampleData);
+      const calculator = new CourseSessionGradeCalculator(
+        sampleData as CourseGradingStats[]
+      );
       const { min, max } = calculator.getHighestAndLowestGrade();
       // Expect an object containing the values
       expect(min).toEqual(
@@ -116,7 +121,7 @@ describe("CourseSessionGradeCalculator", () => {
     it("should return the final grade report", () => {
       // Test implementation for final grade report
 
-      const sampleData: any[] = [
+      const sampleData: Partial<CourseGradingStats>[] = [
         {
           studentId: "1",
           studentFirstName: "student1FirstName",
@@ -151,7 +156,9 @@ describe("CourseSessionGradeCalculator", () => {
         },
       ];
 
-      const calculator = new CourseSessionGradeCalculator(sampleData);
+      const calculator = new CourseSessionGradeCalculator(
+        sampleData as CourseGradingStats[]
+      );
       const finalReport = calculator.getFinalGradeReport();
       expect(finalReport).toEqual(
         expect.objectContaining({
