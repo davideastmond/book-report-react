@@ -1,4 +1,5 @@
 import { AcademicGrade, CourseSession, GradeWeight } from "@/db/schema";
+import { SummarizedData } from "@/lib/controller/grades/calculations/definitions";
 import {
   CourseSessionDataAPIResponse,
   CourseSessionInfo,
@@ -285,5 +286,24 @@ export const CourseSessionClient = {
       throw Error("Failed to fetch course grade average");
     }
     return res.json();
+  },
+  getFinalGradeReport: async (
+    courseSessionId: string
+  ): Promise<SummarizedData[]> => {
+    const res = await fetch(
+      `/api/courses/sessions/${courseSessionId}/analytics/final-grade-report`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    if (!res.ok) {
+      throw Error("Failed to fetch course final grade report");
+    }
+    const retrievedData: Record<string, SummarizedData> = await res.json();
+
+    return Object.values(retrievedData);
   },
 };

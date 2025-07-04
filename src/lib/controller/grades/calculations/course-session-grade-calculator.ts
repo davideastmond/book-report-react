@@ -1,21 +1,5 @@
 import { CourseGradingStats } from "@/lib/types/grading/stats/definition";
-
-type StudentRoster = {
-  studentFirstName: string;
-  studentLastName: string;
-  studentId: string;
-  studentGender: string;
-  studentDob: Date;
-};
-
-type SummarizedData = {
-  studentId: string;
-  studentFirstName: string;
-  studentLastName: string;
-  finalGrade: number;
-  studentGender: string;
-  studentDob: Date;
-};
+import { StudentRoster, SummarizedData } from "./definitions";
 
 export class CourseSessionGradeCalculator {
   private courseGradingStats: CourseGradingStats[];
@@ -27,35 +11,27 @@ export class CourseSessionGradeCalculator {
   > = {};
 
   constructor(courseGradingStats: CourseGradingStats[] = []) {
-    // Initialize the generator with the course grading stats
+    // Initialize the generator with the course grading stats and prepare the data
     this.courseGradingStats = courseGradingStats;
+    this.prepareDataForCalculations();
   }
 
   public getHighestAndLowestGrade() {
-    this.getStudentRoster();
-    this.getAssignmentCount();
-    this.sumGradesForEachStudent();
-    const finalGrades = this.calculateFinalGrade();
-
-    return this.getMinMax(finalGrades);
+    return this.getMinMax(this.calculateFinalGrade());
   }
 
   public getAverageStudentGrade(): number {
-    this.getStudentRoster();
-    this.getAssignmentCount();
-    this.sumGradesForEachStudent();
-    const finalGrades = this.calculateFinalGrade();
-
-    return this._getAverageStudentGrade(finalGrades);
+    return this._getAverageStudentGrade(this.calculateFinalGrade());
   }
 
   public getFinalGradeReport() {
+    return this.calculateFinalGrade();
+  }
+
+  private prepareDataForCalculations() {
     this.getStudentRoster();
     this.getAssignmentCount();
     this.sumGradesForEachStudent();
-    const finalGrades = this.calculateFinalGrade();
-
-    return finalGrades;
   }
 
   private getStudentRoster() {
@@ -188,14 +164,10 @@ export class CourseSessionGradeCalculator {
       return 0;
     });
 
-    if (sortedElements.length === 1) {
-      return { min: sortedElements[0], max: sortedElements[0] };
-    } else {
-      return {
-        min: sortedElements[0],
-        max: sortedElements[sortedElements.length - 1],
-      };
-    }
+    return {
+      min: sortedElements[0],
+      max: sortedElements[sortedElements.length - 1],
+    };
   }
   private _getAverageStudentGrade(
     data: Record<string, SummarizedData>
