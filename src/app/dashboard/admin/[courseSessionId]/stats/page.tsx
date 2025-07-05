@@ -1,11 +1,14 @@
 "use client";
 import { CourseSessionClient } from "@/clients/course-session-client";
+import { ClassListFinalGradeTable } from "@/components/class-list-final-grade-table/Class-list-final-grade-table";
 import { CoursesSessionsList } from "@/components/courses-sessions-list/courses-sessions-list/Courses-sessions-list";
 import { Spinner } from "@/components/spinner/Spinner";
 import { SummarizedData } from "@/lib/controller/grades/calculations/definitions";
 import { CourseSessionInfo } from "@/lib/types/db/course-session-info";
+import { AgChartOptions } from "ag-charts-community";
+import { AgCharts } from "ag-charts-react";
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 /* 
 On this page we will display the basic stats for a course session.
@@ -50,8 +53,38 @@ export default function CourseSessionStatsPage() {
     const data = await CourseSessionClient.getFinalGradeReport(
       params.courseSessionId
     );
-    setFinalGradeReport(data);
+    setFinalGradeReport(data.report);
   }
+
+  const convertedChartData = useMemo<AgChartOptions>(() => {
+    if (!finalGradeReport)
+      return {
+        data: [],
+        series: [],
+      };
+
+    const data = finalGradeReport.map((item) => ({
+      studentName: `${item.studentLastName} ${item.studentLastName.slice(
+        0,
+        1
+      )}.`,
+      finalGrade: item.finalGrade,
+    }));
+
+    return {
+      data,
+      theme: "ag-material-dark",
+      series: [
+        {
+          type: "bar" as const,
+          xKey: "studentName",
+          yKey: "finalGrade",
+          yName: "Final Grade",
+          xName: "Student First Name",
+        },
+      ],
+    };
+  }, [finalGradeReport]);
 
   if (courseSession === null) {
     return <Spinner />;
@@ -76,37 +109,10 @@ export default function CourseSessionStatsPage() {
         </table>
       </div>
       <div className="mt-10">
-        <h2 className="text-2xl">Final Grade Report</h2>
-        {/* Table For the finale grade report */}
-        <table className="table-auto w-full mt-4">
-          <thead className="text-left">
-            <tr>
-              <th>Student First N.</th>
-              <th>Student Last N.</th>
-              <th>Final Grade</th>
-            </tr>
-          </thead>
-          <tbody>
-            {finalGradeReport ? (
-              finalGradeReport.map((data, index) => (
-                <tr
-                  key={data.studentId}
-                  className={`${
-                    index % 2 === 0 ? "bg-slate-400/10" : "bg-background"
-                  }`}
-                >
-                  <td>{data.studentFirstName}</td>
-                  <td>{data.studentLastName}</td>
-                  <td>{data.finalGrade.toFixed(2)}</td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan={3}>No data available</td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+        <ClassListFinalGradeTable data={finalGradeReport} />
+      </div>
+      <div className="mt-10 mx-4">
+        <AgCharts options={convertedChartData} />
       </div>
     </div>
   );

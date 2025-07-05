@@ -1,11 +1,38 @@
+"use client";
+import { CourseSessionClient } from "@/clients/course-session-client";
+import { ClassListFinalGradeTable } from "@/components/class-list-final-grade-table/Class-list-final-grade-table";
+import { SummarizedData } from "@/lib/controller/grades/calculations/definitions";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
+
 export default function CourseSessionFinalReportPage() {
-  //TODO: Implement the final grade report page logic
+  const [finalGradeReport, setFinalGradeReport] = useState<{
+    report: SummarizedData[];
+    courseData: { courseName: string; courseCode: string };
+  } | null>(null);
+
+  const params = useParams<{ courseSessionId: string }>();
+
+  useEffect(() => {
+    fetchFinalGradeReport();
+  }, []);
+
+  const fetchFinalGradeReport = async () => {
+    const data = await CourseSessionClient.getFinalGradeReport(
+      params.courseSessionId
+    );
+    setFinalGradeReport(data);
+  };
   return (
     <div className="flex flex-col items-center justify-center h-full">
       <h1 className="text-2xl font-bold mb-4">Final Grade Report</h1>
-      <p className="text-gray-600">
-        This page will display the final grade report for the course session.
-      </p>
+      <h2 className="text-lg font-semibold">
+        {finalGradeReport?.courseData.courseName} (
+        {finalGradeReport?.courseData.courseCode})
+      </h2>
+      {finalGradeReport && (
+        <ClassListFinalGradeTable data={finalGradeReport.report} />
+      )}
     </div>
   );
 }
