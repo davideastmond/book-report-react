@@ -19,5 +19,14 @@ export async function GET(
   );
   const calculator = new CourseSessionGradeCalculator(rawGradeData);
   const finalGradeReport = calculator.getFinalGradeReport();
-  return NextResponse.json(finalGradeReport);
+  return NextResponse.json(
+    {
+      report: finalGradeReport,
+      courseData: {
+        courseName: rawGradeData[0].courseName,
+        courseCode: rawGradeData[0].courseCode,
+      },
+    },
+    { status: 200 }
+  );
 }
