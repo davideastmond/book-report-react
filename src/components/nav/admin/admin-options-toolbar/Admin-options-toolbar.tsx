@@ -10,6 +10,14 @@ export function AdminOptionsToolbar() {
             Completed Courses Summary
           </a>
         </li>
+        <li>
+          <a
+            href={`/dashboard/admin/student-query`}
+            className="text-white hover:text-gray-300"
+          >
+            Student Query
+          </a>
+        </li>
       </ul>
     </div>
   );
