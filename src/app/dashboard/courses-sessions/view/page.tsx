@@ -121,7 +121,7 @@ export default function CourseSessionPage() {
       {courseSession.description && <p>{courseSession.description}</p>}
       <CoursesSessionsList
         coursesSessions={[courseSession]}
-        enrolled={{ show: true, count: courseSession.allotmentCount }}
+        enrolled={{ show: true, count: courseSession.allotmentCount as number }}
       />
       {courseSession.isCompleted && (
         <p className="text-amber-300 my-4">Course session completed.</p>
