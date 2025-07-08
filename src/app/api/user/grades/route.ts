@@ -2,7 +2,6 @@ import { authOptions } from "@/auth/auth";
 import { calculateGPA } from "@/lib/controller/grades/calculations/gpa-calculator";
 import { StudentGradeCalculator } from "@/lib/controller/grades/calculations/student-grade-calculator";
 import { GradeController } from "@/lib/controller/grades/grade-controller";
-import { GradeSummaryData } from "@/lib/types/grading/student/definitions";
 import { validateGradesAPIRequest } from "@/lib/validators/grades/grades-request-validator";
 
 import { getServerSession } from "next-auth";
@@ -47,30 +46,13 @@ export async function GET(req: NextRequest) {
       });
 
     // Based on the raw data, determine the weighted grade
-    const finalGradesByCourseSessionId = new StudentGradeCalculator(
-      rawReportData
-    ).calculate();
+    const studentGradeCalculator = new StudentGradeCalculator(rawReportData);
+    // Calculate the final grades by course session ID
+    const finalGradesByCourseSessionId = studentGradeCalculator.calculate();
 
-    const apiResponse: GradeSummaryData[] = [];
-
-    // Collate the data for an API Response
-    for (const [k, v] of Object.entries(finalGradesByCourseSessionId)) {
-      const foundData = rawReportData.find((d) => d.courseSessionId === k);
-      if (!foundData) throw Error("When referencing data, it wasn't found");
-      apiResponse.push({
-        studentFirstName: foundData.studentFirstName,
-        studentLastName: foundData.studentLastName,
-        studentId: foundData.studentId,
-        courseName: foundData.courseName,
-        courseCode: foundData.courseCode,
-        coursePercentageAverage: v,
-        isCourseCompleted: foundData.isCourseCompleted,
-        sessionStart: foundData.sessionStart,
-        sessionEnd: foundData.sessionEnd,
-        instructorFirstName: foundData.instructorFirstName,
-        instructorLastName: foundData.instructorLastName,
-      });
-    }
+    const apiResponse = studentGradeCalculator.collate(
+      finalGradesByCourseSessionId
+    );
 
     const gpa = calculateGPA(finalGradesByCourseSessionId)?.toFixed(1);
     return NextResponse.json({ data: apiResponse, gpa: gpa });
