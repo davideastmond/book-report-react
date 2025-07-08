@@ -10,6 +10,8 @@ export type UserSummaryData = {
   studentFirstName: string;
   studentLastName: string;
   studentId: string;
+  studentDob: Date | null;
+  studentEmail: string | null;
 };
 
 export type CourseHistoryData = {

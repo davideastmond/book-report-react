@@ -38,6 +38,8 @@ export async function GET(req: NextRequest) {
     .select({
       studentFirstName: user.firstName,
       studentLastName: user.lastName,
+      studentEmail: user.email,
+      studentDob: user.dob,
       studentId: user.id,
       courseName: course.name,
       courseCode: course.course_code,
