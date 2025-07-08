@@ -7,15 +7,16 @@ import { useEffect } from "react";
 export default function StudentQueryPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
-  if (status === "unauthenticated") {
-    router.replace("/login");
-  }
 
   useEffect(() => {
     if (session?.user && session.user.role !== "admin") {
       router.replace("/dashboard");
     }
   }, [session?.user]);
+
+  if (status === "unauthenticated") {
+    router.replace("/login");
+  }
 
   return (
     <div>
