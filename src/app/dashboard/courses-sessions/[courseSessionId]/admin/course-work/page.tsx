@@ -8,6 +8,7 @@ import { CourseSessionsNavToolbar } from "@/components/nav/admin/course-sessions
 import { Spinner } from "@/components/spinner/Spinner";
 import { AcademicTaskWithWeighting } from "@/lib/types/course-work/definitions";
 import { CourseSessionInfo } from "@/lib/types/db/course-session-info";
+import { useAdminAuthorized } from "app/hooks/use-admin-authorized";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
@@ -30,11 +31,13 @@ export default function AdminCourseWorkPage() {
   const router = useRouter();
   const { data: session, status } = useSession();
   const params = useParams<{ courseSessionId: string }>();
+  const { isAdminAuthorized } = useAdminAuthorized();
 
   useEffect(() => {
+    if (!isAdminAuthorized) return;
     fetchCourseSession();
     fetchCourseWorkForSession();
-  }, []);
+  }, [isAdminAuthorized]);
 
   const fetchCourseSession = async () => {
     try {

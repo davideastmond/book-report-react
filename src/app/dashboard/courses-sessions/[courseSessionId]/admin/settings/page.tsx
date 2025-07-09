@@ -42,8 +42,9 @@ export default function CourseSessionSettingsPage() {
   } = useToast();
 
   useEffect(() => {
+    if (!isAdminAuthorized) return;
     fetchCourseSessionById();
-  }, []);
+  }, [isAdminAuthorized]);
 
   async function fetchCourseSessionById() {
     setIsBusy(true);
@@ -57,8 +58,10 @@ export default function CourseSessionSettingsPage() {
   }
 
   useEffect(() => {
-    loadPrepopulatedData();
-  }, [courseSession]);
+    if (isAdminAuthorized) {
+      loadPrepopulatedData();
+    }
+  }, [courseSession, isAdminAuthorized]);
 
   async function toggleLockState() {
     setApiError(null);

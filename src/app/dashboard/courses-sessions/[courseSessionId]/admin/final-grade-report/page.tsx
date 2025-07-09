@@ -4,6 +4,7 @@ import { ClassListFinalGradeTable } from "@/components/class-list-final-grade-ta
 import { CourseSessionsNavToolbar } from "@/components/nav/admin/course-sessions-nav-toolbar/Course-sessions-nav-toolbar";
 
 import { SummarizedData } from "@/lib/controller/grades/calculations/definitions";
+import { useAdminAuthorized } from "app/hooks/use-admin-authorized";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -20,10 +21,11 @@ export default function CourseSessionFinalReportPage() {
   } | null>(null);
 
   const params = useParams<{ courseSessionId: string }>();
-
+  const { isAdminAuthorized } = useAdminAuthorized();
   useEffect(() => {
+    if (!isAdminAuthorized) return;
     fetchFinalGradeReport();
-  }, []);
+  }, [isAdminAuthorized]);
 
   const fetchFinalGradeReport = async () => {
     const data = await CourseSessionClient.getFinalGradeReport(
@@ -31,6 +33,14 @@ export default function CourseSessionFinalReportPage() {
     );
     setFinalGradeReport(data);
   };
+
+  if (!isAdminAuthorized) {
+    return (
+      <div className="flex flex-col items-center justify-center h-full">
+        <p className="text-lg">You do not have permission to view this page.</p>
+      </div>
+    );
+  }
 
   return (
     <>
