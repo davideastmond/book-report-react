@@ -26,6 +26,9 @@ export async function GET(
       courseData: {
         courseName: rawGradeData[0]?.courseName,
         courseCode: rawGradeData[0]?.courseCode,
+        courseSessionId: rawGradeData[0]?.courseSessionId,
+        sessionStart: rawGradeData[0]?.sessionStart,
+        sessionEnd: rawGradeData[0]?.sessionEnd,
       },
     },
     { status: 200 }
