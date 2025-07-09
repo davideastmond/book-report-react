@@ -291,7 +291,13 @@ export const CourseSessionClient = {
     courseSessionId: string
   ): Promise<{
     report: SummarizedData[];
-    courseData: { courseName: string; courseCode: string };
+    courseData: {
+      courseName: string;
+      courseCode: string;
+      sessionStart: string;
+      sessionEnd: string;
+      courseSessionId: string;
+    };
   }> => {
     const res = await fetch(
       `/api/courses/sessions/${courseSessionId}/analytics/final-grade-report`,
@@ -306,7 +312,13 @@ export const CourseSessionClient = {
       throw Error("Failed to fetch course final grade report");
     }
     const data: {
-      courseData: { courseName: string; courseCode: string };
+      courseData: {
+        courseName: string;
+        courseCode: string;
+        sessionStart: string;
+        sessionEnd: string;
+        courseSessionId: string;
+      };
       report: Record<string, SummarizedData>;
     } = await res.json();
 

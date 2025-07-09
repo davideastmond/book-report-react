@@ -10,7 +10,13 @@ import { useEffect, useState } from "react";
 export default function CourseSessionFinalReportPage() {
   const [finalGradeReport, setFinalGradeReport] = useState<{
     report: SummarizedData[];
-    courseData: { courseName: string; courseCode: string };
+    courseData: {
+      courseName: string;
+      courseCode: string;
+      sessionStart: string;
+      sessionEnd: string;
+      courseSessionId: string;
+    };
   } | null>(null);
 
   const params = useParams<{ courseSessionId: string }>();
@@ -39,6 +45,15 @@ export default function CourseSessionFinalReportPage() {
           <h2 className="text-lg font-semibold">
             {finalGradeReport?.courseData.courseName} (
             {finalGradeReport?.courseData.courseCode})
+          </h2>
+          <h2>
+            {new Date(
+              finalGradeReport.courseData.sessionStart
+            ).toLocaleDateString()}{" "}
+            -
+            {new Date(
+              finalGradeReport.courseData.sessionEnd
+            ).toLocaleDateString()}
           </h2>
           {finalGradeReport && (
             <ClassListFinalGradeTable data={finalGradeReport.report} />
