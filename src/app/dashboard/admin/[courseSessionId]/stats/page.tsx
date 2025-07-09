@@ -8,6 +8,7 @@ import { SummarizedData } from "@/lib/controller/grades/calculations/definitions
 import { CourseSessionInfo } from "@/lib/types/db/course-session-info";
 import { AgChartOptions } from "ag-charts-community";
 import { AgCharts } from "ag-charts-react";
+import { useAdminAuthorized } from "app/hooks/use-admin-authorized";
 import { useParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
@@ -29,11 +30,15 @@ export default function CourseSessionStatsPage() {
     SummarizedData[] | null
   >(null);
 
+  const { isAdminAuthorized } = useAdminAuthorized();
+
   useEffect(() => {
+    if (!isAdminAuthorized) return;
     fetchCourseSession();
     fetchCourseSessionGradeAverage();
     getFinalGradeReport();
-  }, []);
+  }, [isAdminAuthorized]);
+
   const params = useParams<{ courseSessionId: string }>();
 
   async function fetchCourseSession() {
@@ -87,6 +92,13 @@ export default function CourseSessionStatsPage() {
     };
   }, [finalGradeReport]);
 
+  if (!isAdminAuthorized) {
+    return (
+      <div className="flex flex-col items-center justify-center h-full">
+        <p className="text-lg">You do not have permission to view this page.</p>
+      </div>
+    );
+  }
   if (courseSession === null) {
     return <Spinner />;
   }
