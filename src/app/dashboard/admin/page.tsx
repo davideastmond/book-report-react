@@ -1,6 +1,16 @@
+"use client";
 import { AdminOptionsToolbar } from "@/components/nav/admin/admin-options-toolbar/Admin-options-toolbar";
+import { useAdminAuthorized } from "app/hooks/use-admin-authorized";
 
 export default function AdminDashboardPage() {
+  const { isAdminAuthorized } = useAdminAuthorized();
+  if (!isAdminAuthorized) {
+    return (
+      <div className="flex flex-col items-center justify-center h-full">
+        <p className="text-lg">You do not have permission to view this page.</p>
+      </div>
+    );
+  }
   return (
     <div>
       <AdminOptionsToolbar />
