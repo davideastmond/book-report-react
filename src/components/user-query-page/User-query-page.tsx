@@ -130,7 +130,7 @@ export function UserQueryPage() {
 
 function getGradeCSS(input: number | string): string {
   const baseCssClass = "font-thin ";
-  let grade = parseFloat(input as string);
+  const grade = parseFloat(input as string);
   if (isNaN(grade)) {
     return baseCssClass;
   }
