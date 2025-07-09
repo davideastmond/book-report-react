@@ -2,6 +2,7 @@
 import { CourseSessionClient } from "@/clients/course-session-client";
 import { ClassListFinalGradeTable } from "@/components/class-list-final-grade-table/Class-list-final-grade-table";
 import { CoursesSessionsList } from "@/components/courses-sessions-list/courses-sessions-list/Courses-sessions-list";
+import { AdminOptionsToolbar } from "@/components/nav/admin/admin-options-toolbar/Admin-options-toolbar";
 import { Spinner } from "@/components/spinner/Spinner";
 import { SummarizedData } from "@/lib/controller/grades/calculations/definitions";
 import { CourseSessionInfo } from "@/lib/types/db/course-session-info";
@@ -90,30 +91,33 @@ export default function CourseSessionStatsPage() {
     return <Spinner />;
   }
   return (
-    <div className="mt-10">
-      <CoursesSessionsList coursesSessions={[courseSession]} />
+    <>
+      <AdminOptionsToolbar />
       <div className="mt-10">
-        <table className="table-fixed">
-          <thead>
-            <tr>
-              <th>Course Session Grade Avg.</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>
-                {sessionGradeAverage !== null ? sessionGradeAverage : "N/A"}
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        <CoursesSessionsList coursesSessions={[courseSession]} />
+        <div className="mt-10">
+          <table className="table-fixed">
+            <thead>
+              <tr>
+                <th>Course Session Grade Avg.</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  {sessionGradeAverage !== null ? sessionGradeAverage : "N/A"}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div className="mt-10">
+          <ClassListFinalGradeTable data={finalGradeReport} />
+        </div>
+        <div className="mt-10 mx-4">
+          <AgCharts options={convertedChartData} />
+        </div>
       </div>
-      <div className="mt-10">
-        <ClassListFinalGradeTable data={finalGradeReport} />
-      </div>
-      <div className="mt-10 mx-4">
-        <AgCharts options={convertedChartData} />
-      </div>
-    </div>
+    </>
   );
 }
