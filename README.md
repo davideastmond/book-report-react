@@ -38,15 +38,21 @@ This is a web app platform to manage academic grades for a school or university,
 - All course final grades are calculated using the define weights.
 - Students can search for courses that are completed within a time frame, and the system will calculate the final grade for all courses.
 
+### Charts, Graphs and Statistics
+
+- Admins/Teachers can view charts and graphs of course work grades.
+- Admins/Teachers can view statistics of course work grades (averages, medians, etc.).
+
 ## Tech Stack
 
 - [React](https://reactjs.org/) - A JavaScript library for building user interfaces
-- [Next.js and Vercel](https://nextjs.org/) - The React Framework for Production
+- [Next.js and Vercel](https://nextjs.org/) - The React Framework for producing full-stack applications with server-side rendering and static site generation
 - [TypeScript](https://www.typescriptlang.org/) - A superset of JavaScript that compiles to clean JavaScript output
 - [Tailwind CSS](https://tailwindcss.com/) - A utility-first CSS framework for creating custom designs
 - [Drizzle ORM](https://orm.drizzle.team/) - TypeScript ORM for Postgres databases
 - [PostgreSQL](https://www.postgresql.org/) - The world's most advanced open source relational database
-- [Amazon RDS](https://aws.amazon.com/rds/) - Amazon Relational Database Service (Postgres)
+- [Amazon RDS](https://aws.amazon.com/rds/) - AWS Amazon Relational Database Service (Postgres)
+- [Ag Charts](https://www.ag-grid.com/charts/react/quick-start/) - A powerful charting library for React applications
 
 ## Environment Variables
 
