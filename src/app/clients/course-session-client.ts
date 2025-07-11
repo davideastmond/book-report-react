@@ -1,4 +1,5 @@
 import { AcademicGrade, CourseSession, GradeWeight } from "@/db/schema";
+import { AggregatedCourseAssignmentData } from "@/lib/controller/grades/aggregators/definitions";
 import { SummarizedData } from "@/lib/controller/grades/calculations/definitions";
 import {
   CourseSessionDataAPIResponse,
@@ -323,5 +324,22 @@ export const CourseSessionClient = {
     } = await res.json();
 
     return { courseData: data.courseData, report: Object.values(data.report) };
+  },
+  getAssignmentsOverview: async (
+    courseSessionId: string
+  ): Promise<AggregatedCourseAssignmentData[]> => {
+    const res = await fetch(
+      `/api/courses/sessions/${courseSessionId}/analytics/assignment-overview`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    if (!res.ok) {
+      throw Error("Failed to fetch assignments overview");
+    }
+    return res.json();
   },
 };
