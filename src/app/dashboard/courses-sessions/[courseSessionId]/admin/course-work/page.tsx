@@ -28,7 +28,7 @@ export default function AdminCourseWorkPage() {
   const [courseWork, setCourseWork] = useState<AcademicTaskWithWeighting[]>([]); // Adjust type as needed
 
   const router = useRouter();
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   const params = useParams<{ courseSessionId: string }>();
   const { isAdminAuthorized } = useAdminAuthorized();
 

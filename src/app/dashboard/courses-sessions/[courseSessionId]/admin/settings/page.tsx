@@ -23,7 +23,7 @@ export default function CourseSessionSettingsPage() {
   }>({ sessionStart: null, sessionEnd: null });
 
   const [isBusy, setIsBusy] = useState(false);
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   const router = useRouter();
 
   const { isAdminEditable } = useAdmin(

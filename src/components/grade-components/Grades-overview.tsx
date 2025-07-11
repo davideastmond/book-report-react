@@ -20,15 +20,13 @@ export function GradesOverviewComponent() {
 
   useEffect(() => {
     fetchGrades();
-  }, [session?.user?.id]);
+  }, []);
 
   if (status === "unauthenticated") {
     router.replace("/login");
   }
 
   async function fetchGrades() {
-    if (!session?.user) return;
-
     const startDateInput = document.getElementById(
       "sessionStart"
     ) as HTMLInputElement;
@@ -42,7 +40,7 @@ export function GradesOverviewComponent() {
       : new Date();
 
     const overViewData = await GradesClient.getGradesForStudentWithDateRange({
-      studentId: session.user.id,
+      studentId: session?.user?.id as string,
       startDate,
       endDate,
     });

@@ -14,7 +14,7 @@ import { useRouter } from "next/navigation";
  */
 export default function CoursesSessionsPage() {
   const router = useRouter();
-  const { data: session, status } = useSession();
+  const { status } = useSession();
 
   const { isAdminAuthorized } = useAdminAuthorized();
 
