@@ -1,7 +1,6 @@
 "use client";
 
 import { CourseSessionClient } from "@/clients/course-session-client";
-import { CourseSessionsNavToolbar } from "@/components/nav/admin/course-sessions-nav-toolbar/Course-sessions-nav-toolbar";
 import { Spinner } from "@/components/spinner/Spinner";
 import { CourseSessionInfo } from "@/lib/types/db/course-session-info";
 import { useAdmin } from "app/hooks/use-admin";
@@ -200,7 +199,6 @@ export default function CourseSessionSettingsPage() {
 
   return (
     <div>
-      <CourseSessionsNavToolbar courseSessionId={params.courseSessionId} />
       <h1 className="text-3xl">Course Session Settings</h1>
       <section>
         <p>
@@ -311,7 +309,7 @@ export default function CourseSessionSettingsPage() {
             from this course session
           </p>
         </article>
-        {["admin", "teacher"].includes(session?.user?.role as string) && (
+        {isAdminAuthorized && (
           <>
             <input
               type="checkbox"
