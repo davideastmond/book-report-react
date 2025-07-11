@@ -1,5 +1,4 @@
 "use client";
-import { AdminOptionsToolbar } from "@/components/nav/admin/admin-options-toolbar/Admin-options-toolbar";
 import { useAdminAuthorized } from "app/hooks/use-admin-authorized";
 
 export default function AdminDashboardPage() {
@@ -13,7 +12,6 @@ export default function AdminDashboardPage() {
   }
   return (
     <div>
-      <AdminOptionsToolbar />
       <h1 className="text-3xl">Admin Dashboard</h1>
       <p>
         Welcome to the admin dashboard. Here you can manage users, courses, and

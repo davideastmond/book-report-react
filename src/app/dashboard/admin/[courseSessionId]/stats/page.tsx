@@ -2,7 +2,6 @@
 import { CourseSessionClient } from "@/clients/course-session-client";
 import { ClassListFinalGradeTable } from "@/components/class-list-final-grade-table/Class-list-final-grade-table";
 import { CoursesSessionsList } from "@/components/courses-sessions-list/courses-sessions-list/Courses-sessions-list";
-import { AdminStatsNav } from "@/components/nav/admin/stats/Admin-stats-nav";
 import { Spinner } from "@/components/spinner/Spinner";
 import { SummarizedData } from "@/lib/controller/grades/calculations/definitions";
 import { CourseSessionInfo } from "@/lib/types/db/course-session-info";
@@ -104,8 +103,7 @@ export default function CourseSessionStatsPage() {
   }
   return (
     <>
-      <AdminStatsNav courseSessionId={params.courseSessionId} />
-      <div className="mt-10">
+      <div className="mt-12">
         <CoursesSessionsList coursesSessions={[courseSession]} />
         <div className="mt-10">
           <table className="table-fixed">

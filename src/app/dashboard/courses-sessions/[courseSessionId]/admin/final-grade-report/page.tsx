@@ -1,7 +1,6 @@
 "use client";
 import { CourseSessionClient } from "@/clients/course-session-client";
 import { ClassListFinalGradeTable } from "@/components/class-list-final-grade-table/Class-list-final-grade-table";
-import { CourseSessionsNavToolbar } from "@/components/nav/admin/course-sessions-nav-toolbar/Course-sessions-nav-toolbar";
 
 import { SummarizedData } from "@/lib/controller/grades/calculations/definitions";
 import { useAdminAuthorized } from "app/hooks/use-admin-authorized";
@@ -44,7 +43,6 @@ export default function CourseSessionFinalReportPage() {
 
   return (
     <>
-      <CourseSessionsNavToolbar courseSessionId={params.courseSessionId} />
       {!finalGradeReport || finalGradeReport.report.length === 0 ? (
         <div className="flex flex-col items-center justify-center h-full">
           <p className="text-lg">No final grade report available.</p>

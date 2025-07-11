@@ -1,6 +1,5 @@
 "use client";
 import { CourseWorkCreateUpdateForm } from "@/components/course-work-create-update/Course-work-create-update-form";
-import { CourseSessionsNavToolbar } from "@/components/nav/admin/course-sessions-nav-toolbar/Course-sessions-nav-toolbar";
 import { useAdminAuthorized } from "app/hooks/use-admin-authorized";
 import { useParams } from "next/navigation";
 
@@ -21,7 +20,6 @@ export default function EditCourseWorkPage() {
   }
   return (
     <div>
-      <CourseSessionsNavToolbar courseSessionId={params.courseSessionId} />
       <CourseWorkCreateUpdateForm
         isEditing
         courseSessionId={params.courseSessionId}
