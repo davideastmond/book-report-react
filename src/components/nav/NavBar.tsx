@@ -1,4 +1,6 @@
 "use client";
+import { useAdmin } from "app/hooks/use-admin";
+import { useAdminAuthorized } from "app/hooks/use-admin-authorized";
 import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -15,7 +17,8 @@ const styles = {
 };
 export function NavBar() {
   const { data: session } = useSession();
-
+  const { isAdminAuthorized } = useAdminAuthorized();
+  const { isStrictlyAdmin } = useAdmin();
   return (
     <div>
       <nav className="bg-gray-800 p-2 ">
@@ -32,7 +35,7 @@ export function NavBar() {
           </Link>
           <div className="text-white text-lg font-bold">Book Report</div>
           <ul className="flex space-x-4">
-            {["student"].includes(session?.user?.role as string) && (
+            {!isAdminAuthorized && (
               <li style={styles.navMenuItem}>
                 <Link
                   href="/dashboard/student/grades"
@@ -42,7 +45,7 @@ export function NavBar() {
                 </Link>
               </li>
             )}
-            {["admin"].includes(session?.user?.role as string) && (
+            {isStrictlyAdmin && (
               <li style={styles.navMenuItem}>
                 <Link
                   href="/dashboard/admin"
