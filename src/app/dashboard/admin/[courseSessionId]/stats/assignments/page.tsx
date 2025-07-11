@@ -16,5 +16,9 @@ export default function AssignmentsOverviewPage() {
     );
   }
 
-  return <AssignmentsOverview courseSessionId={params.courseSessionId} />;
+  return (
+    <div className="mt-10">
+      <AssignmentsOverview courseSessionId={params.courseSessionId} />
+    </div>
+  );
 }
