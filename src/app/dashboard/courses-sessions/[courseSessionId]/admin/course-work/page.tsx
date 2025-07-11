@@ -4,7 +4,6 @@ import { CourseSessionClient } from "@/clients/course-session-client";
 import { CourseWorkClient } from "@/clients/course-work-client";
 import { CourseWorkList } from "@/components/course-work-list/Course-work-list";
 import { CoursesSessionsList } from "@/components/courses-sessions/courses-sessions-list/Courses-sessions-list";
-import { CourseSessionsNavToolbar } from "@/components/nav/admin/course-sessions-nav-toolbar/Course-sessions-nav-toolbar";
 import { Spinner } from "@/components/spinner/Spinner";
 import { AcademicTaskWithWeighting } from "@/lib/types/course-work/definitions";
 import { CourseSessionInfo } from "@/lib/types/db/course-session-info";
@@ -66,7 +65,7 @@ export default function AdminCourseWorkPage() {
     return router.replace("/login");
   }
 
-  if (!["admin", "teacher"].includes(session?.user?.role as string)) {
+  if (!isAdminAuthorized) {
     return (
       <>
         <p className="text-red-500 text-center">Verifying...</p>
@@ -81,7 +80,6 @@ export default function AdminCourseWorkPage() {
 
   return (
     <div>
-      <CourseSessionsNavToolbar courseSessionId={params.courseSessionId} />
       <h1 className="text-3xl py-4">Course Work Manager(Admin)</h1>
       <CoursesSessionsList coursesSessions={[courseSession]} />
       {courseSession.isCompleted && (
