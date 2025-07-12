@@ -74,7 +74,7 @@ export function LoginForm() {
             )}
           </div>
         </div>
-        <label htmlFor="password">Password:</label>
+        <label htmlFor="password1">Password:</label>
         <div>
           <input
             type="password"
