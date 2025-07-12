@@ -1,3 +1,4 @@
+/* eslint  @typescript-eslint/no-require-imports: "off"  */
 import { render } from "@testing-library/react";
 
 import { beforeEach } from "node:test";
