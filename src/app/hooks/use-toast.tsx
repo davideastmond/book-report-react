@@ -14,7 +14,11 @@ export function useToast() {
   }
   const ToastElement = () => {
     if (!toastVisible) return null;
-    return <p className="text-green-600">{toastMessage}</p>;
+    return (
+      <p data-testid="toast" className="text-green-600">
+        {toastMessage}
+      </p>
+    );
   };
 
   return { showToast, ToastElement };
