@@ -1,6 +1,6 @@
-import { cleanup, renderHook } from "@testing-library/react";
+import { renderHook } from "@testing-library/react";
 
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { useAdminAuthorized } from "../use-admin-authorized";
 
 const roles = ["admin", "teacher", "user"];
@@ -16,10 +16,6 @@ vi.mock("next-auth/react", () => ({
   SessionProvider: ({ children }: { children: React.ReactNode }) => children, // Pass children directly
 }));
 describe("hooks - useAdminAuthorized", () => {
-  beforeEach(() => {
-    cleanup();
-  });
-
   it.each([
     [roles[0], true],
     [roles[1], true],
