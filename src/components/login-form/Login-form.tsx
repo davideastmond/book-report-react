@@ -74,7 +74,7 @@ export function LoginForm() {
             )}
           </div>
         </div>
-        <label htmlFor="password">Password:</label>
+        <label htmlFor="password1">Password:</label>
         <div>
           <input
             type="password"
@@ -88,7 +88,12 @@ export function LoginForm() {
           )}
         </div>
         <div className="flex justify-between">
-          <button type="submit" className="bg-blue-500 text-white p-2 rounded">
+          <button
+            type="submit"
+            className="bg-blue-500 text-white p-2 rounded"
+            name="submit"
+            data-testid="login-submit-button"
+          >
             Submit
           </button>
           <Link href={"/register"}>New Account</Link>

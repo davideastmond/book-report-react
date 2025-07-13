@@ -1,7 +1,6 @@
 "use client";
 
 import { CourseSessionClient } from "@/clients/course-session-client";
-import { CourseSessionsNavToolbar } from "@/components/nav/admin/course-sessions-nav-toolbar/Course-sessions-nav-toolbar";
 import { Spinner } from "@/components/spinner/Spinner";
 import { CourseSessionInfo } from "@/lib/types/db/course-session-info";
 import { useAdmin } from "app/hooks/use-admin";
@@ -24,7 +23,7 @@ export default function CourseSessionSettingsPage() {
   }>({ sessionStart: null, sessionEnd: null });
 
   const [isBusy, setIsBusy] = useState(false);
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   const router = useRouter();
 
   const { isAdminEditable } = useAdmin(
@@ -42,8 +41,9 @@ export default function CourseSessionSettingsPage() {
   } = useToast();
 
   useEffect(() => {
+    if (!isAdminAuthorized) return;
     fetchCourseSessionById();
-  }, []);
+  }, [isAdminAuthorized]);
 
   async function fetchCourseSessionById() {
     setIsBusy(true);
@@ -57,8 +57,10 @@ export default function CourseSessionSettingsPage() {
   }
 
   useEffect(() => {
-    loadPrepopulatedData();
-  }, [courseSession]);
+    if (isAdminAuthorized) {
+      loadPrepopulatedData();
+    }
+  }, [courseSession, isAdminAuthorized]);
 
   async function toggleLockState() {
     setApiError(null);
@@ -197,7 +199,6 @@ export default function CourseSessionSettingsPage() {
 
   return (
     <div>
-      <CourseSessionsNavToolbar courseSessionId={params.courseSessionId} />
       <h1 className="text-3xl">Course Session Settings</h1>
       <section>
         <p>
@@ -308,7 +309,7 @@ export default function CourseSessionSettingsPage() {
             from this course session
           </p>
         </article>
-        {["admin", "teacher"].includes(session?.user?.role as string) && (
+        {isAdminAuthorized && (
           <>
             <input
               type="checkbox"

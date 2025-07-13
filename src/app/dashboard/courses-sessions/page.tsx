@@ -1,7 +1,8 @@
 "use client";
 import { CoursesSessionsMain } from "@/components/courses-sessions/Courses-sessions-main";
-import { CourseSessionsNavToolbar } from "@/components/nav/student/Course-sessions-nav-toolbar";
+
 import { Spinner } from "@/components/spinner/Spinner";
+import { useAdminAuthorized } from "app/hooks/use-admin-authorized";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 /**
@@ -13,19 +14,20 @@ import { useRouter } from "next/navigation";
  */
 export default function CoursesSessionsPage() {
   const router = useRouter();
-  const { data: session, status } = useSession();
+  const { status } = useSession();
+
+  const { isAdminAuthorized } = useAdminAuthorized();
 
   if (status === "unauthenticated") {
     router.replace("/login");
   }
 
-  if (!session?.user) return <Spinner />;
+  if (isAdminAuthorized === null) {
+    return <Spinner />;
+  }
   return (
     <>
-      <CourseSessionsNavToolbar />
-      <CoursesSessionsMain
-        isAdmin={["admin", "teacher"].includes(session?.user?.role as string)}
-      />
+      <CoursesSessionsMain isAdmin={isAdminAuthorized} />
     </>
   );
 }

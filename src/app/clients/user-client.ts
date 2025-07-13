@@ -1,4 +1,5 @@
 import { User } from "@/db/schema";
+import { AdminStudentDataAPIResponse } from "@/lib/types/admin-data/admin-student-data-api-response";
 import { EnrolledStudent } from "@/lib/types/db/course-session-info";
 
 export const UserClient = {
@@ -43,5 +44,26 @@ export const UserClient = {
     if (!res.ok) {
       throw Error("Failed to update password");
     }
+  },
+  updateUserGender: async (userId: string, gender: string): Promise<void> => {
+    const res = await fetch(`/api/user/identity/gender?userId=${userId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ gender }),
+    });
+    if (!res.ok) {
+      throw Error("Failed to update gender");
+    }
+  },
+  getAdminUserData: async (
+    userId: string
+  ): Promise<AdminStudentDataAPIResponse> => {
+    const res = await fetch(`/api/user/admin/student-data?userId=${userId}`);
+    if (!res.ok) {
+      throw Error("Failed to fetch user courses");
+    }
+    return res.json();
   },
 };

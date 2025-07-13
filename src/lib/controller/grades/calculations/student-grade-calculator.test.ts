@@ -1,6 +1,6 @@
-import { RawGradeReportData } from "@/lib/types/grading/definitions";
+import { RawGradeReportData } from "@/lib/types/grading/student/definitions";
 import { describe, expect, test } from "vitest";
-import { GradeCalculator } from "./grade-calculator";
+import { StudentGradeCalculator } from "./student-grade-calculator";
 describe("Grade Calculator Tests", () => {
   test("should calculate the final grade correctly", () => {
     const rawGradeData = [
@@ -33,7 +33,7 @@ describe("Grade Calculator Tests", () => {
         gradeWeightPercentage: 10,
       },
     ];
-    const calculator = new GradeCalculator(
+    const calculator = new StudentGradeCalculator(
       rawGradeData as RawGradeReportData[]
     );
     const result = calculator.calculate();

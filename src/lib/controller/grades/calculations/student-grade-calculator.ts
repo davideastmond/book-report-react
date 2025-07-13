@@ -1,4 +1,7 @@
-import { RawGradeReportData } from "@/lib/types/grading/definitions";
+import {
+  GradeSummaryData,
+  RawGradeReportData,
+} from "@/lib/types/grading/student/definitions";
 
 type CourseSessionId = string;
 type GradeWeightId = string;
@@ -13,7 +16,7 @@ type DataByWeightGroup = {
 
 type WeightedFinalGrades = Record<CourseSessionId, number>;
 
-export class GradeCalculator {
+export class StudentGradeCalculator {
   private input: RawGradeReportData[];
   constructor(input: RawGradeReportData[]) {
     this.input = input;
@@ -25,6 +28,30 @@ export class GradeCalculator {
     return this.getWeightedFinalGrade(groupedByWeightMarks);
   }
 
+  public collate(data: Record<CourseSessionId, number>) {
+    const apiResponse: GradeSummaryData[] = [];
+
+    // Collate the data for an API Response
+    for (const [k, v] of Object.entries(data)) {
+      const foundData = this.input.find((d) => d.courseSessionId === k);
+      if (!foundData) throw Error("When referencing data, it wasn't found");
+      apiResponse.push({
+        studentFirstName: foundData.studentFirstName,
+        studentLastName: foundData.studentLastName,
+        studentId: foundData.studentId,
+        courseName: foundData.courseName,
+        courseCode: foundData.courseCode,
+        coursePercentageAverage: v,
+        isCourseCompleted: foundData.isCourseCompleted,
+        sessionStart: foundData.sessionStart,
+        sessionEnd: foundData.sessionEnd,
+        instructorFirstName: foundData.instructorFirstName,
+        instructorLastName: foundData.instructorLastName,
+        courseSessionId: foundData.courseSessionId,
+      });
+    }
+    return apiResponse;
+  }
   private sumMarksByGradeWeightGroup(): Record<
     CourseSessionId,
     DataByCourseSession

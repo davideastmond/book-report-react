@@ -97,6 +97,9 @@ export const user = pgTable("user", {
     .default("student"),
   hashedPassword: text("password_hash").notNull(),
   dob: date("dob", { mode: "date" }).notNull(),
+  gender: text({ enum: ["male", "female", "other", "not_selected"] }).default(
+    "not_selected"
+  ),
 });
 
 export const gradeWeight = pgTable("grade_weight", {

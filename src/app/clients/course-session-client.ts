@@ -1,10 +1,13 @@
 import { AcademicGrade, CourseSession, GradeWeight } from "@/db/schema";
+import { AggregatedCourseAssignmentData } from "@/lib/controller/grades/aggregators/definitions";
+import { SummarizedData } from "@/lib/controller/grades/calculations/definitions";
 import {
   CourseSessionDataAPIResponse,
   CourseSessionInfo,
   CourseSessionsAPIResponse,
 } from "@/lib/types/db/course-session-info";
-import { TableData } from "@/lib/types/grading/definitions";
+import { GroupedCourseInfo } from "@/lib/types/db/grouped-course-info";
+import { TableData } from "@/lib/types/grading/student/definitions";
 import { WeightingData } from "@/lib/types/weighting/weighting-data";
 
 export const CourseSessionClient = {
@@ -249,6 +252,93 @@ export const CourseSessionClient = {
     );
     if (!res.ok) {
       throw Error("Failed to fetch course weightings");
+    }
+    return res.json();
+  },
+  fetchGroupedCourseSessionByCourse: async (): Promise<GroupedCourseInfo[]> => {
+    const res = await fetch("/api/courses/sessions/grouped", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (!res.ok) {
+      throw Error("Failed to fetch grouped course sessions");
+    }
+    return res.json();
+  },
+  getCourseGradeAverage: async (
+    courseSessionId: string
+  ): Promise<{
+    courseSessionGradeAverage: number;
+    courseSessionId: string;
+    status: string;
+  }> => {
+    const res = await fetch(
+      `/api/courses/sessions/${courseSessionId}/analytics/course-session-grade-average`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    if (!res.ok) {
+      throw Error("Failed to fetch course grade average");
+    }
+    return res.json();
+  },
+  getFinalGradeReport: async (
+    courseSessionId: string
+  ): Promise<{
+    report: SummarizedData[];
+    courseData: {
+      courseName: string;
+      courseCode: string;
+      sessionStart: string;
+      sessionEnd: string;
+      courseSessionId: string;
+    };
+  }> => {
+    const res = await fetch(
+      `/api/courses/sessions/${courseSessionId}/analytics/final-grade-report`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    if (!res.ok) {
+      throw Error("Failed to fetch course final grade report");
+    }
+    const data: {
+      courseData: {
+        courseName: string;
+        courseCode: string;
+        sessionStart: string;
+        sessionEnd: string;
+        courseSessionId: string;
+      };
+      report: Record<string, SummarizedData>;
+    } = await res.json();
+
+    return { courseData: data.courseData, report: Object.values(data.report) };
+  },
+  getAssignmentsOverview: async (
+    courseSessionId: string
+  ): Promise<AggregatedCourseAssignmentData[]> => {
+    const res = await fetch(
+      `/api/courses/sessions/${courseSessionId}/analytics/assignment-overview`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    if (!res.ok) {
+      throw Error("Failed to fetch assignments overview");
     }
     return res.json();
   },

@@ -2,7 +2,7 @@
 The responsibility of this component is to display a table for a course, with the grade summary
 */
 
-import { GradeSummaryData } from "@/lib/types/grading/definitions";
+import { GradeSummaryData } from "@/lib/types/grading/student/definitions";
 
 export function CourseGradeSummaryTable({
   gradeSummaryData,

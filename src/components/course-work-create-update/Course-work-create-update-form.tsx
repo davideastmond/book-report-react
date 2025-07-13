@@ -104,7 +104,7 @@ export function CourseWorkCreateUpdateForm({
       "gradeValueType"
     ) as HTMLSelectElement;
 
-    const greatWeightsInput = document.getElementById(
+    const gradeWeightsInput = document.getElementById(
       "gradeWeightId"
     ) as HTMLSelectElement;
 
@@ -126,8 +126,8 @@ export function CourseWorkCreateUpdateForm({
         : "";
     }
 
-    if (greatWeightsInput) {
-      greatWeightsInput.value = data.gradeWeightId || "";
+    if (gradeWeightsInput) {
+      gradeWeightsInput.value = data.gradeWeightId || "";
     }
   }
 

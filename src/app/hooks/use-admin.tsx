@@ -4,7 +4,7 @@ import { CourseSessionDataAPIResponse } from "@/lib/types/db/course-session-info
 import { useSession } from "next-auth/react";
 import { useEffect, useMemo, useState } from "react";
 
-export function useAdmin(courseSessionId: string) {
+export function useAdmin(courseSessionId?: string) {
   const [courseSessionContext, setCourseSessionContext] =
     useState<CourseSessionDataAPIResponse | null>(null);
 
@@ -17,6 +17,10 @@ export function useAdmin(courseSessionId: string) {
       fetchCourseSessionData();
     }
   }, [courseSessionId, session?.user]);
+
+  const isStrictlyAdmin = useMemo(() => {
+    return session?.user?.role === "admin";
+  }, [session?.user?.role]);
 
   const isAdminEditable = useMemo(() => {
     if (!courseSessionId) return false;
@@ -34,7 +38,7 @@ export function useAdmin(courseSessionId: string) {
     try {
       setIsBusy(true);
       const courseSessionData =
-        await CourseSessionClient.fetchCourseSessionByIdAdmin(courseSessionId);
+        await CourseSessionClient.fetchCourseSessionByIdAdmin(courseSessionId!);
       setCourseSessionContext(courseSessionData);
       setIsBusy(false);
     } catch (error) {
@@ -45,5 +49,5 @@ export function useAdmin(courseSessionId: string) {
     }
   }
 
-  return { isBusy, isAdminEditable };
+  return { isBusy, isAdminEditable, isStrictlyAdmin };
 }

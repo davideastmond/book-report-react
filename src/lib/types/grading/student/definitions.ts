@@ -34,6 +34,7 @@ export type GradeSummaryData = {
   sessionEnd: Date | null;
   instructorFirstName: string | null;
   instructorLastName: string | null;
+  courseSessionId: string | null;
 };
 
 export type WeighingTableData = {

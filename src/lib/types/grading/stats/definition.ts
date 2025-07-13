@@ -1,0 +1,20 @@
+export type CourseGradingStats = {
+  academicTaskId: string | null;
+  academicTaskName: string | null;
+  academicTaskType: string | null;
+  courseSessionId: string | null;
+  gradeWeightId: string | null;
+  gradeWeightName: string | null;
+  gradeWeightPercentage: number | null;
+  percentageGrade: number | null;
+  sessionStart: Date | null;
+  sessionEnd: Date | null;
+  isCourseCompleted: boolean | null;
+  courseName: string | null;
+  courseCode: string | null;
+  studentId: string | null;
+  studentFirstName: string | null;
+  studentLastName: string | null;
+  studentGender: string | null;
+  studentDob: Date | null;
+};

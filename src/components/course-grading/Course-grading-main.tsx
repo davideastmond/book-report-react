@@ -3,7 +3,7 @@ import { CourseWorkClient } from "@/clients/course-work-client";
 import { AcademicGrade } from "@/db/schema";
 import { AcademicTaskWithWeighting } from "@/lib/types/course-work/definitions";
 import { CourseSessionDataAPIResponse } from "@/lib/types/db/course-session-info";
-import { TableData } from "@/lib/types/grading/definitions";
+import { TableData } from "@/lib/types/grading/student/definitions";
 import { useAdmin } from "app/hooks/use-admin";
 import { useToast } from "app/hooks/use-toast";
 import { useParams } from "next/navigation";

@@ -14,6 +14,7 @@ export async function POST(req: NextRequest) {
     firstName: string;
     lastName: string;
     dob: string;
+    gender: "male" | "female" | "other";
   };
   try {
     registrationValidator.parse(requestBody);
@@ -59,6 +60,7 @@ export async function POST(req: NextRequest) {
       email: requestBody.email,
       hashedPassword: hashSync(requestBody.password1, 10),
       dob: new Date(requestBody.dob),
+      gender: requestBody.gender,
     });
     return NextResponse.json({
       status: "ok",
