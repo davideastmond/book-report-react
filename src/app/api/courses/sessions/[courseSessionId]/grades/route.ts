@@ -5,7 +5,7 @@ import {
   GradeData,
   StudentGradeData,
   TableData,
-} from "@/lib/types/grading/definitions";
+} from "@/lib/types/grading/student/definitions";
 import { and, eq } from "drizzle-orm";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";

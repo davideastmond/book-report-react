@@ -2,7 +2,7 @@
 
 ## About
 
-This is a web app platform to manage academics for a school or university, allowing instructors to manages courses, students and grades, and allowing students to manage their courses and grades.
+This is a web app platform to manage academic grades for a school or university, allowing instructors to manages courses, course work, students and grades, and allowing students to manage their courses and grades.
 
 ## Features
 
@@ -11,32 +11,54 @@ This is a web app platform to manage academics for a school or university, allow
 - Sign up and log in with email and password.
 - Student and Admin/Teacher security access
 
+### User Management
+
+- User can update their password.
+- User can update their name.
+
 ### Courses and Course Work
 
 - Admins/Teachers can create courses.
-- Admins/Teachers can create/update course work (assignments, quizzes, etc.) for courses.
+- Admins/Teachers can create/update course work (assignments, quizzes, exams, essays...) for courses.
 - Admins/Teachers can enroll students in courses.
-- Students can enroll themselves in courses.
+- Students can enroll and de-enroll themselves in/from courses.
+- Admins/Teachers can lock a course, preventing students from enrolling or de-enrolling.
+- Admins/Teachers can set a course as completed.
+
+### Grade Weighting
+
+- Admins/Teachers can allocate weights to course work to emphasize importance of particular assignments, quizzes or final exams.
 
 ### Grading
 
-- Admins/Teachers can assign numerical and letter grades to students for course work.
+- Admins/Teachers can assign numerical grades (0 - 100) for course work.
+
+### Final Grade Calculation
+
+- All course final grades are calculated using the define weights.
+- Students can search for courses that are completed within a time frame, and the system will calculate the final grade for all courses.
+
+### Charts, Graphs and Statistics
+
+- Admins/Teachers can view charts and graphs of course work grades.
+- Admins/Teachers can view statistics of course work grades (averages, medians, etc.).
 
 ## Tech Stack
 
 - [React](https://reactjs.org/) - A JavaScript library for building user interfaces
-- [Next.js and Vercel](https://nextjs.org/) - The React Framework for Production
+- [Next.js and Vercel](https://nextjs.org/) - The React Framework for producing full-stack applications with server-side rendering and static site generation
 - [TypeScript](https://www.typescriptlang.org/) - A superset of JavaScript that compiles to clean JavaScript output
 - [Tailwind CSS](https://tailwindcss.com/) - A utility-first CSS framework for creating custom designs
 - [Drizzle ORM](https://orm.drizzle.team/) - TypeScript ORM for Postgres databases
 - [PostgreSQL](https://www.postgresql.org/) - The world's most advanced open source relational database
-- [Amazon RDS](https://aws.amazon.com/rds/) - Amazon Relational Database Service (Postgres)
+- [Amazon RDS](https://aws.amazon.com/rds/) - AWS Amazon Relational Database Service (Postgres)
+- [Ag Charts](https://www.ag-grid.com/charts/react/quick-start/) - A powerful charting library for React applications
 
 ## Environment Variables
 
 DATABASE_URL=#the connection string for your postgres instance
 NEXT_AUTH_SECRET=#Required for auth - it can be any string
-ADMIN_PASSWORD=#Create an admin password to allow for admin tasks. It can be any string. It needs to be included in the Bearer token for admin tasks.
+ADMIN_PASSWORD=#Create an admin password to allow for admin tasks. It can be any string. It needs to be included in the Authorization headers as a Bearer token for admin tasks.
 
 ## Getting Started
 

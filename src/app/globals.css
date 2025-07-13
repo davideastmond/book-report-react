@@ -5,6 +5,7 @@
   --foreground: #171717;
   --amber: #461901;
   --list-hover: oklch(96.2% 0.059 95.617);
+  --greyed-out: oklch(55.1% 0.027 264.364);
 }
 
 @theme inline {
@@ -53,8 +54,27 @@ a:link.flatStyle:hover {
   color: var(--background);
 }
 
+button.flatStyle:disabled,
+button.flatSTyle:disabled:hover {
+  background-color: var(--greyed-out);
+  opacity: 0.2;
+  cursor: not-allowed;
+}
+
+button.responsiveStyle:disabled {
+  background-color: var(--greyed-out);
+  opacity: 0.2;
+  cursor: not-allowed;
+}
+
 a:link.flatStyle {
   border: 1px solid var(--foreground);
   border-radius: 5px;
   padding: 5px
+}
+
+select {
+  background-color: #f0f0f0b8;
+  color: #0b0b0b;
+  font-weight: 200;
 }

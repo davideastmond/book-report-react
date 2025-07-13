@@ -17,7 +17,7 @@ export function CoursesSessionsList({
 }: CoursesSessionsListProps) {
   const router = useRouter();
   return (
-    <table className="table-auto w-full">
+    <table className="table-auto w-full mt-4">
       <thead className="text-left">
         <tr>
           <th>Code</th>
@@ -38,34 +38,43 @@ export function CoursesSessionsList({
             </td>
           </tr>
         )}
-        {coursesSessions?.map((session, index) => (
-          <tr
-            key={session.courseSessionId}
-            className={`${
-              linkable && "hover:cursor-pointer "
-            } hover:bg-list-hover/20 ${
-              index % 2 === 0 ? "bg-slate-400/10" : "bg-background"
-            }`}
-            onClick={() => {
-              if (!linkable) return;
-              router.push(
-                `/dashboard/courses-sessions/view?id=${session.courseSessionId}`
-              );
-            }}
-          >
-            <td>{session.courseCode}</td>
-            <td>{session.courseName}</td>
-            <td>
-              {session.instructorLastName}{" "}
-              {session.instructorFirstName?.slice(0, 1)}
-            </td>
-            <td>{new Date(session.sessionStart!).toLocaleDateString()}</td>
-            <td>{new Date(session.sessionEnd!).toLocaleDateString()}</td>
-            <td>{session.studentAllotment}</td>
-            <td className="text-amber-300">{session.isCompleted ? "Y" : ""}</td>
-            {enrolled && enrolled.show && <td>{enrolled.count}</td>}
-          </tr>
-        ))}
+        {coursesSessions &&
+          [...coursesSessions]
+            .sort((a, b) => {
+              if (a.courseCode! > b.courseCode!) return 1;
+              if (a.courseCode! < b.courseCode!) return -1;
+              return 0;
+            })
+            .map((session, index) => (
+              <tr
+                key={session.courseSessionId}
+                className={`${
+                  linkable && "hover:cursor-pointer "
+                } hover:bg-list-hover/20 ${
+                  index % 2 === 0 ? "bg-slate-400/10" : "bg-background"
+                }`}
+                onClick={() => {
+                  if (!linkable) return;
+                  router.push(
+                    `/dashboard/courses-sessions/view?id=${session.courseSessionId}`
+                  );
+                }}
+              >
+                <td>{session.courseCode}</td>
+                <td>{session.courseName}</td>
+                <td>
+                  {session.instructorLastName}{" "}
+                  {session.instructorFirstName?.slice(0, 1)}
+                </td>
+                <td>{new Date(session.sessionStart!).toLocaleDateString()}</td>
+                <td>{new Date(session.sessionEnd!).toLocaleDateString()}</td>
+                <td>{session.studentAllotment}</td>
+                <td className="text-amber-300">
+                  {session.isCompleted ? "Y" : ""}
+                </td>
+                {enrolled && enrolled.show && <td>{enrolled.count}</td>}
+              </tr>
+            ))}
       </tbody>
     </table>
   );

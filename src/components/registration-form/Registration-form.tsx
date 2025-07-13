@@ -17,6 +17,7 @@ export function RegistrationForm() {
     password1: null,
     password2: null,
     dob: null,
+    gender: null,
   });
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -78,6 +79,7 @@ export function RegistrationForm() {
       password1: null,
       password2: null,
       dob: null,
+      gender: null,
     });
   };
   return (
@@ -136,6 +138,26 @@ export function RegistrationForm() {
             />
             {formErrors.lastName && (
               <p className="text-red-500 text-sm">{formErrors.lastName}</p>
+            )}
+          </div>
+        </div>
+        <div className="mt-4">
+          <label htmlFor="dob">Date of Birth:</label>
+          <div>
+            {/* Gender select */}
+            <select
+              id="gender"
+              name="gender"
+              className="border border-gray-300 rounded p-2 mb-4 w-full"
+              required
+            >
+              <option value="">Select Gender</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+              <option value="other">Other</option>
+            </select>
+            {formErrors.gender && (
+              <p className="text-red-500 text-sm">{formErrors.gender}</p>
             )}
           </div>
         </div>

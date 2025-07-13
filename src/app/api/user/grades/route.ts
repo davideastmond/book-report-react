@@ -1,6 +1,9 @@
 import { authOptions } from "@/auth/auth";
+import { calculateGPA } from "@/lib/controller/grades/calculations/gpa-calculator";
+import { StudentGradeCalculator } from "@/lib/controller/grades/calculations/student-grade-calculator";
 import { GradeController } from "@/lib/controller/grades/grade-controller";
 import { validateGradesAPIRequest } from "@/lib/validators/grades/grades-request-validator";
+
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -29,10 +32,34 @@ export async function GET(req: NextRequest) {
     });
   }
 
-  const result = await GradeController.getGradeSummaryByDate({
-    studentId: query.get("studentId") as string,
-    startDate: new Date(query.get("startDate")!),
-    endDate: new Date(query.get("endDate") || new Date().toISOString()),
-  });
-  return NextResponse.json(result);
+  const startDate = query.get("startDate");
+  const endDate = query.get("endDate");
+  const studentId = query.get("studentId");
+
+  try {
+    // Create the raw report data
+    const rawReportData =
+      await GradeController.getRawGradeReportDataByDateRange({
+        studentId: studentId!,
+        startDate: new Date(startDate!),
+        endDate: new Date(endDate || new Date().toISOString()),
+      });
+
+    // Based on the raw data, determine the weighted grade
+    const studentGradeCalculator = new StudentGradeCalculator(rawReportData);
+    // Calculate the final grades by course session ID
+    const calculatedStudentGrades = studentGradeCalculator.calculate();
+
+    const apiResponse = studentGradeCalculator.collate(calculatedStudentGrades);
+
+    const gpa = calculateGPA(calculatedStudentGrades)?.toFixed(1);
+    return NextResponse.json({ data: apiResponse, gpa: gpa });
+  } catch (error) {
+    return NextResponse.json(
+      {
+        error: "Grades computation error: " + (error as Error).message,
+      },
+      { status: 400 }
+    );
+  }
 }

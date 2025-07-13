@@ -18,6 +18,7 @@ export function UserSearch({
   const [students, setStudents] = useState<EnrolledStudent[]>([]);
   const [filteredResults, setFilteredResults] = useState<EnrolledStudent[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [studentListVisible, setStudentListVisible] = useState(true);
   useEffect(() => {
     getAllStudents();
   }, []);
@@ -30,6 +31,7 @@ export function UserSearch({
   const handleStudentSelected = (studentId: string) => {
     if (onUserSelect) {
       onUserSelect(studentId);
+      setStudentListVisible(false);
     }
   };
 
@@ -52,13 +54,21 @@ export function UserSearch({
           ))
       );
     });
+    if (results.length === 0) {
+      setStudentListVisible(false);
+    } else {
+      setStudentListVisible(true);
+    }
     setFilteredResults(results);
   };
   return (
-    <div>
+    <div className="mt-6">
+      <div>
+        <h4 className="text-lg">Search Results</h4>
+      </div>
       <input
         type="text"
-        placeholder="Search for users..."
+        placeholder="Search for students..."
         className="border rounded p-2 mb-4 w-full"
         value={searchQuery}
         onChange={(e) => {
@@ -66,14 +76,13 @@ export function UserSearch({
         }}
         disabled={disabled}
       />
-      <div>
-        <h4 className="text-lg">Search Results</h4>
+      {studentListVisible && (
         <StudentList
           students={filteredResults}
           onStudentClick={handleStudentSelected}
           linkable
         />
-      </div>
+      )}
     </div>
   );
 }

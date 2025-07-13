@@ -12,13 +12,13 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token }) {
       if (!token.email) {
-        throw new Error("No email found in token");
+        throw Error("No email found in token");
       }
 
       const userFoundInDb = await db.query.user.findFirst({
         where: eq(DrizzleDBUser.email, token.email),
       });
-      if (!userFoundInDb) throw new Error("No user found");
+      if (!userFoundInDb) throw Error("No user found");
 
       token = {
         ...token,
@@ -60,7 +60,7 @@ export const authOptions: NextAuthOptions = {
         });
 
         if (!queryUser) {
-          throw new Error("Unable to validate the user credentials");
+          throw Error("Unable to validate the user credentials");
         }
 
         const passwordValidationResult = await compare(
@@ -69,7 +69,7 @@ export const authOptions: NextAuthOptions = {
         );
 
         if (!passwordValidationResult)
-          throw new Error("Invalid e-mail or password");
+          throw Error("Invalid e-mail or password");
         return queryUser;
       },
     }),

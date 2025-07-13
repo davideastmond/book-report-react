@@ -1,4 +1,6 @@
 "use client";
+import { useAdmin } from "app/hooks/use-admin";
+import { useAdminAuthorized } from "app/hooks/use-admin-authorized";
 import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -15,21 +17,25 @@ const styles = {
 };
 export function NavBar() {
   const { data: session } = useSession();
+  const { isAdminAuthorized } = useAdminAuthorized();
+  const { isStrictlyAdmin } = useAdmin();
   return (
     <div>
       <nav className="bg-gray-800 p-2 ">
         <div className="container mx-auto flex justify-between items-center">
           <Link href="/dashboard">
-            <Image
-              src="/images/app-logo/large-app-logo.png"
-              width={50}
-              height={50}
-              alt="Logo"
-            />
+            <div className="rounded-full overflow-clip">
+              <Image
+                src="/images/app-logo/large-app-logo.png"
+                width={50}
+                height={50}
+                alt="Logo"
+              />
+            </div>
           </Link>
           <div className="text-white text-lg font-bold">Book Report</div>
           <ul className="flex space-x-4">
-            {["student"].includes(session?.user?.role as string) && (
+            {!isAdminAuthorized && (
               <li style={styles.navMenuItem}>
                 <Link
                   href="/dashboard/student/grades"
@@ -39,7 +45,16 @@ export function NavBar() {
                 </Link>
               </li>
             )}
-
+            {isStrictlyAdmin && (
+              <li style={styles.navMenuItem}>
+                <Link
+                  href="/dashboard/admin"
+                  className="text-white hover:text-gray-300"
+                >
+                  Admin
+                </Link>
+              </li>
+            )}
             <li style={styles.navMenuItem}>
               <a
                 href="/dashboard/courses-sessions"
@@ -63,10 +78,14 @@ export function NavBar() {
             </li>
             {session?.user?.email && (
               <li style={styles.finalItem} className="flex gap-4">
-                {session.user.email} {displayAdminRole(session.user.role)}
+                <Link href="/dashboard/user/settings">
+                  {session.user.email} {displayAdminRole(session.user.role)}
+                </Link>
                 <button
                   className="text-white hover:text-gray-300 hover:underline hover:cursor-pointer"
-                  onClick={async () => await signOut()}
+                  onClick={async () => {
+                    await signOut();
+                  }}
                 >
                   Log Out
                 </button>

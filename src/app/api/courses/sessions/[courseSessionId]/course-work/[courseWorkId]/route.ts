@@ -99,7 +99,14 @@ export async function PATCH(
       );
     }
   }
-  const { name, description, taskType, dueDate, gradeValueType } = requestBody;
+  const {
+    name,
+    description,
+    taskType,
+    dueDate,
+    gradeValueType,
+    gradeWeightId,
+  } = requestBody;
   try {
     const updatedAcademicTask = await db
       .update(academicTask)
@@ -109,6 +116,7 @@ export async function PATCH(
         taskType,
         dueDate: dueDate ? new Date(dueDate) : null,
         gradeValueType,
+        gradeWeightId,
       })
       .where(eq(academicTask.id, courseWorkId))
       .returning();

@@ -1,10 +1,14 @@
-import { AcademicGrade, CourseSession } from "@/db/schema";
+import { AcademicGrade, CourseSession, GradeWeight } from "@/db/schema";
+import { AggregatedCourseAssignmentData } from "@/lib/controller/grades/aggregators/definitions";
+import { SummarizedData } from "@/lib/controller/grades/calculations/definitions";
 import {
   CourseSessionDataAPIResponse,
   CourseSessionInfo,
   CourseSessionsAPIResponse,
 } from "@/lib/types/db/course-session-info";
-import { TableData } from "@/lib/types/grading/definitions";
+import { GroupedCourseInfo } from "@/lib/types/db/grouped-course-info";
+import { TableData } from "@/lib/types/grading/student/definitions";
+import { WeightingData } from "@/lib/types/weighting/weighting-data";
 
 export const CourseSessionClient = {
   createCourseSession: async ({
@@ -28,7 +32,7 @@ export const CourseSessionClient = {
       }),
     });
     if (!res.ok) {
-      throw new Error("Failed to create course");
+      throw Error("Failed to create course");
     }
   },
   patchCourseSession: async (
@@ -63,7 +67,7 @@ export const CourseSessionClient = {
       },
     });
     if (!res.ok) {
-      throw new Error("Failed to fetch course sessions");
+      throw Error("Failed to fetch course sessions");
     }
 
     return res.json();
@@ -76,7 +80,7 @@ export const CourseSessionClient = {
       },
     });
     if (!res.ok) {
-      throw new Error("Failed to fetch course sessions");
+      throw Error("Failed to fetch course sessions");
     }
     return res.json();
   },
@@ -90,7 +94,7 @@ export const CourseSessionClient = {
       },
     });
     if (!res.ok) {
-      throw new Error("Failed to fetch course sessions");
+      throw Error("Failed to fetch course sessions");
     }
 
     return res.json();
@@ -115,7 +119,7 @@ export const CourseSessionClient = {
       }
     );
     if (!res.ok) {
-      throw new Error("Failed to add user to course session");
+      throw Error("Failed to add user to course session");
     }
   },
   removeStudentFromCourseSession: async ({
@@ -138,19 +142,24 @@ export const CourseSessionClient = {
       }
     );
     if (!res.ok) {
-      throw new Error("Failed to remove user from session");
+      throw Error("Failed to remove user from session");
     }
   },
-  fetchAvailableCourses: async (): Promise<CourseSessionInfo[]> => {
-    const res = await fetch("/api/courses/sessions", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+  fetchAvailableCourses: async (
+    showCompleted: boolean = false
+  ): Promise<CourseSessionInfo[]> => {
+    const res = await fetch(
+      `/api/courses/sessions?showCompleted=${showCompleted}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
     if (!res.ok) {
-      throw new Error("Failed to fetch available courses");
+      throw Error("Failed to fetch available courses");
     }
     return await res.json();
   },
@@ -160,7 +169,7 @@ export const CourseSessionClient = {
     const res = await fetch(`/api/courses/sessions/${courseSessionId}/grades`);
 
     if (!res.ok) {
-      throw new Error("Failed to fetch grades for course session");
+      throw Error("Failed to fetch grades for course session");
     }
     return await res.json();
   },
@@ -179,7 +188,7 @@ export const CourseSessionClient = {
       body: JSON.stringify(data),
     });
     if (!res.ok) {
-      throw new Error("Failed to submit grade updates for course session");
+      throw Error("Failed to submit grade updates for course session");
     }
   },
   toggleLockedStatusForCourseSession: async (
@@ -192,7 +201,7 @@ export const CourseSessionClient = {
       },
     });
     if (!res.ok) {
-      throw new Error("Failed to toggle locked status for course session");
+      throw Error("Failed to toggle locked status for course session");
     }
   },
   markCourseSessionAsCompleted: async (
@@ -208,7 +217,129 @@ export const CourseSessionClient = {
       }
     );
     if (!res.ok) {
-      throw new Error("Failed to mark course session as completed");
+      throw Error("Failed to mark course session as completed");
     }
+  },
+  createCourseWeighting: async (
+    courseSessionId: string,
+    payload: WeightingData
+  ): Promise<void> => {
+    const res = await fetch(
+      `/api/courses/sessions/${courseSessionId}/weighting`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      }
+    );
+    if (!res.ok) {
+      throw Error("Failed to create course weighting");
+    }
+  },
+  getCourseWeightings: async (
+    courseSessionId: string
+  ): Promise<GradeWeight[]> => {
+    const res = await fetch(
+      `/api/courses/sessions/${courseSessionId}/weighting`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    if (!res.ok) {
+      throw Error("Failed to fetch course weightings");
+    }
+    return res.json();
+  },
+  fetchGroupedCourseSessionByCourse: async (): Promise<GroupedCourseInfo[]> => {
+    const res = await fetch("/api/courses/sessions/grouped", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (!res.ok) {
+      throw Error("Failed to fetch grouped course sessions");
+    }
+    return res.json();
+  },
+  getCourseGradeAverage: async (
+    courseSessionId: string
+  ): Promise<{
+    courseSessionGradeAverage: number;
+    courseSessionId: string;
+    status: string;
+  }> => {
+    const res = await fetch(
+      `/api/courses/sessions/${courseSessionId}/analytics/course-session-grade-average`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    if (!res.ok) {
+      throw Error("Failed to fetch course grade average");
+    }
+    return res.json();
+  },
+  getFinalGradeReport: async (
+    courseSessionId: string
+  ): Promise<{
+    report: SummarizedData[];
+    courseData: {
+      courseName: string;
+      courseCode: string;
+      sessionStart: string;
+      sessionEnd: string;
+      courseSessionId: string;
+    };
+  }> => {
+    const res = await fetch(
+      `/api/courses/sessions/${courseSessionId}/analytics/final-grade-report`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    if (!res.ok) {
+      throw Error("Failed to fetch course final grade report");
+    }
+    const data: {
+      courseData: {
+        courseName: string;
+        courseCode: string;
+        sessionStart: string;
+        sessionEnd: string;
+        courseSessionId: string;
+      };
+      report: Record<string, SummarizedData>;
+    } = await res.json();
+
+    return { courseData: data.courseData, report: Object.values(data.report) };
+  },
+  getAssignmentsOverview: async (
+    courseSessionId: string
+  ): Promise<AggregatedCourseAssignmentData[]> => {
+    const res = await fetch(
+      `/api/courses/sessions/${courseSessionId}/analytics/assignment-overview`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    if (!res.ok) {
+      throw Error("Failed to fetch assignments overview");
+    }
+    return res.json();
   },
 };

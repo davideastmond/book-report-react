@@ -28,8 +28,38 @@ export type GradeSummaryData = {
   studentId: string | null;
   courseName: string | null;
   courseCode: string | null;
-  coursePercentageAverage: string | null;
-  courseLetterGradeAverage: string | null | unknown;
+  coursePercentageAverage: number | null;
+  isCourseCompleted: boolean | null;
+  sessionStart: Date | null;
+  sessionEnd: Date | null;
+  instructorFirstName: string | null;
+  instructorLastName: string | null;
+  courseSessionId: string | null;
+};
+
+export type WeighingTableData = {
+  courseName: string | null;
+  courseCode: string | null;
+  courseSessionId: string | null;
+  gradeWeightName: string | null;
+  gradeWeightPercentage: number | null;
+  gradeWeightId: string | null;
+};
+
+export type RawGradeReportData = {
+  academicTaskId: string | null;
+  academicTaskName: string | null;
+  academicTaskType: string | null;
+  courseName: string | null;
+  courseSessionId: string | null;
+  courseCode: string | null;
+  studentId: string | null;
+  studentFirstName: string | null;
+  studentLastName: string | null;
+  gradeWeightId: string | null;
+  gradeWeightName: string | null;
+  gradeWeightPercentage: number | null;
+  percentageGrade: number | null;
   isCourseCompleted: boolean | null;
   sessionStart: Date | null;
   sessionEnd: Date | null;

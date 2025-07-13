@@ -10,6 +10,7 @@ type CoursesSessionsMainProps = {
 export function CoursesSessionsMain({ isAdmin }: CoursesSessionsMainProps) {
   const [courseSessions, setCourseSessions] =
     useState<CourseSessionsAPIResponse>([]);
+
   useEffect(() => {
     fetchCourseSessions();
   }, [isAdmin]);
@@ -28,9 +29,9 @@ export function CoursesSessionsMain({ isAdmin }: CoursesSessionsMainProps) {
   if (isAdmin) {
     return (
       <>
-        <div className="mt-4 flex justify-end">
+        <div className="mt-4 flex justify-end px-4">
           <Link href="/dashboard/courses-sessions/new" className="flatStyle">
-            + New Class Session
+            + New Course Session
           </Link>
         </div>
         <div className="flex justify-end p-4">

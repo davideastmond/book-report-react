@@ -1,8 +1,11 @@
 "use client";
 
 import { CourseSessionClient } from "@/clients/course-session-client";
-import { CourseSessionsNavToolbar } from "@/components/nav/admin/course-sessions-nav-toolbar/Course-sessions-nav-toolbar";
+import { Spinner } from "@/components/spinner/Spinner";
 import { CourseSessionInfo } from "@/lib/types/db/course-session-info";
+import { useAdmin } from "app/hooks/use-admin";
+import { useAdminAuthorized } from "app/hooks/use-admin-authorized";
+import { useToast } from "app/hooks/use-toast";
 import { useSession } from "next-auth/react";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -20,12 +23,28 @@ export default function CourseSessionSettingsPage() {
   }>({ sessionStart: null, sessionEnd: null });
 
   const [isBusy, setIsBusy] = useState(false);
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   const router = useRouter();
 
+  const { isAdminEditable } = useAdmin(
+    courseSession?.courseSessionId as string
+  );
+  const { isAdminAuthorized } = useAdminAuthorized();
+  const {
+    showToast: showDescriptionUpdatedToast,
+    ToastElement: DescriptionUpdatedToast,
+  } = useToast();
+
+  const {
+    showToast: showCourseSessionDatesUpdatedToast,
+    ToastElement: CourseSessionDatesUpdatedToast,
+  } = useToast();
+
   useEffect(() => {
+    if (!isAdminAuthorized) return;
     fetchCourseSessionById();
-  }, []);
+  }, [isAdminAuthorized]);
+
   async function fetchCourseSessionById() {
     setIsBusy(true);
     const res = await CourseSessionClient.fetchCourseSessionByIdAdmin(
@@ -38,8 +57,10 @@ export default function CourseSessionSettingsPage() {
   }
 
   useEffect(() => {
-    loadPrepopulatedData();
-  }, [courseSession]);
+    if (isAdminAuthorized) {
+      loadPrepopulatedData();
+    }
+  }, [courseSession, isAdminAuthorized]);
 
   async function toggleLockState() {
     setApiError(null);
@@ -68,13 +89,20 @@ export default function CourseSessionSettingsPage() {
       "description"
     ) as HTMLTextAreaElement | null;
 
-    sessionStartInput!.value = courseSession.sessionStart
-      ? new Date(courseSession.sessionStart).toISOString().split("T")[0]
-      : "";
-    sessionEndInput!.value = courseSession.sessionEnd
-      ? new Date(courseSession.sessionEnd).toISOString().split("T")[0]
-      : "";
-    courseDescriptionInput!.value = courseSession.description || "";
+    if (sessionStartInput) {
+      sessionStartInput.value = courseSession.sessionStart
+        ? new Date(courseSession.sessionStart)?.toISOString()?.split("T")[0]
+        : "";
+    }
+
+    if (sessionEndInput) {
+      sessionEndInput.value = courseSession.sessionEnd
+        ? new Date(courseSession.sessionEnd)?.toISOString()?.split("T")[0]
+        : "";
+    }
+    if (courseDescriptionInput) {
+      courseDescriptionInput!.value = courseSession.description || "";
+    }
   }
 
   async function handleUpdateSessionDescription(
@@ -92,6 +120,9 @@ export default function CourseSessionSettingsPage() {
       });
       setIsBusy(false);
       await fetchCourseSessionById();
+      showDescriptionUpdatedToast(
+        "Course session description updated successfully."
+      );
     } catch (error) {
       setApiError(
         "Error updating course session dates: " + (error as Error).message
@@ -130,6 +161,9 @@ export default function CourseSessionSettingsPage() {
       });
       setIsBusy(false);
       await fetchCourseSessionById();
+      showCourseSessionDatesUpdatedToast(
+        "Course session dates updated successfully."
+      );
     } catch (error) {
       setApiError(
         "Error updating course session dates: " + (error as Error).message
@@ -152,18 +186,19 @@ export default function CourseSessionSettingsPage() {
       );
     }
   }
+
   if (status === "unauthenticated") {
     router.replace("/login");
     return null;
   }
 
-  if (["student"].includes(session?.user?.role as string)) {
-    return null;
+  if (!isAdminAuthorized) {
+    if (isAdminAuthorized === null) return <Spinner />;
+    router.replace("/dashboard");
   }
 
   return (
     <div>
-      <CourseSessionsNavToolbar courseSessionId={params.courseSessionId} />
       <h1 className="text-3xl">Course Session Settings</h1>
       <section>
         <p>
@@ -181,20 +216,27 @@ export default function CourseSessionSettingsPage() {
                 <textarea
                   id="description"
                   name="description"
-                  className="w-full p-2"
+                  className="w-full p-2 responsiveStyle"
                   autoComplete="off"
                   rows={4}
                   placeholder="Description of the class session"
                   maxLength={500}
+                  disabled={!isAdminEditable}
                 ></textarea>
               </div>
             </div>
             <div>
-              <button type="submit" className="flatStyle bg-green-900">
+              <button
+                type="submit"
+                className="flatStyle bg-green-900 responsiveStyle"
+              >
                 Update
               </button>
             </div>
           </form>
+          <div>
+            <DescriptionUpdatedToast />
+          </div>
         </article>
       </section>
       <section className="p-4 mt-10">
@@ -213,6 +255,7 @@ export default function CourseSessionSettingsPage() {
                   autoComplete="off"
                   data-lpignore="true"
                   onKeyDown={() => false}
+                  disabled={!isAdminEditable}
                   required
                 ></input>
                 {sessionDateFormErrors.sessionStart && (
@@ -232,6 +275,7 @@ export default function CourseSessionSettingsPage() {
                   className="w-full p-2"
                   autoComplete="off"
                   data-lpignore="true"
+                  disabled={!isAdminEditable}
                   required
                   onKeyDown={() => false}
                 ></input>
@@ -243,11 +287,17 @@ export default function CourseSessionSettingsPage() {
               </div>
             </div>
             <div>
-              <button type="submit" className="flatStyle bg-green-900">
+              <button
+                type="submit"
+                className="flatStyle bg-green-900 responsiveStyle"
+              >
                 Update
               </button>
             </div>
           </form>
+          <div>
+            <CourseSessionDatesUpdatedToast />
+          </div>
         </article>
       </section>
       <section className="p-4 mt-10">
@@ -259,7 +309,7 @@ export default function CourseSessionSettingsPage() {
             from this course session
           </p>
         </article>
-        {["admin", "teacher"].includes(session?.user?.role as string) && (
+        {isAdminAuthorized && (
           <>
             <input
               type="checkbox"
@@ -267,8 +317,8 @@ export default function CourseSessionSettingsPage() {
               name="isLocked"
               checked={isLocked}
               onChange={toggleLockState}
-              disabled={isBusy}
-              className="customStyledCheckbox"
+              disabled={!isAdminEditable || isBusy}
+              className="customStyledCheckbox responsiveStyle"
             />
             <label htmlFor="isLocked">Locked</label>
           </>
@@ -295,7 +345,7 @@ export default function CourseSessionSettingsPage() {
             <button
               className="flatStyle flex justify-center"
               onClick={handleMarkSessionCourseComplete}
-              disabled={isBusy}
+              disabled={!isAdminEditable || isBusy}
             >
               Complete this course
             </button>

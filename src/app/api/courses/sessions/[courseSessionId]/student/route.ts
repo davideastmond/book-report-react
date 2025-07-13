@@ -62,6 +62,7 @@ export async function POST(
       eq(roster.studentId, studentId)
     ),
   });
+
   if (studentInRoster) {
     return NextResponse.json(
       {
@@ -134,14 +135,37 @@ export async function DELETE(
     );
   }
 
-  // Check that the user is a student and user is part of the course
-  const studentInRoster = await db.query.roster.findFirst({
-    where: and(
-      eq(roster.courseSessionId, courseSessionId),
-      eq(roster.studentId, studentId)
-    ),
-  });
-  if (!studentInRoster) {
+  // Let's try to get the data we need for this next step in one query
+
+  const query = await db
+    .select({
+      studentId: roster.studentId,
+      courseSessionId: roster.courseSessionId,
+      isLocked: courseSession.isLocked,
+    })
+    .from(roster)
+    .where(
+      and(
+        eq(roster.courseSessionId, courseSessionId),
+        eq(roster.studentId, studentId)
+      )
+    )
+    .fullJoin(courseSession, eq(courseSession.id, roster.courseSessionId));
+
+  const retrievedData = query[0];
+
+  // Check that retrieved data is defined
+  if (!retrievedData) {
+    return NextResponse.json(
+      {
+        error: "No valid course session.",
+      },
+      { status: 400 }
+    );
+  }
+
+  // Check if student is enrolled
+  if (retrievedData.studentId !== studentId) {
     return NextResponse.json(
       {
         error: `StudentID ${studentId} not enrolled in this course session`,
@@ -150,11 +174,8 @@ export async function DELETE(
     );
   }
 
-  // Check if the course session is locked
-  const foundSession = await db.query.courseSession.findFirst({
-    where: eq(courseSession.id, courseSessionId),
-  });
-  if (foundSession && foundSession.isLocked) {
+  // Check that the course session isn't locked
+  if (retrievedData.isLocked) {
     return NextResponse.json(
       {
         error: `Course session ${courseSessionId} is locked and cannot be modified`,
@@ -162,6 +183,7 @@ export async function DELETE(
       { status: 403 }
     );
   }
+
   await db
     .delete(roster)
     .where(

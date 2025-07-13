@@ -9,10 +9,11 @@ export type CourseSessionInfo = {
   instructorFirstName: string;
   instructorLastName: string;
   description: string | null;
-  studentAllotment: number;
-  allotmentCount: number;
+  studentAllotment: number | null;
+  allotmentCount: number | null;
   isLocked: boolean;
   isCompleted: boolean;
+  gradeWeightId: string | null;
 };
 
 export type EnrolledStudent = {

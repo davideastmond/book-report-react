@@ -9,3 +9,11 @@
     ...//
   }
 }
+
+// Determining weighted grades, grouped.
+
+1. Course falls within the date range
+2. Course is completed
+          - Get weightings for all courses, in the date range, that are completed
+
+3.

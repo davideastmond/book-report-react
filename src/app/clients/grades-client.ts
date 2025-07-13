@@ -1,4 +1,4 @@
-import { GradeSummaryData } from "@/lib/types/grading/definitions";
+import { GradeSummaryData } from "@/lib/types/grading/student/definitions";
 
 export const GradesClient = {
   getGradesForStudentWithDateRange: async ({
@@ -9,7 +9,7 @@ export const GradesClient = {
     studentId: string;
     startDate: Date;
     endDate: Date;
-  }): Promise<GradeSummaryData[]> => {
+  }): Promise<{ data: GradeSummaryData[]; gpa: string | number }> => {
     const res = await fetch(
       `/api/user/grades?studentId=${studentId}&filter=allCourses&startDate=${
         startDate.toISOString().split("T")[0]
@@ -19,7 +19,7 @@ export const GradesClient = {
       }
     );
     if (!res.ok) {
-      throw new Error("Failed to fetch grades");
+      throw Error("Failed to fetch grades");
     }
     return res.json();
   },

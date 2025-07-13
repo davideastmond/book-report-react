@@ -1,4 +1,4 @@
-export const CourseSessionsNavToolbar = () => {
+export const CourseSessionsStudentNavToolbar = () => {
   return (
     <div className="bg-green-900 p-1 text-sm">
       <ul className="flex justify-start">
