@@ -37,9 +37,9 @@ export async function GET(
     );
   }
 
-  const rawGradesData = await GradeController.getRawDataForCourseSessionById(
+  const rawGradeData = await GradeController.getRawDataForCourseSessionById(
     courseSessionId
   );
-  const aggregatedData = aggregateCourseAssignmentData(rawGradesData);
+  const aggregatedData = aggregateCourseAssignmentData(rawGradeData);
   return NextResponse.json(aggregatedData, { status: 200 });
 }

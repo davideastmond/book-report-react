@@ -54,12 +54,14 @@ export async function GET(req: NextRequest) {
     .innerJoin(courseSession, eq(courseSession.id, roster.courseSessionId))
     .innerJoin(course, eq(course.id, courseSession.courseId));
 
-  const rawGradeData = await GradeController.getRawGradeReport({
+  const rawGradeReport = await GradeController.getRawGradeReport({
     studentId: userId,
   });
-  const studentGradeCalculator = new StudentGradeCalculator(rawGradeData);
-  const finalGrades = studentGradeCalculator.calculate();
-  const collatedGradeData = studentGradeCalculator.collate(finalGrades);
+  const studentGradeCalculator = new StudentGradeCalculator(rawGradeReport);
+  const calculatedStudentGrades = studentGradeCalculator.calculate();
+  const collatedGradeData = studentGradeCalculator.collate(
+    calculatedStudentGrades
+  );
 
   // This route is designed to fetch all data for some student with userId
   // Return the basic user identity and all of the classes and grading stats

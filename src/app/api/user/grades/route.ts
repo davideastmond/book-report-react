@@ -48,13 +48,11 @@ export async function GET(req: NextRequest) {
     // Based on the raw data, determine the weighted grade
     const studentGradeCalculator = new StudentGradeCalculator(rawReportData);
     // Calculate the final grades by course session ID
-    const finalGradesByCourseSessionId = studentGradeCalculator.calculate();
+    const calculatedStudentGrades = studentGradeCalculator.calculate();
 
-    const apiResponse = studentGradeCalculator.collate(
-      finalGradesByCourseSessionId
-    );
+    const apiResponse = studentGradeCalculator.collate(calculatedStudentGrades);
 
-    const gpa = calculateGPA(finalGradesByCourseSessionId)?.toFixed(1);
+    const gpa = calculateGPA(calculatedStudentGrades)?.toFixed(1);
     return NextResponse.json({ data: apiResponse, gpa: gpa });
   } catch (error) {
     return NextResponse.json(
