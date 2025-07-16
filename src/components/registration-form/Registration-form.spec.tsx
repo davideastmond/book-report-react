@@ -3,16 +3,11 @@ import { fireEvent, render } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { RegistrationForm } from "./Registration-form";
 
-vi.mock("next-auth/react", () => ({
-  signIn: vi.fn(),
-}));
-vi.mock("next/navigation", () => ({
-  useRouter: () => ({
-    push: vi.fn(),
-  }),
-}));
-
 describe("Registration form component tests", () => {
+  vi.mock("next-auth/react", () => ({
+    signIn: vi.fn(),
+  }));
+
   it("should render the registration form", () => {
     const { getByLabelText } = render(<RegistrationForm />);
     expect(getByLabelText(/first name/i)).toBeDefined();
