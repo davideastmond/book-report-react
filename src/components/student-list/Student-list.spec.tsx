@@ -7,6 +7,11 @@ describe("Student List ", () => {
   it("student data is empty - should see the 'no data' message", () => {
     const { getByText } = render(<StudentList students={[]} linkable={true} />);
     expect(getByText(/no data/i)).toBeDefined();
+    // Check for the table headers
+    const headers = ["Name", "Email", "DOB"];
+    headers.forEach((header) => {
+      expect(getByText(header)).toBeDefined();
+    });
   });
   it("it should render a table with the student data and callback is invoked", () => {
     const mockStudents = [
