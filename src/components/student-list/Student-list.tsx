@@ -23,7 +23,7 @@ export function StudentList({
     if (suppressLink) return;
   };
   return (
-    <table className="table-auto w-full">
+    <table className="table-auto w-full" data-testid="user-search-results">
       <thead className="text-left">
         <tr>
           <th>Name</th>
