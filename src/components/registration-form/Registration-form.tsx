@@ -1,5 +1,6 @@
 "use client";
 
+import { UserClient } from "@/clients/user-client";
 import { registrationValidatorWithConfirmPassword } from "@/lib/validators/registration/registration-validator";
 import { signIn } from "next-auth/react";
 import Image from "next/image";
@@ -36,19 +37,22 @@ export function RegistrationForm() {
             [err.path[0]]: err.message,
           }));
         });
+
+        // Specific error handling for password confirmation
+        if (
+          error.errors.some((err) => err.message === "Passwords do not match")
+        ) {
+          setFormErrors((prev) => ({
+            ...prev,
+            password2: "Passwords do not match",
+          }));
+        }
       }
       console.error("Error parsing form data:", error);
       return;
     }
-    // Perform your registration logic here
-    // For example, send the data to your API endpoint
-    const response = await fetch("/api/auth/register", {
-      method: "POST",
-      body: JSON.stringify(data),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+
+    const response = await UserClient.registerUser(data);
 
     if (response.ok) {
       const { email, password1 } = data;
@@ -96,7 +100,7 @@ export function RegistrationForm() {
         </Link>
       </div>
       <h1 className="text-2xl text-center mb-4 font-bold">Create Account</h1>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} data-testid="registration-form">
         <div>
           <label htmlFor="email">E-mail address:</label>
           <div>
@@ -126,7 +130,7 @@ export function RegistrationForm() {
               <p className="text-red-500 text-sm">{formErrors.firstName}</p>
             )}
           </div>
-          <label htmlFor="firstName">Last Name:</label>
+          <label htmlFor="lastName">Last Name:</label>
           <div>
             <input
               type="text"
@@ -142,7 +146,7 @@ export function RegistrationForm() {
           </div>
         </div>
         <div className="mt-4">
-          <label htmlFor="dob">Date of Birth:</label>
+          <label htmlFor="gender">Gender:</label>
           <div>
             {/* Gender select */}
             <select
@@ -180,7 +184,7 @@ export function RegistrationForm() {
           </div>
         </div>
         <div>
-          <label htmlFor="password">Password:</label>
+          <label htmlFor="password1">Choose a password:</label>
           <div>
             <input
               type="password"
@@ -194,7 +198,7 @@ export function RegistrationForm() {
               <p className="text-red-500 text-sm">{formErrors.password1}</p>
             )}
           </div>
-          <label htmlFor="confirmPassword">Confirm Password:</label>
+          <label htmlFor="password2">Confirm Password:</label>
           <div>
             <input
               type="password"
@@ -210,7 +214,11 @@ export function RegistrationForm() {
           </div>
         </div>
         <div className="flex justify-between">
-          <button type="submit" className="bg-blue-500 text-white p-2 rounded">
+          <button
+            type="submit"
+            className="bg-blue-500 text-white p-2 rounded"
+            name="submit"
+          >
             Submit
           </button>
           <Link href={"/login"}>Log in with existing account</Link>

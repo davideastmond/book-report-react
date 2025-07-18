@@ -3,6 +3,21 @@ import { AdminStudentDataAPIResponse } from "@/lib/types/admin-data/admin-studen
 import { EnrolledStudent } from "@/lib/types/db/course-session-info";
 
 export const UserClient = {
+  registerUser: async (
+    data: Record<string, FormDataEntryValue>
+  ): Promise<Response> => {
+    const res = await fetch("/api/auth/register", {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (!res.ok) {
+      console.error("Failed to register user");
+    }
+    return res;
+  },
   getAllStudentsAdmin: async (): Promise<EnrolledStudent[]> => {
     const res = await fetch("/api/user");
     if (!res.ok) {

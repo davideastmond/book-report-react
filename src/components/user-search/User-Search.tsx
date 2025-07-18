@@ -61,6 +61,7 @@ export function UserSearch({
     }
     setFilteredResults(results);
   };
+
   return (
     <div className="mt-6">
       <div>
