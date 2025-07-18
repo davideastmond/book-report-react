@@ -17,15 +17,17 @@ type FormFields =
   | "dueDate"
   | "gradeWeightId";
 
+type CourseWorkCreateUpdateFormProps = {
+  courseSessionId: string;
+  courseWorkId?: string;
+  isEditing?: boolean;
+};
+
 export function CourseWorkCreateUpdateForm({
   courseSessionId,
   courseWorkId,
   isEditing = false,
-}: {
-  courseSessionId: string;
-  courseWorkId?: string;
-  isEditing?: boolean;
-}) {
+}: CourseWorkCreateUpdateFormProps) {
   const [formErrors, setFormErrors] = useState<
     Record<FormFields, string | null>
   >({

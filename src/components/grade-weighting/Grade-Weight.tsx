@@ -24,7 +24,9 @@ export function GradeWeight({ name, onRemove }: GradeWeightProps) {
         max={100}
         defaultValue={0}
       ></input>
-      <button onClick={handleRemove}>Remove</button>
+      <button type="button" onClick={handleRemove}>
+        Remove
+      </button>
     </div>
   );
 }

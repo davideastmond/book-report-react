@@ -17,6 +17,9 @@ export const CourseSessionsNavToolbar = () => {
 
   const computedCourseSessionId = useMemo(() => {
     if (courseSessionId) return courseSessionId;
+    if (idFromSearchParams === "null" || idFromSearchParams === "undefined")
+      return null;
+
     if (idFromSearchParams) return idFromSearchParams;
     return null;
   }, [courseSessionId, idFromSearchParams]);

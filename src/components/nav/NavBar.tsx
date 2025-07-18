@@ -83,9 +83,11 @@ export function NavBar() {
                 </Link>
                 <button
                   className="text-white hover:text-gray-300 hover:underline hover:cursor-pointer"
+                  name="logOut"
                   onClick={async () => {
                     await signOut();
                   }}
+                  type="button"
                 >
                   Log Out
                 </button>
