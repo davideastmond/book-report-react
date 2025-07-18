@@ -38,7 +38,7 @@ describe("Course sessions nav toolbar", () => {
       "/dashboard/courses-sessions/123/admin/course-work"
     );
   });
-  it("links are rendered correctly for admin users - courseSessionId is undefined", async () => {
+  it("links are rendered correctly for admin users with fallback value: courseSessionId is undefined", async () => {
     csIdx = 1;
     idIdx = 0; // idFromSearchParams is fallbackId
     const { findByText, findByRole } = render(<CourseSessionsNavToolbar />);
