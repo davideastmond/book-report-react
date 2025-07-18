@@ -49,7 +49,7 @@ describe("Main NavBar tests", () => {
     });
   });
   describe("Log out button functions", () => {
-    it("should call signOut when the logout button is clicked", async () => {
+    it("should call signOut when the logout button is clicked", () => {
       const { getByText } = render(<NavBar />);
       const logoutButton = getByText(/log out/i);
       expect(logoutButton).toBeDefined();
