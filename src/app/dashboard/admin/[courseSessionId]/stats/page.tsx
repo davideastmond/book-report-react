@@ -1,7 +1,8 @@
 "use client";
 import { CourseSessionClient } from "@/clients/course-session-client";
 import { ClassListFinalGradeTable } from "@/components/class-list-final-grade-table/Class-list-final-grade-table";
-import { CoursesSessionsList } from "@/components/courses-sessions-list/courses-sessions-list/Courses-sessions-list";
+import { CoursesSessionsList } from "@/components/courses-sessions/courses-sessions-list/Courses-sessions-list";
+
 import { Spinner } from "@/components/spinner/Spinner";
 import { SummarizedData } from "@/lib/controller/grades/calculations/definitions";
 import { CourseSessionInfo } from "@/lib/types/db/course-session-info";
