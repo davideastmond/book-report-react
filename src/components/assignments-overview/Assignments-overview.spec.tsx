@@ -1,4 +1,5 @@
 import { CourseSessionClient } from "@/clients/course-session-client";
+import { AggregatedCourseAssignmentData } from "@/lib/controller/grades/aggregators/definitions";
 import { render } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { AssignmentsOverview } from "./Assignments-overview";
@@ -45,7 +46,7 @@ const fetchSpy = vi
         },
       ],
     },
-  ] as any);
+  ] as AggregatedCourseAssignmentData[]);
 
 describe("Assignments Overview Component Tests", () => {
   it("calls CourseSessionClient.getAssignmentsOverview on mount", () => {
