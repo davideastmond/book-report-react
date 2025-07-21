@@ -210,7 +210,10 @@ export function UserSettingsForm() {
       </section>
       <section className="p-4 mt-10">
         <h2 className="text-2xl">Your name</h2>
-        <form onSubmit={handleNameChangeFormSubmit}>
+        <form
+          onSubmit={handleNameChangeFormSubmit}
+          data-testid="update-user-form"
+        >
           <label htmlFor="firstName">* First Name:</label>
           <div>
             <input
@@ -238,7 +241,7 @@ export function UserSettingsForm() {
               disabled={isBusy}
             />
             {nameFormErrors.lastName && (
-              <p className="text-red-500 text-sm">{nameFormErrors.firstName}</p>
+              <p className="text-red-500 text-sm">{nameFormErrors.lastName}</p>
             )}
           </div>
           <div>
@@ -301,7 +304,10 @@ export function UserSettingsForm() {
       <section className="p-4 mt-10">
         <h2 className="text-2xl">Your Password</h2>
         <article>
-          <form onSubmit={handlePasswordUpdateFormSubmit}>
+          <form
+            onSubmit={handlePasswordUpdateFormSubmit}
+            data-testid="update-password-form"
+          >
             <label htmlFor="password1">* Password:</label>
             <div>
               <input
@@ -319,7 +325,7 @@ export function UserSettingsForm() {
                 </p>
               )}
             </div>
-            <label htmlFor="lastName">* Confirm Password:</label>
+            <label htmlFor="password2">* Confirm Password:</label>
             <div>
               <input
                 maxLength={200}
@@ -339,6 +345,7 @@ export function UserSettingsForm() {
             <div>
               <button
                 type="submit"
+                name="updatePassword"
                 disabled={isBusy}
                 className="bg-blue-500 text-white p-2 rounded"
               >
