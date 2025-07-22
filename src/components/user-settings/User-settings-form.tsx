@@ -260,7 +260,7 @@ export function UserSettingsForm() {
       </section>
       <section className="p-4 mt-10">
         <h2 className="text-2xl">Gender</h2>
-        <form onSubmit={handleGenderChangeFormSubmit}>
+        <form onSubmit={handleGenderChangeFormSubmit} data-testid="gender-form">
           <label htmlFor="gender">* Gender:</label>
           <div>
             <select

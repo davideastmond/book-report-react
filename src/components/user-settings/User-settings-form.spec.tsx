@@ -2,6 +2,7 @@ import { UserClient } from "@/clients/user-client";
 import { fireEvent, render } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { UserSettingsForm } from "./User-settings-form";
+
 vi.mock("next-auth/react", () => ({
   useSession: () => ({
     data: {
@@ -103,6 +104,47 @@ describe("UserSettingsForm", () => {
         const errorMessage = await findByText(/Last name is required/i);
         expect(errorMessage).toBeDefined();
         expect(updateUserSpy).not.toHaveBeenCalled();
+      });
+    });
+    describe("gender validation", () => {
+      it("shows validation error if gender is undefined", async () => {
+        const { findByLabelText, findByText, findByTestId } = render(
+          <UserSettingsForm />
+        );
+
+        const updateUserSpy = vi.spyOn(UserClient, "updateUserGender");
+
+        const genderSelectInput = await findByLabelText(/gender/i);
+        fireEvent.change(genderSelectInput, { target: { value: "" } });
+
+        const genderUpdateForm = await findByTestId("gender-form");
+        fireEvent.submit(genderUpdateForm);
+
+        const errorMessage = await findByText(/gender is required/i);
+        expect(errorMessage).toBeDefined();
+        expect(updateUserSpy).not.toHaveBeenCalled();
+      });
+      it("update user gender successful and no validation errors", async () => {
+        const { findByLabelText, findByTestId, findByText } = render(
+          <UserSettingsForm />
+        );
+
+        const updateUserSpy = vi
+          .spyOn(UserClient, "updateUserGender")
+          .mockResolvedValue();
+
+        const genderSelectInput = await findByLabelText(/gender/i);
+        fireEvent.change(genderSelectInput, { target: { value: "other" } });
+
+        const genderUpdateForm = await findByTestId("gender-form");
+        fireEvent.submit(genderUpdateForm);
+
+        expect(updateUserSpy).toHaveBeenCalledWith("12345", "other");
+        const toastNotification = await findByText(
+          "Gender updated successfully."
+        );
+        // Toast notification
+        expect(toastNotification).toBeDefined();
       });
     });
     describe("password validation", () => {
