@@ -63,20 +63,25 @@ export function UserSearch({
   };
 
   return (
-    <div className="mt-6">
+    <div className="mt-6" data-testid="user-search-component">
       <div>
         <h4 className="text-lg">Search Results</h4>
       </div>
-      <input
-        type="text"
-        placeholder="Search for students..."
-        className="border rounded p-2 mb-4 w-full"
-        value={searchQuery}
-        onChange={(e) => {
-          handleSearch(e.target.value);
-        }}
-        disabled={disabled}
-      />
+      <form>
+        <label htmlFor="studentSearch">Enter student name or email</label>
+        <input
+          type="text"
+          placeholder="Search for students..."
+          className="border rounded p-2 mb-4 w-full"
+          value={searchQuery}
+          name="studentSearch"
+          id="studentSearch"
+          onChange={(e) => {
+            handleSearch(e.target.value);
+          }}
+          disabled={disabled}
+        />
+      </form>
       {studentListVisible && (
         <StudentList
           students={filteredResults}

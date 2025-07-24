@@ -21,6 +21,7 @@ const fetchSpy = vi.spyOn(UserClient, "getUserIdentity").mockResolvedValue({
   dob: new Date("1990-01-01"),
   gender: "female",
 });
+
 describe("UserSettingsForm", () => {
   it("loads pre-populated user settings data", async () => {
     const { findByLabelText } = render(<UserSettingsForm />);
