@@ -34,46 +34,6 @@ describe("User-query-page tests", () => {
     expect(noStudentSelected).toBeDefined();
   });
   it("renders and calls the functions on load - student data", async () => {
-    const getAdminUserDataSpy = vi
-      .spyOn(UserClient, "getAdminUserData")
-      .mockResolvedValue({
-        studentData: {
-          studentFirstName: "John",
-          studentLastName: "Doe",
-          studentId: "12345",
-          studentDob: new Date("2000-01-01"),
-          studentEmail: "john.doe@example.com",
-        },
-        coursesData: [
-          {
-            courseCode: "course-1",
-            courseName: "Math 101",
-            courseSessionId: "session-1",
-            sessionStart: new Date("2023-01-01"),
-            sessionEnd: new Date("2023-06-01"),
-            isCompleted: true,
-            studentId: "12345",
-            studentFirstName: "John",
-            studentLastName: "Doe",
-          },
-        ],
-        gradesData: [
-          {
-            studentFirstName: "John",
-            studentLastName: "Doe",
-            studentId: "12345",
-            courseName: "Math 101",
-            courseCode: "course-1",
-            courseSessionId: "session-1",
-            coursePercentageAverage: 85.5,
-            isCourseCompleted: true,
-            sessionStart: new Date("2023-01-01"),
-            sessionEnd: new Date("2023-06-01"),
-            instructorFirstName: "Jane",
-            instructorLastName: "Smith",
-          },
-        ],
-      });
     const getAllStudentsAdminSpy = vi
       .spyOn(UserClient, "getAllStudentsAdmin")
       .mockResolvedValue([
