@@ -54,7 +54,7 @@ export function GradingTable({
   }
 
   return (
-    <table className="table-auto w-full">
+    <table className="table-auto w-full" data-testid="grading-table">
       <thead className="text-left">
         <tr>
           <th className="border border-gray-300 p-2">Student</th>

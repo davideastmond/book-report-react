@@ -245,7 +245,7 @@ export function CourseWorkCreateUpdateForm({
             )}
           </div>
           <div>
-            <label htmlFor="taskType">* Course</label>
+            <label htmlFor="taskType">* Task Type</label>
             <select
               className="border rounded p-2 mb-4 w-full"
               name="taskType"
