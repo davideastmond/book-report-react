@@ -5,7 +5,11 @@ export default function Home() {
   return (
     <div className="flex justify-center flex-col font-[family-name:var(--font-geist-sans)]">
       <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Link href="/dashboard" className="self-center">
+        <Link
+          href="/dashboard"
+          className="self-center"
+          data-testid="app-logo-link"
+        >
           <Image
             src="/images/app-logo/large-app-logo.png"
             className="rounded-full self-center mt-[30vh]"
