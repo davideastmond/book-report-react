@@ -59,7 +59,7 @@ export function RegistrationForm() {
       const { email, password1 } = data;
       await signInFromRegistration(email as string, password1 as string);
     } catch (error) {
-      console.error("Registration failed");
+      console.error("Registration failed", error);
       setApiError("Failed to register user. Please try again.");
     }
   };
