@@ -1,3 +1,4 @@
+/* eslint  @typescript-eslint/no-explicit-any: "off" */
 import { AcademicTask } from "@/db/schema";
 import { describe, expect, it, vi } from "vitest";
 import { CourseWorkClient } from "../course-work-client";

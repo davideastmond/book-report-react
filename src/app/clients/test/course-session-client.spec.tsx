@@ -1,3 +1,4 @@
+/* eslint  @typescript-eslint/no-explicit-any: "off" */
 import { describe, expect, it, vi } from "vitest";
 import { CourseSessionClient } from "../course-session-client";
 
