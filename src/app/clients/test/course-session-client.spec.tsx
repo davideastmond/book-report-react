@@ -300,4 +300,66 @@ describe("CourseSessionClient tests", () => {
       ).rejects.toThrow("Failed to remove user from session");
     });
   });
+  describe("fetchAvailableCourses", () => {
+    it("should fetch course session by ID successfully - show completed true", async () => {
+      const mockResponse = new Response(
+        JSON.stringify({ session: { id: "sessionId" } }),
+        {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+
+      global.fetch = vi.fn(() => Promise.resolve(mockResponse)) as any;
+
+      const result = await CourseSessionClient.fetchAvailableCourses(true);
+
+      expect(result).toEqual({ session: { id: "sessionId" } });
+      expect(global.fetch).toHaveBeenCalledWith(
+        "/api/courses/sessions?showCompleted=true",
+        expect.objectContaining({
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+      );
+    });
+    it("should fetch course session by ID successfully - show completed false", async () => {
+      const mockResponse = new Response(
+        JSON.stringify({ session: { id: "sessionId" } }),
+        {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+
+      global.fetch = vi.fn(() => Promise.resolve(mockResponse)) as any;
+
+      const result = await CourseSessionClient.fetchAvailableCourses();
+
+      expect(result).toEqual({ session: { id: "sessionId" } });
+      expect(global.fetch).toHaveBeenCalledWith(
+        "/api/courses/sessions?showCompleted=false",
+        expect.objectContaining({
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+      );
+    });
+    it("should throw an error when fetching available courses fails", async () => {
+      const mockResponse = new Response(null, {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      });
+
+      global.fetch = vi.fn(() => Promise.resolve(mockResponse)) as any;
+
+      await expect(CourseSessionClient.fetchAvailableCourses()).rejects.toThrow(
+        "Failed to fetch available courses"
+      );
+    });
+  });
 });

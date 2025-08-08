@@ -79,6 +79,20 @@ describe("CourseWorkClient tests", () => {
         CourseWorkClient.getCourseWorkForSession("courseId")
       ).rejects.toThrow("Failed to fetch course work");
     });
+    it("error is undefined, should throw 'Unknown error'", async () => {
+      global.fetch = vi.fn(() =>
+        Promise.resolve({
+          ok: false,
+          status: 500,
+          statusText: "Internal Server Error",
+          json: () => Promise.resolve({}),
+        })
+      ) as any;
+
+      await expect(
+        CourseWorkClient.getCourseWorkForSession("courseId")
+      ).rejects.toThrow("Failed to fetch course work: Unknown error");
+    });
   });
   describe("getCourseWorkById", () => {
     it("should fetch course work by ID successfully", async () => {
@@ -115,8 +129,25 @@ describe("CourseWorkClient tests", () => {
         })
       ).rejects.toThrow("Course work not found");
     });
+    it("error is undefined, should throw 'Unknown error'", async () => {
+      global.fetch = vi.fn(() =>
+        Promise.resolve({
+          ok: false,
+          status: 404,
+          statusText: "Not Found",
+          json: () => Promise.resolve({}),
+        })
+      ) as any;
+
+      await expect(
+        CourseWorkClient.getCourseWorkById({
+          courseSessionId: "courseId",
+          courseWorkId: "1",
+        })
+      ).rejects.toThrow("Failed to fetch course work by ID: Unknown error");
+    });
   });
-  describe("updateCourseWorkAttributes", () => {
+  describe("updateCourseWorkAttributesById", () => {
     it("should update course work attributes successfully", async () => {
       const mockResponse = new Response(null, {
         status: 200,
@@ -155,6 +186,24 @@ describe("CourseWorkClient tests", () => {
           name: "Updated Assignment",
         })
       ).rejects.toThrow("Failed to update course work");
+    });
+    it("error is undefined, should throw 'Unknown error'", async () => {
+      global.fetch = vi.fn(() =>
+        Promise.resolve({
+          ok: false,
+          status: 400,
+          statusText: "Bad Request",
+          json: () => Promise.resolve({}),
+        })
+      ) as any;
+
+      await expect(
+        CourseWorkClient.updateCourseWorkAttributesById("courseId", "1", {
+          name: "Updated Assignment",
+        })
+      ).rejects.toThrow(
+        "Failed to update course work attributes: Unknown error"
+      );
     });
   });
 });
