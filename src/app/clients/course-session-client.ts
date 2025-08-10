@@ -262,6 +262,7 @@ export const CourseSessionClient = {
         "Content-Type": "application/json",
       },
     });
+    console.log(res);
     if (!res.ok) {
       throw Error("Failed to fetch grouped course sessions");
     }
