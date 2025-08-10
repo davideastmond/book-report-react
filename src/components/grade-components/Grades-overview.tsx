@@ -57,11 +57,12 @@ export function GradesOverviewComponent() {
   return (
     <div>
       <h1 className="text-3xl">Grades Overview</h1>
-      <div>
-        <h2>Filter Dates</h2>
+      <div className="mt-4">
+        <h2 className="ml-[20%]">Filter Dates</h2>
         <form>
           <div className="flex gap-10">
             <div className="max-w-[300px]">
+              <label htmlFor="sessionStart">Session Start</label>
               <input
                 type="date"
                 id="sessionStart"
@@ -76,6 +77,7 @@ export function GradesOverviewComponent() {
               ></input>
             </div>
             <div className="max-w-[300px]">
+              <label htmlFor="sessionEnd">Session End</label>
               <input
                 type="date"
                 id="sessionEnd"
