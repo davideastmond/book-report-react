@@ -44,7 +44,7 @@ export function GradesOverviewComponent() {
       startDate,
       endDate,
     });
-    console.info("Grades Overview Data Fetched", new Date().toISOString());
+
     setGradesOverviewData(overViewData.data);
     setGpaValue(overViewData.gpa);
   }
