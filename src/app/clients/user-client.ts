@@ -14,7 +14,7 @@ export const UserClient = {
       },
     });
     if (!res.ok) {
-      console.error("Failed to register user");
+      throw Error("Failed to register user");
     }
     return res;
   },

@@ -26,6 +26,7 @@
       "@/*": ["./src/*"],
       "@/lib/*": ["lib/*"],
       "@/clients/*": ["./app/clients/*"],
+      "@/hooks/*": ["./app/hooks/*"],
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "vitest.config.js"],

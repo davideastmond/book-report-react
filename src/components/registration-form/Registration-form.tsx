@@ -20,6 +20,7 @@ export function RegistrationForm() {
     dob: null,
     gender: null,
   });
+  const [apiError, setApiError] = useState<string | null>(null);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -27,6 +28,7 @@ export function RegistrationForm() {
     const data = Object.fromEntries(formData.entries());
 
     clearFormErrors();
+    setApiError(null);
     try {
       registrationValidatorWithConfirmPassword.parse(data);
     } catch (error) {
@@ -52,13 +54,13 @@ export function RegistrationForm() {
       return;
     }
 
-    const response = await UserClient.registerUser(data);
-
-    if (response.ok) {
+    try {
+      await UserClient.registerUser(data);
       const { email, password1 } = data;
       await signInFromRegistration(email as string, password1 as string);
-    } else {
-      console.error("Registration failed");
+    } catch (error) {
+      console.error("Registration failed", error);
+      setApiError("Failed to register user. Please try again.");
     }
   };
 
@@ -224,6 +226,7 @@ export function RegistrationForm() {
           <Link href={"/login"}>Log in with existing account</Link>
         </div>
       </form>
+      {apiError && <p className="text-red-500 text-sm mt-4">{apiError}</p>}
     </div>
   );
 }
