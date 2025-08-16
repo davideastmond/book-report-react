@@ -2,7 +2,7 @@
 
 ## About
 
-This is a web app platform to manage academic grades for a school or university, allowing instructors to manages courses, course work, students and grades, and allowing students to manage their courses and grades.
+This is a web app platform to manage academic grades for a school or university, allowing instructors to manage courses, course work, students and grades, and allowing students to manage their courses and grades.
 
 ## Features
 
