@@ -54,16 +54,23 @@ export function CourseWorkCreateUpdateForm({
   }, []);
 
   async function loadCourseSessionData() {
-    setIsBusy(true);
-    const data = await CourseSessionClient.fetchCourseSessionByIdAdmin(
-      courseSessionId
-    );
-    setCourseSessionInfo(data.courseSessionData);
-    if (isEditing && courseWorkId) {
-      // If editing, fetch the course work data by ID
-      await fetchCourseWorkDataById();
+    try {
+      setIsBusy(true);
+      const data = await CourseSessionClient.fetchCourseSessionByIdAdmin(
+        courseSessionId
+      );
+      setCourseSessionInfo(data.courseSessionData);
+      if (isEditing && courseWorkId) {
+        // If editing, fetch the course work data by ID
+        await fetchCourseWorkDataById();
+      }
+      setIsBusy(false);
+    } catch (error) {
+      console.error(
+        "Error fetching course session data:",
+        (error as Error).message
+      );
     }
-    setIsBusy(false);
   }
 
   async function loadGradeWeightOptions() {

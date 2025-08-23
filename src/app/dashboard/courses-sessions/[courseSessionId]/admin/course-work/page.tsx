@@ -25,7 +25,7 @@ export default function AdminCourseWorkPage() {
   const [courseSession, setCourseSession] = useState<CourseSessionInfo | null>(
     null
   );
-  const [courseWork, setCourseWork] = useState<AcademicTaskWithWeighting[]>([]); // Adjust type as needed
+  const [courseWork, setCourseWork] = useState<AcademicTaskWithWeighting[]>([]);
 
   const router = useRouter();
   const { status } = useSession();
@@ -62,7 +62,8 @@ export default function AdminCourseWorkPage() {
   };
 
   if (status === "unauthenticated") {
-    return router.replace("/login");
+    router.replace("/login");
+    return null;
   }
 
   if (!isAdminAuthorized) {
