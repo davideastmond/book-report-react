@@ -33,7 +33,8 @@ export default function AdminGradingPage() {
 
   if (!isAdminAuthorized) {
     if (isAdminAuthorized === null) return <Spinner />;
-    return router.replace("/dashboard");
+    router.replace("/dashboard");
+    return null;
   }
 
   return (
