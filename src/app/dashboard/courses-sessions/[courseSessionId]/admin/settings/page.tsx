@@ -45,6 +45,12 @@ export default function CourseSessionSettingsPage() {
     fetchCourseSessionById();
   }, [isAdminAuthorized]);
 
+  useEffect(() => {
+    if (isAdminAuthorized) {
+      loadPrepopulatedData();
+    }
+  }, [courseSession, isAdminAuthorized]);
+
   async function fetchCourseSessionById() {
     setIsBusy(true);
     const res = await CourseSessionClient.fetchCourseSessionByIdAdmin(
@@ -55,12 +61,6 @@ export default function CourseSessionSettingsPage() {
 
     setIsLocked(res.courseSessionData.isLocked || false);
   }
-
-  useEffect(() => {
-    if (isAdminAuthorized) {
-      loadPrepopulatedData();
-    }
-  }, [courseSession, isAdminAuthorized]);
 
   async function toggleLockState() {
     setApiError(null);
@@ -195,6 +195,7 @@ export default function CourseSessionSettingsPage() {
   if (!isAdminAuthorized) {
     if (isAdminAuthorized === null) return <Spinner />;
     router.replace("/dashboard");
+    return null;
   }
 
   return (
