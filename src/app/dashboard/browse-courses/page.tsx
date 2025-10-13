@@ -38,6 +38,7 @@ export default function BrowseCoursesPage() {
           onChange={() => {
             setShowCompleted(!showCompleted);
           }}
+          data-testid="showCompleted"
         />
         <label htmlFor="showCompleted" className="font-thin">
           Show All Courses
