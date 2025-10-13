@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export function GradesNavMain() {
   /* 
   This is the toolbar for the grades section of the student dashboard.
@@ -9,28 +11,28 @@ export function GradesNavMain() {
     <div className="bg-green-900 p-1 text-sm">
       <ul className="flex justify-start gap-12">
         <li>
-          <a
+          <Link
             href={`/dashboard/student/grades`}
             className="text-white hover:text-gray-300 self-start"
           >
             Overview
-          </a>
+          </Link>
         </li>
         <li>
-          <a
+          <Link
             href={`/dashboard/student/grades`}
             className="text-white hover:text-gray-300 self-start"
           >
             Course Details
-          </a>
+          </Link>
         </li>
         <li>
-          <a
+          <Link
             href={`/dashboard/student/grades`}
             className="text-white hover:text-gray-300 self-start"
           >
             Course History
-          </a>
+          </Link>
         </li>
       </ul>
     </div>
