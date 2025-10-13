@@ -1,6 +1,7 @@
 import { NavBar } from "@/components/nav/NavBar";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Suspense } from "react";
 import "./globals.css";
 import { NextAuthProvider } from "./providers/NextAuth";
 
@@ -31,7 +32,7 @@ export default function RootLayout({
       >
         <NextAuthProvider>
           <NavBar />
-          {children}
+          <Suspense>{children}</Suspense>
         </NextAuthProvider>
       </body>
     </html>
