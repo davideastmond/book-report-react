@@ -8,8 +8,7 @@ export function useAdminAuthorized() {
   const isAdminAuthorized = useMemo<boolean | null>(() => {
     if (!session?.user) return null;
 
-    if (["admin", "teacher"].includes(session.user.role)) return true;
-    return false;
+    return ["admin", "teacher"].includes(session.user.role);
   }, [session?.user]);
 
   return { isAdminAuthorized };
