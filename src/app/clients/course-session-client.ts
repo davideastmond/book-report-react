@@ -8,7 +8,6 @@ import {
 } from "@/lib/types/db/course-session-info";
 import { GroupedCourseInfo } from "@/lib/types/db/grouped-course-info";
 import { TableData } from "@/lib/types/grading/student/definitions";
-import { WeightingData } from "@/lib/types/weighting/weighting-data";
 
 export const CourseSessionClient = {
   createCourseSession: async ({
@@ -222,7 +221,7 @@ export const CourseSessionClient = {
   },
   createCourseWeighting: async (
     courseSessionId: string,
-    payload: WeightingData
+    payload: GradeWeight[]
   ): Promise<void> => {
     const res = await fetch(
       `/api/courses/sessions/${courseSessionId}/weighting`,
