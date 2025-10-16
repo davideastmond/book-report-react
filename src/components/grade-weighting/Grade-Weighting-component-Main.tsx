@@ -18,10 +18,6 @@ type GradeWeightingComponentProps = {
 export function GradeWeightingComponentMain({
   courseSessionId,
 }: GradeWeightingComponentProps) {
-  const [weightComponents, setWeightComponents] = useState<
-    { keyTag: string }[]
-  >([]);
-
   const [, setErrors] = useState<string | null>(null);
   const [, setIsBusy] = useState(false);
   const [currentWeights, setCurrentWeights] = useState<GradeWeight[] | null>(
