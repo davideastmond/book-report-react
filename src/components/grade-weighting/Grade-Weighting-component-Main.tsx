@@ -6,7 +6,6 @@ import { useEffect, useState } from "react";
 import { z } from "zod";
 
 import { GradeWeight } from "@/db/schema";
-import { useAdmin } from "app/hooks/use-admin";
 import { GradeWeightTable } from "./Grade-Weight-table";
 
 type GradeWeightingComponentProps = {
@@ -23,7 +22,7 @@ export function GradeWeightingComponentMain({
     { keyTag: string }[]
   >([]);
 
-  const [errors, setErrors] = useState<string | null>(null);
+  const [, setErrors] = useState<string | null>(null);
   const [isBusy, setIsBusy] = useState(false);
   const [currentWeights, setCurrentWeights] = useState<GradeWeight[] | null>(
     null
@@ -39,17 +38,6 @@ export function GradeWeightingComponentMain({
   useEffect(() => {
     fetchCurrentWeights();
   }, [courseSessionId]);
-
-  const { isAdminEditable } = useAdmin(courseSessionId);
-
-  function handleAddWeighting() {
-    // The id and name will be unique for each component.
-
-    const newWeightComponent = {
-      keyTag: `weight_${weightComponents.length + crypto.randomUUID()}`,
-    };
-    setWeightComponents([...weightComponents, newWeightComponent]);
-  }
 
   async function fetchCurrentWeights() {
     try {
@@ -67,23 +55,6 @@ export function GradeWeightingComponentMain({
 
   async function handleSaveWeightings(updatedWeights: GradeWeight[]) {
     setErrors(null);
-    /*
-    const weightData = weightComponents.map((component) => {
-      const percentageInput = document.querySelector(
-        `input[name="num_${component.keyTag}"]`
-      ) as HTMLInputElement;
-
-      const weightCaptionInputElement = document.querySelector(
-        `input[name="${component.keyTag}"]`
-      ) as HTMLInputElement;
-
-      return {
-        keyTag: component.keyTag.split("_")[1] || component.keyTag,
-        name: weightCaptionInputElement.value,
-        percentage: parseInt(percentageInput.value) || 0,
-      };
-    });
-    */
 
     try {
       weightDataValidator.parse(updatedWeights);
