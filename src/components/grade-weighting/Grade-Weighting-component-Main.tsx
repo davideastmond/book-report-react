@@ -23,17 +23,10 @@ export function GradeWeightingComponentMain({
   >([]);
 
   const [, setErrors] = useState<string | null>(null);
-  const [isBusy, setIsBusy] = useState(false);
+  const [, setIsBusy] = useState(false);
   const [currentWeights, setCurrentWeights] = useState<GradeWeight[] | null>(
     null
   );
-
-  const handleRemoveWeighting = (name: string) => {
-    const tempWeightComponents = weightComponents.filter(
-      (component) => component.keyTag !== name
-    );
-    setWeightComponents(tempWeightComponents);
-  };
 
   useEffect(() => {
     fetchCurrentWeights();
