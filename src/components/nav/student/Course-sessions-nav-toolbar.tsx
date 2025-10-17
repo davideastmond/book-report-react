@@ -1,14 +1,16 @@
+import Link from "next/link";
+
 export const CourseSessionsStudentNavToolbar = () => {
   return (
     <div className="bg-green-900 p-1 text-sm">
       <ul className="flex justify-start">
         <li>
-          <a
+          <Link
             href={`/dashboard/student/grades`}
             className="text-white hover:text-gray-300 self-start"
           >
             Grades
-          </a>
+          </Link>
         </li>
       </ul>
     </div>

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useParams } from "next/navigation";
 
 export const AdminStatsNav = () => {
@@ -8,12 +9,12 @@ export const AdminStatsNav = () => {
     <div className="bg-green-900 p-1 text-sm">
       <ul className="flex justify-start gap-12">
         <li>
-          <a
+          <Link
             href={`/dashboard/admin/${courseSessionId}/stats/assignments`}
             className="text-white hover:text-gray-300"
           >
             Assignments Stats
-          </a>
+          </Link>
         </li>
       </ul>
     </div>
