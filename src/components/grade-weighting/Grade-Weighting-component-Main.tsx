@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { z } from "zod";
 
 import { GradeWeight } from "@/db/schema";
+import { Spinner } from "../spinner/Spinner";
 import { GradeWeightTable } from "./Grade-Weight-table";
 
 type GradeWeightingComponentProps = {
@@ -18,8 +19,8 @@ type GradeWeightingComponentProps = {
 export function GradeWeightingComponentMain({
   courseSessionId,
 }: GradeWeightingComponentProps) {
-  const [, setErrors] = useState<string | null>(null);
-  const [, setIsBusy] = useState(false);
+  const [errors, setErrors] = useState<string | null>(null);
+  const [isBusy, setIsBusy] = useState(false);
   const [currentWeights, setCurrentWeights] = useState<GradeWeight[] | null>(
     null
   );
@@ -79,15 +80,22 @@ export function GradeWeightingComponentMain({
     }
   }
 
+  if (isBusy) return <Spinner />;
   return (
     <div>
       <h1 className="text-2xl my-4">Weight Definitions</h1>
+
       {currentWeights && (
         <div>
           <GradeWeightTable
             gradeWeights={currentWeights}
             onWeightsUpdated={handleSaveWeightings}
           />
+        </div>
+      )}
+      {errors && (
+        <div className="mt-4 p-4 border border-red-500 bg-red-100 text-red-700">
+          {errors}
         </div>
       )}
     </div>
