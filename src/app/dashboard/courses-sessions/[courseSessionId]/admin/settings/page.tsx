@@ -45,6 +45,12 @@ export default function CourseSessionSettingsPage() {
     fetchCourseSessionById();
   }, [isAdminAuthorized]);
 
+  useEffect(() => {
+    if (isAdminAuthorized) {
+      loadPrepopulatedData();
+    }
+  }, [courseSession, isAdminAuthorized]);
+
   async function fetchCourseSessionById() {
     setIsBusy(true);
     const res = await CourseSessionClient.fetchCourseSessionByIdAdmin(
@@ -55,12 +61,6 @@ export default function CourseSessionSettingsPage() {
 
     setIsLocked(res.courseSessionData.isLocked || false);
   }
-
-  useEffect(() => {
-    if (isAdminAuthorized) {
-      loadPrepopulatedData();
-    }
-  }, [courseSession, isAdminAuthorized]);
 
   async function toggleLockState() {
     setApiError(null);
@@ -195,6 +195,7 @@ export default function CourseSessionSettingsPage() {
   if (!isAdminAuthorized) {
     if (isAdminAuthorized === null) return <Spinner />;
     router.replace("/dashboard");
+    return null;
   }
 
   return (
@@ -209,7 +210,10 @@ export default function CourseSessionSettingsPage() {
         <h2 className="text-2xl">Course Description</h2>
         <article>
           <p>This description appears in the course catalog and syllabus.</p>
-          <form onSubmit={handleUpdateSessionDescription}>
+          <form
+            onSubmit={handleUpdateSessionDescription}
+            data-testid="update-session-description-form"
+          >
             <div className="mt-4">
               <label htmlFor="description">Description:</label>
               <div>
@@ -229,6 +233,7 @@ export default function CourseSessionSettingsPage() {
               <button
                 type="submit"
                 className="flatStyle bg-green-900 responsiveStyle"
+                data-testid="update-session-description-button"
               >
                 Update
               </button>
@@ -266,7 +271,7 @@ export default function CourseSessionSettingsPage() {
               </div>
             </div>
             <div className="mt-4">
-              <label htmlFor="session_end">* Ends:</label>
+              <label htmlFor="sessionEnd">* Ends:</label>
               <div className="max-w-[300px]">
                 <input
                   type="date"
@@ -289,7 +294,9 @@ export default function CourseSessionSettingsPage() {
             <div>
               <button
                 type="submit"
+                name="update-form"
                 className="flatStyle bg-green-900 responsiveStyle"
+                data-testid="update-session-dates-button"
               >
                 Update
               </button>

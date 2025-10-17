@@ -2,7 +2,7 @@
 
 ## About
 
-This is a web app platform to manage academic grades for a school or university, allowing instructors to manages courses, course work, students and grades, and allowing students to manage their courses and grades.
+This is a web app platform to manage academic grades for a school or university, allowing instructors to manage courses, course work, students and grades, and allowing students to manage their courses and grades.
 
 ## Features
 
@@ -59,9 +59,9 @@ This is a web app platform to manage academic grades for a school or university,
 
 ## Environment Variables
 
-DATABASE_URL=#the connection string for your postgres instance
-NEXT_AUTH_SECRET=#Required for auth - it can be any string
-ADMIN_PASSWORD=#Create an admin password to allow for admin tasks. It can be any string. It needs to be included in the Authorization headers as a Bearer token for admin tasks.
+- `DATABASE_URL=`#the connection string for your postgres instance
+- `NEXT_AUTH_SECRET=`#Required for auth - it can be any string
+- `ADMIN_PASSWORD=`#Create an admin password to allow for admin tasks. It can be any string. It needs to be included in the Authorization headers as a Bearer token for admin tasks.
 
 ## Getting Started
 

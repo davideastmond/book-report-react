@@ -6,7 +6,7 @@ export function ClassListFinalGradeTable({
   data: SummarizedData[] | null;
 }) {
   return (
-    <table className="table-auto w-full mt-4">
+    <table className="table-auto w-full mt-4" data-testid="final-grade-table">
       <thead className="text-left">
         <tr>
           <th>Student First N.</th>

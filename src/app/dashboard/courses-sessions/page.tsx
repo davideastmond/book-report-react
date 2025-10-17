@@ -18,16 +18,11 @@ export default function CoursesSessionsPage() {
 
   const { isAdminAuthorized } = useAdminAuthorized();
 
-  if (status === "unauthenticated") {
-    router.replace("/login");
-  }
-
   if (isAdminAuthorized === null) {
     return <Spinner />;
   }
-  return (
-    <>
-      <CoursesSessionsMain isAdmin={isAdminAuthorized} />
-    </>
-  );
+  if (status === "unauthenticated") {
+    router.replace("/login");
+  }
+  return <CoursesSessionsMain isAdmin={isAdminAuthorized} />;
 }

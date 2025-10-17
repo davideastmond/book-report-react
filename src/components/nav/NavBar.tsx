@@ -56,25 +56,25 @@ export function NavBar() {
               </li>
             )}
             <li style={styles.navMenuItem}>
-              <a
+              <Link
                 href="/dashboard/courses-sessions"
                 className="text-white hover:text-gray-300"
               >
                 My Courses
-              </a>
+              </Link>
             </li>
             <li style={styles.navMenuItem}>
-              <a
+              <Link
                 href="/dashboard/browse-courses"
                 className="text-white hover:text-gray-300"
               >
                 Browse Courses
-              </a>
+              </Link>
             </li>
             <li style={styles.navMenuItem}>
-              <a href="/help" className="text-white hover:text-gray-300">
+              <Link href="/help" className="text-white hover:text-gray-300">
                 Help❔
-              </a>
+              </Link>
             </li>
             {session?.user?.email && (
               <li style={styles.finalItem} className="flex gap-4">

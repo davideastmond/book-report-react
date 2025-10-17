@@ -38,7 +38,7 @@ export default function CourseSessionPage() {
   const { isAdminAuthorized } = useAdminAuthorized();
   useEffect(() => {
     fetchCourseSessionById();
-  }, []);
+  }, [courseSessionId]);
 
   const removeStudentFromCourse = async (
     studentId: string,

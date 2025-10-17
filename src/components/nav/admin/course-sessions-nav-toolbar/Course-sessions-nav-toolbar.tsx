@@ -1,6 +1,7 @@
 "use client";
 
 import { useAdminAuthorized } from "app/hooks/use-admin-authorized";
+import Link from "next/link";
 import { useParams, useSearchParams } from "next/navigation";
 import { useMemo } from "react";
 import { CourseSessionsStudentNavToolbar } from "../../student/Course-sessions-nav-toolbar";
@@ -34,52 +35,52 @@ export const CourseSessionsNavToolbar = () => {
     <div className="bg-green-900 p-1 text-sm">
       <ul className="flex justify-start gap-12">
         <li>
-          <a
+          <Link
             href={`/dashboard/courses-sessions/${computedCourseSessionId}/admin/course-work`}
             className="text-white hover:text-gray-300"
           >
             Exams and Course Work
-          </a>
+          </Link>
         </li>
         <li>
-          <a
+          <Link
             href={`/dashboard/courses-sessions/${computedCourseSessionId}/admin/grading`}
             className="text-white hover:text-gray-300"
           >
             Grading
-          </a>
+          </Link>
         </li>
         <li>
-          <a
+          <Link
             href={`/dashboard/courses-sessions/${computedCourseSessionId}/admin/grading/weighting`}
             className="text-white hover:text-gray-300"
           >
             Grade Weightings
-          </a>
+          </Link>
         </li>
         <li>
-          <a
+          <Link
             href={`/dashboard/courses-sessions/${computedCourseSessionId}/admin/settings`}
             className="text-white hover:text-gray-300"
           >
             Settings
-          </a>
+          </Link>
         </li>
         <li>
-          <a
+          <Link
             href={`/dashboard/courses-sessions/${computedCourseSessionId}/admin/final-grade-report`}
             className="text-white hover:text-gray-300"
           >
             Final Grade Report
-          </a>
+          </Link>
         </li>
         <li>
-          <a
+          <Link
             href={`/dashboard/courses-sessions/view?id=${computedCourseSessionId}`}
             className="text-white hover:text-gray-300"
           >
             Main
-          </a>
+          </Link>
         </li>
       </ul>
     </div>

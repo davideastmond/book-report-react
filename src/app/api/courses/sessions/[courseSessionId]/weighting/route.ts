@@ -1,8 +1,7 @@
 import { authOptions } from "@/auth/auth";
 
 import { db } from "@/db/index";
-import { academicTask, gradeWeight } from "@/db/schema";
-import { WeightingData } from "@/lib/types/weighting/weighting-data";
+import { academicTask, GradeWeight, gradeWeight } from "@/db/schema";
 import { weightDataValidator } from "@/lib/validators/weightings/weight-data-validator";
 import { eq } from "drizzle-orm";
 import { getServerSession } from "next-auth";
@@ -55,7 +54,7 @@ export async function POST(
   }
 
   const { courseSessionId } = await urlData.params;
-  const requestBody = (await req.json()) as WeightingData;
+  const requestBody = (await req.json()) as GradeWeight[];
 
   // Validate the request body
   try {
@@ -112,10 +111,13 @@ export async function POST(
 
   // Now insert the new weights.
   const dataToInsert = requestBody.map((w) => {
+    const elementId = crypto.randomUUID();
     return {
       courseSessionId: courseSessionId,
-      id: crypto.randomUUID(),
-      ...w,
+      id: elementId,
+      name: w.name,
+      percentage: w.percentage,
+      keyTag: `keyTag_${elementId}`,
     };
   });
 
