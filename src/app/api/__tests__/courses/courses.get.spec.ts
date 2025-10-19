@@ -2,9 +2,6 @@
 import { GET as handler } from "@/api/courses/route";
 import { afterAll, describe, expect, test, vi } from "vitest";
 
-afterAll(() => {
-  vi.resetAllMocks();
-});
 vi.mock("drizzle-orm/postgres-js", () => {
   return {
     drizzle: () => ({
@@ -22,6 +19,9 @@ vi.mock("drizzle-orm/postgres-js", () => {
   };
 });
 describe("GET /api/courses", () => {
+  afterAll(() => {
+    vi.resetAllMocks();
+  });
   test("should return 500 error", async () => {
     const response = await handler();
     expect(response.status).toBe(500);
