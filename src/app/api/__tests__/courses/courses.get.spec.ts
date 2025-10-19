@@ -1,6 +1,6 @@
 // @vitest-environment node
+import { GET as handler } from "@/api/courses/route";
 import { afterAll, describe, expect, test, vi } from "vitest";
-import { GET as handler } from "./route";
 
 afterAll(() => {
   vi.resetAllMocks();
