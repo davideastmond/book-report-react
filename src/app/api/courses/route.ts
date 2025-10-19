@@ -6,9 +6,11 @@ export async function GET() {
     const courses = await db.query.course.findMany();
     return NextResponse.json(courses);
   } catch (error) {
-    return NextResponse.json({
-      error:
-        "An error occurred while fetching courses:" + (error as Error).message,
-    });
+    return NextResponse.json(
+      {
+        error: "An server error occurred while fetching courses",
+      },
+      { status: 500 }
+    );
   }
 }
