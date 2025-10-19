@@ -5,6 +5,9 @@ on:
     branches:
       - "**" # Runs on push to any branch
 
+env:
+  DATABASE_URL: file:./test.db
+
 jobs:
   test:
     runs-on: ubuntu-latest
