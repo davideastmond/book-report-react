@@ -6,6 +6,7 @@ export async function GET() {
     const courses = await db.query.course.findMany();
     return NextResponse.json(courses);
   } catch (error) {
+    console.error("Error fetching courses:", error);
     return NextResponse.json(
       {
         error: "An server error occurred while fetching courses",
