@@ -1,5 +1,7 @@
 import { cleanup } from "@testing-library/react";
+import dotenv from "dotenv";
 import { beforeEach, vi } from "vitest";
+dotenv.config();
 vi.mock("next/navigation", () => {
   return {
     useRouter: () => {

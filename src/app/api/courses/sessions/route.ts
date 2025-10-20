@@ -46,7 +46,10 @@ export async function POST(request: NextRequest) {
       description: description || null,
       studentAllotment: studentAllotment,
     });
-    return NextResponse.json({ message: "Course created successfully" });
+    return NextResponse.json(
+      { message: "Course created successfully" },
+      { status: 201 }
+    );
   } catch (error) {
     return NextResponse.json(
       {

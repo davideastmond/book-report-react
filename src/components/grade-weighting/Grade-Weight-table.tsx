@@ -98,11 +98,13 @@ export function GradeWeightTable({
                   name={`name_${weight.id}`}
                   className="border border-gray-300 rounded p-2 w-full"
                   defaultValue={weight.name}
+                  maxLength={100}
                 />
               </td>
               <td className="px-4 py-2">
                 <input
                   id={weight.id}
+                  name={`num_${weight.id}`}
                   type="number"
                   min={0}
                   max={100}
