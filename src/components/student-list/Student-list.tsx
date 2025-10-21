@@ -28,7 +28,7 @@ export function StudentList({
   }
   return (
     <div className="flex flex-wrap gap-6">
-      {students?.map((student, index) => (
+      {students?.map((student) => (
         <Card
           data-testid="user-search-results"
           className={`bg-gray-900 p-3 rounded-md mb-2 w-full ${
