@@ -28,7 +28,7 @@ describe("Courses Session List Component Tests", () => {
     const enrolled = { show: true, count: 25 };
     const linkable = true;
 
-    const { getByText } = render(
+    const { getByText, getByTestId } = render(
       <CoursesSessionsList
         coursesSessions={coursesSessions as CourseSessionInfo[]}
         linkable={linkable}
@@ -38,7 +38,7 @@ describe("Courses Session List Component Tests", () => {
 
     expect(getByText("CS101")).toBeDefined();
     expect(getByText("Introduction to Computer Science")).toBeDefined();
-    expect(getByText("Doe J")).toBeDefined();
+    expect(getByText("DOE, J")).toBeDefined();
     expect(
       getByText(new Date("2023-01-01").toLocaleDateString())
     ).toBeDefined();
@@ -48,7 +48,7 @@ describe("Courses Session List Component Tests", () => {
     expect(getByText("30")).toBeDefined();
     expect(getByText("25")).toBeDefined();
 
-    const link = getByText("CS101").closest("tr");
+    const link = getByTestId("course-session-card-body");
 
     // Simulate click on the linkable row
     fireEvent.click(link!);
