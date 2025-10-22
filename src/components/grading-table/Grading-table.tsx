@@ -1,5 +1,6 @@
 import { EnrolledStudent } from "@/lib/types/db/course-session-info";
 import { GradeData, TableData } from "@/lib/types/grading/student/definitions";
+import { Card, CardBody } from "@heroui/react";
 import { ChangeEvent } from "react";
 
 type GradingTableProps = {
@@ -31,7 +32,7 @@ export function GradingTable({
   onTableDataChange,
   disabled,
 }: GradingTableProps) {
-  function handleTableDataChange<T>({
+  function handleGradeDataChange<T>({
     event,
     studentId,
     courseWorkId,
@@ -54,38 +55,35 @@ export function GradingTable({
   }
 
   return (
-    <table className="table-auto w-full" data-testid="grading-table">
-      <thead className="text-left">
-        <tr>
-          <th className="border border-gray-300 p-2">Student</th>
-          <th className="border border-gray-300 p-2">DOB</th>
-          <th className="border border-gray-300 p-2">N. Grade</th>
-          <th className="border border-gray-300 p-2">Ins. Feedback</th>
-        </tr>
-      </thead>
-      <tbody>
-        {students.map((student, index) => (
-          <tr
-            key={student.studentId}
-            className={`${
-              index % 2 === 0 ? "bg-slate-400/10" : "bg-background"
-            } hover:bg-list-hover/20`}
-          >
-            <td className="border border-gray-300 p-2">
-              {student.studentLastName} {student.studentFirstName}
-            </td>
-            <td className="border border-gray-300 p-2">
+    <div data-testid="grading-container">
+      {students.map((student, index) => (
+        <Card
+          key={student.studentId}
+          className="bg-gray-900 p-3 rounded-md mb-2 w-full"
+        >
+          <CardBody>
+            <p>
+              <span className="font-bold">Student Name: </span>
+              <span>
+                {student.studentLastName.toLocaleUpperCase()}
+                {", "}
+                {student.studentFirstName?.slice(0, 1).toLocaleUpperCase()}
+              </span>
+            </p>
+            <p>
+              <span className="font-bold">DOB: </span>
               {new Date(student.studentDob!).toLocaleDateString()}
-            </td>
-            <td className="border border-gray-300 p-2">
+            </p>
+            <p>
+              <span className="font-bold">N. Grade: </span>
               <input
                 type="number"
                 min={0}
                 name="percentageGrade"
-                className="text-sky-500 appearance-none"
+                className="text-sky-500 appearance-none border-b border-b-green-50"
                 disabled={disabled}
                 onChange={(event) =>
-                  handleTableDataChange({
+                  handleGradeDataChange({
                     event,
                     studentId: student.studentId,
                     courseWorkId: courseWorkId!,
@@ -99,16 +97,17 @@ export function GradingTable({
                   })?.percentageGrade || 0
                 }
               />
-            </td>
-            <td className="border border-gray-300 p-2">
+            </p>
+            <p>
+              <span className="font-bold">Ins. Feedback: </span>
               <input
                 type="text"
-                className="w-full"
+                className="w-full border-b border-b-green-50"
                 name="instructorFeedback"
                 maxLength={500}
                 disabled={disabled}
                 onChange={(event) =>
-                  handleTableDataChange({
+                  handleGradeDataChange({
                     event,
                     studentId: student.studentId,
                     courseWorkId: courseWorkId!,
@@ -122,11 +121,11 @@ export function GradingTable({
                   })?.instructorFeedback || ""
                 }
               />
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
+            </p>
+          </CardBody>
+        </Card>
+      ))}
+    </div>
   );
 }
 
