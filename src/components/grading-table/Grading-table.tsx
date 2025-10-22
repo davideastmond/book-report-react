@@ -56,7 +56,7 @@ export function GradingTable({
 
   return (
     <div data-testid="grading-container">
-      {students.map((student, index) => (
+      {students.map((student) => (
         <Card
           key={student.studentId}
           className="bg-gray-900 p-3 rounded-md mb-2 w-full"
