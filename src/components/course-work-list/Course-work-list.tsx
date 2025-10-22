@@ -1,5 +1,6 @@
 "use client";
 import { AcademicTaskWithWeighting } from "@/lib/types/course-work/definitions";
+import { Card, CardBody } from "@heroui/react";
 import { useRouter } from "next/navigation";
 
 export function CourseWorkList({
@@ -11,23 +12,16 @@ export function CourseWorkList({
 }) {
   const router = useRouter();
   return (
-    <table className="table-auto w-full">
-      <thead className="text-left">
-        <tr>
-          <th>Name</th>
-          <th>Description</th>
-          <th>Type</th>
-          <th>Gr. P%</th>
-          <th>Due Date</th>
-        </tr>
-      </thead>
-      <tbody>
-        {courseWork.map((work, index) => (
-          <tr
-            key={work.id}
+    <div>
+      {courseWork.map((work, index) => (
+        <Card
+          key={work.id}
+          className={`${
+            linkable && "hover:cursor-pointer "
+          } hover:bg-list-hover/20 `}
+        >
+          <CardBody
             className={`${
-              linkable && "hover:cursor-pointer "
-            } hover:bg-list-hover/20 ${
               index % 2 === 0 ? "bg-slate-400/10" : "bg-background"
             }`}
             onClick={() => {
@@ -38,26 +32,37 @@ export function CourseWorkList({
               }
             }}
           >
-            <td className="p-2">{work.name}</td>
-            <td className="p-2">{work.description}</td>
-            <td className="p-2 font-thin">{work.taskType}</td>
-            <td>
-              {work.gradeWeightId ? (
-                <p>
-                  {work.gradeWeightName}({work.gradeWeightPercentage}%)
+            <div className="flex flex-col">
+              <p className="text-md font-bold">{work.name}</p>
+              <p className="text-sm">{work.description}</p>
+              <div className="flex gap-4 mt-2">
+                <p className="font-bold">
+                  Type: <span className="font-thin">{work.taskType}</span>
                 </p>
-              ) : (
-                <p className="text-amber-400">N.A</p>
-              )}
-            </td>
-            <td className="p-2">
-              {work.dueDate
-                ? new Date(work.dueDate).toLocaleDateString()
-                : "N/A"}
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
+                <p className="font-bold">
+                  Gr. P%:{" "}
+                  {work.gradeWeightId ? (
+                    <span className="font-thin">
+                      {work.gradeWeightName}({work.gradeWeightPercentage}
+                      %)
+                    </span>
+                  ) : (
+                    <span className="text-amber-400">N.A</span>
+                  )}
+                </p>
+                <p className="font-bold">
+                  Due Date:{" "}
+                  <span className="font-thin">
+                    {work.dueDate
+                      ? new Date(work.dueDate).toLocaleDateString()
+                      : "N/A"}
+                  </span>
+                </p>
+              </div>
+            </div>
+          </CardBody>
+        </Card>
+      ))}
+    </div>
   );
 }

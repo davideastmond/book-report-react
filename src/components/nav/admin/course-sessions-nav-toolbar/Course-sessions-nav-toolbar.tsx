@@ -26,8 +26,8 @@ const MenuToggleButton = () => {
       <path
         d="M5 8H13.75M5 12H19M10.25 16L19 16"
         stroke="#ffffff"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   );
