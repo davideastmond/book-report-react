@@ -32,7 +32,9 @@ export function CoursesSessionsList({
           })
           .map((session) => (
             <Card
-              className=" bg-gray-900 p-3 rounded-md mb-2 w-full"
+              className={`bg-gray-900 p-3 rounded-md mb-2 w-full ${
+                linkable ? "cursor-pointer hover:shadow-lg" : ""
+              }`}
               key={session.courseId}
             >
               <CardHeader className="flex gap-3">
