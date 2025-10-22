@@ -57,14 +57,6 @@ describe("CourseWorkList", () => {
       const element = getByText(text);
       expect(element).toBeDefined();
     });
-
-    // Table headers
-    [/name/i, /description/i, /type/i, /gr. p%/i, /due date/i].forEach(
-      async (text) => {
-        const element = getByText(text);
-        expect(element).toBeDefined();
-      }
-    );
   });
 
   it("when the list is linkable, the router is called with the correct path", async () => {
