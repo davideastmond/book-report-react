@@ -22,18 +22,16 @@ describe("Grades Overview Component", () => {
     );
 
     //Headers
-    expect(getByText(/course code/i)).toBeDefined();
-    expect(getByText(/course name/i)).toBeDefined();
-    expect(getByText(/instr\./i)).toBeDefined();
-    expect(getByText(/session start/i)).toBeDefined();
-    expect(getByText(/session end/i)).toBeDefined();
-    expect(getByText(/student name/i)).toBeDefined();
+    expect(getByText(/course/i)).toBeDefined();
+    expect(getByText(/instructor/i)).toBeDefined();
+    expect(getByText(/session/i)).toBeDefined();
+    expect(getByText(/student/i)).toBeDefined();
     expect(getByText(/grade/i)).toBeDefined();
 
     expect(getByText(/cs101/i)).toBeDefined();
     expect(getByText(/introduction to computer science/i)).toBeDefined();
     expect(getByText(/85/i)).toBeDefined();
 
-    expect(getByText(/doe j/i)).toBeDefined();
+    expect(getByText(/doe, j/i)).toBeDefined();
   });
 });
