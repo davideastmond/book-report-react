@@ -215,8 +215,14 @@ export const CourseSessionClient = {
         },
       }
     );
+
     if (!res.ok) {
-      throw Error("Failed to mark course session as completed");
+      if (res.status === 422) {
+        throw Error(
+          "Please ensure all grade-weights have at least one course-work item assigned before marking the course session as complete."
+        );
+      }
+      throw Error("Failed to mark course session as completed.");
     }
   },
   createCourseWeighting: async (
