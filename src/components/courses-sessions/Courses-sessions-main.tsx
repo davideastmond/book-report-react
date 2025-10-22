@@ -34,7 +34,7 @@ export function CoursesSessionsMain({ isAdmin }: CoursesSessionsMainProps) {
             + New Course Session
           </Link>
         </div>
-        <div className="flex justify-end p-4">
+        <div className="flex p-4">
           <CoursesSessionsList coursesSessions={courseSessions} linkable />
         </div>
       </>
@@ -42,7 +42,7 @@ export function CoursesSessionsMain({ isAdmin }: CoursesSessionsMainProps) {
   }
   return (
     <>
-      <div className="flex justify-end p-4">
+      <div className="flex p-4">
         <CoursesSessionsList coursesSessions={courseSessions} linkable />
       </div>
     </>
