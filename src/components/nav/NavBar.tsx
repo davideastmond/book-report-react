@@ -41,16 +41,7 @@ const LogOutButton = () => (
     Log Out
   </button>
 );
-const styles = {
-  navMenuItem: {
-    borderRight: "1.5px solid #ccc",
-    padding: "0.5rem 1rem",
-  },
-  finalItem: {
-    borderRight: "none",
-    padding: "0.5rem 1rem",
-  },
-};
+
 export function NavBar() {
   const { data: session } = useSession();
   const { isAdminAuthorized } = useAdminAuthorized();
@@ -103,7 +94,7 @@ export function NavBar() {
                 src="/images/app-logo/large-app-logo.png"
                 width={50}
                 height={50}
-                alt="Logo"
+                alt="Book Report Logo"
               />
             </div>
           </Link>
@@ -112,20 +103,23 @@ export function NavBar() {
       </NavbarContent>
       <NavbarContent className="hidden sm:flex gap-4" justify="center">
         {menuItems.map((el) => (
-          <NavbarItem key={el.href} style={styles.navMenuItem}>
-            <Link href={el.href} className="text-white hover:text-gray-300">
+          <NavbarItem key={el.href}>
+            <Link
+              href={el.href}
+              className="text-white hover:text-gray-300 sm:text-sm"
+            >
               {el.label}
             </Link>
           </NavbarItem>
         ))}
-        <NavbarItem style={styles.finalItem}>
+        <NavbarItem>
           <LogOutButton />
         </NavbarItem>
       </NavbarContent>
-      <NavbarMenu className="bg-gray-800">
+      <NavbarMenu className="bg-gray-900 absolute top-16 w-full">
         {menuItems.map((el) => (
           <NavbarMenuItem key={el.href}>
-            <Link href={el.href} className="text-black hover:text-gray-700">
+            <Link href={el.href} className="text-white hover:text-gray-700">
               {el.label}
             </Link>
           </NavbarMenuItem>
