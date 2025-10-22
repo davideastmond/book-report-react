@@ -181,9 +181,7 @@ export default function CourseSessionSettingsPage() {
       setIsBusy(false);
       await fetchCourseSessionById();
     } catch (error) {
-      setApiError(
-        "Error marking course session as complete: " + (error as Error).message
-      );
+      setApiError((error as Error).message);
     }
   }
 
