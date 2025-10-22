@@ -1,6 +1,6 @@
 import { authOptions } from "@/auth/auth";
 import { db } from "@/db/index";
-import { academicTask, courseSession } from "@/db/schema";
+import { academicTask, courseSession, gradeWeight } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
@@ -88,6 +88,40 @@ export async function PATCH(
       { status: 500 }
     );
   }
+
+  // There should also be at least one academic task for each grading weight
+  // associated with the course session.
+  // This is to prevent situations where a grading weight exists but no tasks are assigned to it.
+  try {
+    const tasksAndWeights = await db
+      .select()
+      .from(gradeWeight)
+      .where(eq(gradeWeight.courseSessionId, courseSessionId))
+      .leftJoin(academicTask, eq(gradeWeight.id, academicTask.gradeWeightId));
+
+    const validation = tasksAndWeights.some(
+      (item) => item.academic_task === null
+    );
+    if (validation) {
+      return NextResponse.json(
+        {
+          error:
+            "weights-tasks-count-mismatch: Each grading weight must have at least one academic task assigned.",
+        },
+        { status: 422 }
+      );
+    }
+  } catch (error) {
+    return NextResponse.json(
+      {
+        error:
+          "Error validating course work and weightings - matching tasks and weights are assigned: " +
+          (error as Error).message,
+      },
+      { status: 500 }
+    );
+  }
+
   try {
     await db
       .update(courseSession)
