@@ -1,7 +1,5 @@
-"use client";
 import { AcademicTaskWithWeighting } from "@/lib/types/course-work/definitions";
 import { Card, CardBody, Link } from "@heroui/react";
-import { useRouter } from "next/navigation";
 
 export function CourseWorkList({
   courseWork,
@@ -10,9 +8,8 @@ export function CourseWorkList({
   courseWork: AcademicTaskWithWeighting[];
   linkable?: boolean;
 }) {
-  const router = useRouter();
   return (
-    <div>
+    <div className="flex flex-col">
       {courseWork.map((work, index) => (
         <Link
           href={
@@ -26,7 +23,7 @@ export function CourseWorkList({
             key={work.id}
             className={`${
               linkable && "hover:cursor-pointer "
-            } hover:bg-list-hover/20 `}
+            } hover:bg-list-hover/20 w-full`}
           >
             <CardBody
               className={`${
