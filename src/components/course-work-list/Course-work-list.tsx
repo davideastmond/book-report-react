@@ -1,6 +1,6 @@
 "use client";
 import { AcademicTaskWithWeighting } from "@/lib/types/course-work/definitions";
-import { Card, CardBody } from "@heroui/react";
+import { Card, CardBody, Link } from "@heroui/react";
 import { useRouter } from "next/navigation";
 
 export function CourseWorkList({
@@ -14,54 +14,56 @@ export function CourseWorkList({
   return (
     <div>
       {courseWork.map((work, index) => (
-        <Card
+        <Link
+          href={
+            linkable
+              ? `/dashboard/courses-sessions/${work.courseSessionId}/admin/course-work/${work.id}/edit`
+              : "#"
+          }
           key={work.id}
-          className={`${
-            linkable && "hover:cursor-pointer "
-          } hover:bg-list-hover/20 `}
         >
-          <CardBody
+          <Card
+            key={work.id}
             className={`${
-              index % 2 === 0 ? "bg-slate-400/10" : "bg-background"
-            }`}
-            onClick={() => {
-              if (linkable) {
-                router.push(
-                  `/dashboard/courses-sessions/${work.courseSessionId}/admin/course-work/${work.id}/edit`
-                );
-              }
-            }}
+              linkable && "hover:cursor-pointer "
+            } hover:bg-list-hover/20 `}
           >
-            <div className="flex flex-col">
-              <p className="text-md font-bold">{work.name}</p>
-              <p className="text-sm">{work.description}</p>
-              <div className="flex gap-4 mt-2">
-                <p className="font-bold">
-                  Type: <span className="font-thin">{work.taskType}</span>
-                </p>
-                <p className="font-bold">
-                  Gr. P%:{" "}
-                  {work.gradeWeightId ? (
+            <CardBody
+              className={`${
+                index % 2 === 0 ? "bg-slate-400/10" : "bg-background"
+              }`}
+            >
+              <div className="flex flex-col">
+                <p className="text-md font-bold">{work.name}</p>
+                <p className="text-sm">{work.description}</p>
+                <div className="flex gap-4 mt-2">
+                  <p className="font-bold">
+                    Type: <span className="font-thin">{work.taskType}</span>
+                  </p>
+                  <p className="font-bold">
+                    Gr. P%:{" "}
+                    {work.gradeWeightId ? (
+                      <span className="font-thin">
+                        {work.gradeWeightName}({work.gradeWeightPercentage}
+                        %)
+                      </span>
+                    ) : (
+                      <span className="text-amber-400">N.A</span>
+                    )}
+                  </p>
+                  <p className="font-bold">
+                    Due Date:{" "}
                     <span className="font-thin">
-                      {work.gradeWeightName}({work.gradeWeightPercentage}
-                      %)
+                      {work.dueDate
+                        ? new Date(work.dueDate).toLocaleDateString()
+                        : "N/A"}
                     </span>
-                  ) : (
-                    <span className="text-amber-400">N.A</span>
-                  )}
-                </p>
-                <p className="font-bold">
-                  Due Date:{" "}
-                  <span className="font-thin">
-                    {work.dueDate
-                      ? new Date(work.dueDate).toLocaleDateString()
-                      : "N/A"}
-                  </span>
-                </p>
+                  </p>
+                </div>
               </div>
-            </div>
-          </CardBody>
-        </Card>
+            </CardBody>
+          </Card>
+        </Link>
       ))}
     </div>
   );

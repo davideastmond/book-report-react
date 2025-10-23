@@ -1,8 +1,8 @@
 import { GroupedCourseInfo } from "@/lib/types/db/grouped-course-info";
 import { render } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { GroupedCourseTable } from "./Grouped-course-table";
-describe("grouped course table", () => {
+import { GroupedCourseList } from "./Grouped-course-list";
+describe("grouped course List", () => {
   it("renders the component correctly", () => {
     const groupedCourses: Partial<GroupedCourseInfo>[] = [
       {
@@ -27,7 +27,7 @@ describe("grouped course table", () => {
       },
     ];
     const { getByText } = render(
-      <GroupedCourseTable
+      <GroupedCourseList
         groupedCourses={groupedCourses as GroupedCourseInfo[]}
       />
     );

@@ -1,6 +1,6 @@
 "use client";
 import { CourseSessionClient } from "@/clients/course-session-client";
-import { GroupedCourseTable } from "@/components/grouped-course-table/Grouped-course-table";
+import { GroupedCourseList } from "@/components/grouped-course-table/Grouped-course-list";
 import { GroupedCourseInfo } from "@/lib/types/db/grouped-course-info";
 import { useAdminAuthorized } from "app/hooks/use-admin-authorized";
 import { useSession } from "next-auth/react";
@@ -34,9 +34,5 @@ export default function CompletedCoursesSummaryPage() {
       </div>
     );
   }
-  return (
-    <>
-      <GroupedCourseTable groupedCourses={groupedCourses} />
-    </>
-  );
+  return <GroupedCourseList groupedCourses={groupedCourses} />;
 }
