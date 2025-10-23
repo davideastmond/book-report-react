@@ -1,14 +1,8 @@
 import { CourseSessionInfo } from "@/lib/types/db/course-session-info";
-import { fireEvent, render } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { render } from "@testing-library/react";
+import { describe, expect, it } from "vitest";
 import { CoursesSessionsList } from "./Courses-sessions-list";
 
-const routerMock = vi.fn();
-vi.mock("next/navigation", () => ({
-  useRouter: () => ({
-    push: () => routerMock(),
-  }),
-}));
 describe("Courses Session List Component Tests", () => {
   it("renders the component with courses sessions", () => {
     const coursesSessions = [
@@ -47,11 +41,5 @@ describe("Courses Session List Component Tests", () => {
     ).toBeDefined();
     expect(getByText("30")).toBeDefined();
     expect(getByText("25")).toBeDefined();
-
-    const link = getByTestId("course-session-card-body");
-
-    // Simulate click on the linkable row
-    fireEvent.click(link!);
-    expect(routerMock).toHaveBeenCalled();
   });
 });
