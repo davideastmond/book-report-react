@@ -1,8 +1,7 @@
 import { TaskType } from "@/lib/types/course-work/task-type";
 import { render } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 import { CourseWorkList } from "./Course-work-list";
-const routerMock = vi.fn();
 
 const dummyTaskData = [
   {
