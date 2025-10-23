@@ -1,4 +1,3 @@
-"use client";
 import { EnrolledStudent } from "@/lib/types/db/course-session-info";
 import { Card, CardBody } from "@heroui/react";
 type StudentListProps = {
