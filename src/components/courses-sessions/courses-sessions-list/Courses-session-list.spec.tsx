@@ -22,7 +22,7 @@ describe("Courses Session List Component Tests", () => {
     const enrolled = { show: true, count: 25 };
     const linkable = true;
 
-    const { getByText, getByTestId } = render(
+    const { getByText } = render(
       <CoursesSessionsList
         coursesSessions={coursesSessions as CourseSessionInfo[]}
         linkable={linkable}

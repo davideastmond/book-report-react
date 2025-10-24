@@ -95,7 +95,7 @@ export const CourseSessionsNavToolbar = () => {
           icon={MenuToggleButton}
         />
       </NavbarContent>
-      <NavbarContent className="hidden sm:flex gap-4">
+      <NavbarContent className="hidden sm:flex gap-4 w-full justify-around">
         {menuItems.map((el) => (
           <NavbarItem key={el.href}>
             <Link href={el.href} className="text-white hover:text-gray-300">
