@@ -1,29 +1,24 @@
 import { CourseSessionClient } from "@/clients/course-session-client";
-import { CourseSessionsAPIResponse } from "@/lib/types/db/course-session-info";
+import {
+  CourseSessionInfo,
+  CourseSessionsAPIResponse,
+} from "@/lib/types/db/course-session-info";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import { CoursesSessionsList } from "./courses-sessions-list/Courses-sessions-list";
 
 type CoursesSessionsMainProps = {
   isAdmin?: boolean;
 };
-export function CoursesSessionsMain({ isAdmin }: CoursesSessionsMainProps) {
-  const [courseSessions, setCourseSessions] =
-    useState<CourseSessionsAPIResponse>([]);
-
-  useEffect(() => {
-    fetchCourseSessions();
-  }, [isAdmin]);
+export async function CoursesSessionsMain({
+  isAdmin,
+}: CoursesSessionsMainProps) {
+  const courseSessions = await fetchCourseSessions();
 
   async function fetchCourseSessions() {
     if (isAdmin) {
-      const res = await CourseSessionClient.fetchCourseSessionsAdmin();
-      setCourseSessions(res);
-      return;
+      return CourseSessionClient.fetchCourseSessionsAdmin();
     }
-    // TODO: Implement for students
-    const res = await CourseSessionClient.fetchCourseSessionsByStudent();
-    setCourseSessions(res);
+    return CourseSessionClient.fetchCourseSessionsByStudent();
   }
 
   if (isAdmin) {
@@ -35,16 +30,20 @@ export function CoursesSessionsMain({ isAdmin }: CoursesSessionsMainProps) {
           </Link>
         </div>
         <div className="flex p-4">
-          <CoursesSessionsList coursesSessions={courseSessions} linkable />
+          <CoursesSessionsList
+            coursesSessions={courseSessions as CourseSessionInfo[]}
+            linkable
+          />
         </div>
       </>
     );
   }
   return (
-    <>
-      <div className="flex p-4">
-        <CoursesSessionsList coursesSessions={courseSessions} linkable />
-      </div>
-    </>
+    <div className="flex p-4">
+      <CoursesSessionsList
+        coursesSessions={courseSessions as CourseSessionsAPIResponse}
+        linkable
+      />
+    </div>
   );
 }
