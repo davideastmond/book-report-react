@@ -3,6 +3,7 @@
 import { CourseSessionClient } from "@/clients/course-session-client";
 import { CourseWorkClient } from "@/clients/course-work-client";
 import { AcademicTask, GradeWeight } from "@/db/schema";
+import { useToast } from "@/hooks/use-toast";
 import { TaskType } from "@/lib/types/course-work/task-type";
 import { CourseSessionInfo } from "@/lib/types/db/course-session-info";
 import { newCourseWorkValidator } from "@/lib/validators/course-work/new-course-work-validator";
@@ -44,6 +45,7 @@ export function CourseWorkCreateUpdateForm({
   const [gradeWeightOptions, setGradeWeightOptions] = useState<GradeWeight[]>(
     []
   );
+  const { showToast, ToastElement: AttribsUpdatedToast } = useToast();
   const router = useRouter();
 
   useEffect(() => {
@@ -164,6 +166,7 @@ export function CourseWorkCreateUpdateForm({
     if (isEditing) {
       // Patch request to update course work
       updateCourseWork(data);
+      showToast("Course work attributes updated successfully.");
       return;
     }
     await createCourseWork(data);
@@ -357,6 +360,7 @@ export function CourseWorkCreateUpdateForm({
             </div>
           </div>
         </div>
+        <div>{<AttribsUpdatedToast />}</div>
         <button
           type="submit"
           disabled={isBusy}
