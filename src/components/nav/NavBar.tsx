@@ -56,7 +56,7 @@ export function NavBar() {
       { label: "My Courses", href: "/dashboard/courses-sessions" },
       { label: "Browse Courses", href: "/dashboard/browse-courses" },
       {
-        label: `${session?.user?.email} ${displayAdminRole(
+        label: `${session?.user?.email || ""} ${displayAdminRole(
           session?.user?.role || "student"
         )}`,
         href: "/dashboard/user/settings",
