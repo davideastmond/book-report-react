@@ -1,3 +1,5 @@
+import { apiAdminGetCoursesSessions } from "@/api/user/admin/me/course-sessions/api";
+import { apiUserGetCoursesSessions } from "@/api/user/me/course-sessions/api";
 import { AcademicGrade, CourseSession, GradeWeight } from "@/db/schema";
 import { AggregatedCourseAssignmentData } from "@/lib/controller/grades/aggregators/definitions";
 import { SummarizedData } from "@/lib/controller/grades/calculations/definitions";
@@ -58,31 +60,13 @@ export const CourseSessionClient = {
       }),
     });
   },
-  fetchCourseSessionsAdmin: async (): Promise<CourseSessionsAPIResponse> => {
-    const res = await fetch("/api/user/admin/me/course-sessions", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    if (!res.ok) {
-      throw Error("Failed to fetch course sessions");
-    }
-
-    return res.json();
+  fetchCourseSessionsAdmin: async () => {
+    return apiAdminGetCoursesSessions();
   },
-  fetchCourseSessionsByStudent: async () => {
-    const res = await fetch("/api/user/me/course-sessions", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    if (!res.ok) {
-      throw Error("Failed to fetch course sessions");
-    }
-    return res.json();
-  },
+  fetchCourseSessionsByStudent:
+    async (): Promise<CourseSessionsAPIResponse> => {
+      return apiUserGetCoursesSessions() as Promise<CourseSessionsAPIResponse>;
+    },
   fetchCourseSessionByIdAdmin: async (
     id: string
   ): Promise<CourseSessionDataAPIResponse> => {

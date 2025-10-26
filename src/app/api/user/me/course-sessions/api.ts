@@ -1,33 +1,22 @@
+"use server";
 import { authOptions } from "@/auth/auth";
 import { db } from "@/db/index";
 import { course, courseSession, roster, user } from "@/db/schema";
 import { and, eq } from "drizzle-orm";
 import { getServerSession } from "next-auth";
-import { NextResponse } from "next/server";
-export async function GET() {
+
+export async function apiUserGetCoursesSessions() {
   // Get all course sessions for which the user is registered as student
   const authSession = await getServerSession(authOptions);
   if (!authSession || !authSession.user) {
-    return NextResponse.json(
-      {
-        error: "Unauthorized",
-      },
-      { status: 401 }
-    );
+    throw new Error("Unauthorized");
   }
 
-  if (["admin, teacher"].includes(authSession.user.role)) {
+  if (["admin", "teacher"].includes(authSession.user.role)) {
     try {
-      const results = await adminGetMyCourses(authSession.user.id);
-      return NextResponse.json(results);
+      return adminGetMyCourses(authSession.user.id);
     } catch (error) {
-      console.error("Error fetching course sessions:", error);
-      return NextResponse.json(
-        {
-          error: (error as Error).message,
-        },
-        { status: 500 }
-      );
+      throw new Error("Failed to fetch course sessions for admin/teacher");
     }
   }
 
@@ -50,15 +39,9 @@ export async function GET() {
       .innerJoin(course, eq(course.id, courseSession.courseId))
       .innerJoin(user, eq(user.id, courseSession.instructorId));
 
-    return NextResponse.json(res);
+    return res;
   } catch (error) {
-    console.error("Error fetching course sessions:", error);
-    return NextResponse.json(
-      {
-        error: (error as Error).message,
-      },
-      { status: 500 }
-    );
+    throw error;
   }
 }
 

@@ -1,14 +1,10 @@
-"use client";
-import { useAdminAuthorized } from "app/hooks/use-admin-authorized";
-
-export default function AdminDashboardPage() {
-  const { isAdminAuthorized } = useAdminAuthorized();
-  if (!isAdminAuthorized) {
-    return (
-      <div className="flex flex-col items-center justify-center h-full">
-        <p className="text-lg">You do not have permission to view this page.</p>
-      </div>
-    );
+import { authOptions } from "@/auth/auth";
+import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
+export default async function AdminDashboardPage() {
+  const serverSession = await getServerSession(authOptions);
+  if (!serverSession || !serverSession.user) {
+    redirect("/login");
   }
   return (
     <div>
@@ -17,7 +13,6 @@ export default function AdminDashboardPage() {
         Welcome to the admin dashboard. Here you can manage users, courses, and
         more.
       </p>
-      {/* Add more admin-specific components or links here */}
     </div>
   );
 }

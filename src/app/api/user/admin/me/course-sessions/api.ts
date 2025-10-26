@@ -1,22 +1,16 @@
 // Route to get the requesting user's sessions
-
+"use server";
 import { authOptions } from "@/auth/auth";
 import { db } from "@/db/index";
 import { course, courseSession, user } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { getServerSession } from "next-auth";
-import { NextResponse } from "next/server";
 
-export async function GET() {
+export async function apiAdminGetCoursesSessions() {
   const authSession = await getServerSession(authOptions);
 
   if (!authSession || !authSession.user) {
-    return NextResponse.json(
-      {
-        error: "Unauthorized",
-      },
-      { status: 401 }
-    );
+    throw new Error("Unauthorized");
   }
 
   try {
@@ -38,13 +32,8 @@ export async function GET() {
       .where(eq(user.id, authSession?.user.id))
       .leftJoin(courseSession, eq(user.id, courseSession.instructorId))
       .leftJoin(course, eq(course.id, courseSession.courseId));
-    return NextResponse.json(result);
+    return result;
   } catch (error) {
-    return NextResponse.json(
-      {
-        error: (error as Error).message,
-      },
-      { status: 500 }
-    );
+    throw new Error("Failed to fetch course sessions for admin");
   }
 }
