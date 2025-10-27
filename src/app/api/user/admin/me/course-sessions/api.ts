@@ -3,14 +3,21 @@
 import { authOptions } from "@/auth/auth";
 import { db } from "@/db/index";
 import { course, courseSession, user } from "@/db/schema";
+import { ApiResult } from "@/lib/types/api/api-return-type";
+import { CourseSessionInfo } from "@/lib/types/db/course-session-info";
 import { eq } from "drizzle-orm";
 import { getServerSession } from "next-auth";
 
-export async function apiAdminGetCoursesSessions() {
+export async function apiAdminGetCoursesSessions(): Promise<
+  ApiResult<CourseSessionInfo[]>
+> {
   const authSession = await getServerSession(authOptions);
 
   if (!authSession || !authSession.user) {
-    throw new Error("Unauthorized");
+    return {
+      message: "Unauthorized",
+      success: false,
+    };
   }
 
   try {
@@ -32,8 +39,16 @@ export async function apiAdminGetCoursesSessions() {
       .where(eq(user.id, authSession?.user.id))
       .leftJoin(courseSession, eq(user.id, courseSession.instructorId))
       .leftJoin(course, eq(course.id, courseSession.courseId));
-    return result;
+
+    return {
+      message: null,
+      success: true,
+      data: result as CourseSessionInfo[],
+    };
   } catch (error) {
-    throw new Error("Failed to fetch course sessions for admin");
+    return {
+      message: (error as Error).message,
+      success: false,
+    };
   }
 }

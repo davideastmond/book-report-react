@@ -16,7 +16,10 @@ export async function apiUserGetCoursesSessions() {
     try {
       return adminGetMyCourses(authSession.user.id);
     } catch (error) {
-      throw new Error("Failed to fetch course sessions for admin/teacher");
+      throw new Error(
+        "Failed to fetch course sessions for admin/teacher: " +
+          (error as Error).message
+      );
     }
   }
 

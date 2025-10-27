@@ -2,6 +2,7 @@
 import { authOptions } from "@/auth/auth";
 import { db } from "@/db/index";
 import { course, courseSession, user } from "@/db/schema";
+import { ApiResult } from "@/lib/types/api/api-return-type";
 import { GroupedCourseInfo } from "@/lib/types/db/grouped-course-info";
 import { eq } from "drizzle-orm";
 import { getServerSession } from "next-auth";
@@ -9,10 +10,16 @@ import { getServerSession } from "next-auth";
 /* 
 This route will return a list of completed course sessions, grouped by the course they belong to.
 */
-export async function apiGetGroupedCoursesSessionsByCourse() {
+export async function apiGetGroupedCoursesSessionsByCourse<T>(): Promise<
+  ApiResult<GroupedCourseInfo[]>
+> {
   const authSession = await getServerSession(authOptions);
   if (!authSession || !authSession.user) {
-    throw new Error("Unauthorized");
+    return {
+      message: "Unauthorized",
+      success: false,
+      data: null,
+    };
   }
 
   const completedSessions: GroupedCourseInfo[] = await db
@@ -33,5 +40,9 @@ export async function apiGetGroupedCoursesSessionsByCourse() {
     .fullJoin(course, eq(course.id, courseSession.courseId))
     .fullJoin(user, eq(user.id, courseSession.instructorId));
 
-  return completedSessions;
+  return {
+    success: true,
+    message: null,
+    data: completedSessions,
+  };
 }

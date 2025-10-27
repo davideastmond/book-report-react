@@ -2,6 +2,7 @@
 import { authOptions } from "@/auth/auth";
 import { db } from "@/db/index";
 import { course, courseSession, roster, user } from "@/db/schema";
+import { ApiResult } from "@/lib/types/api/api-return-type";
 import { isStudentEnrolled } from "@/lib/utils/db/course-enrollment-helpers";
 
 import { eq } from "drizzle-orm";
@@ -91,14 +92,20 @@ export async function apiPatchCoursesSessionById(
     description?: string;
     studentAllotment?: number;
   }
-) {
+): Promise<ApiResult<null>> {
   const authSession = await getServerSession(authOptions);
   if (!authSession || !authSession.user) {
-    throw new Error("Unauthorized");
+    return {
+      success: false,
+      message: "Unauthorized",
+    };
   }
 
   if (!["admin", "teacher"].includes(authSession.user.role)) {
-    throw Error("Unauthorized access.");
+    return {
+      success: false,
+      message: "Unauthorized",
+    };
   }
 
   try {
@@ -116,9 +123,13 @@ export async function apiPatchCoursesSessionById(
         studentAllotment: requestBody.studentAllotment,
       })
       .where(eq(courseSession.id, courseSessionId));
+    return {
+      success: true,
+    };
   } catch (error) {
-    throw new Error(
-      "Failed to update course session: " + (error as Error).message
-    );
+    return {
+      success: false,
+      message: "Failed to update course session: " + (error as Error).message,
+    };
   }
 }

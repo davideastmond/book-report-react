@@ -2,6 +2,8 @@
 import { authOptions } from "@/auth/auth";
 import { db } from "@/db/index";
 import { course, CourseSession, courseSession, user } from "@/db/schema";
+import { ApiResult } from "@/lib/types/api/api-return-type";
+import { CourseSessionInfo } from "@/lib/types/db/course-session-info";
 import { createCourseSessionValidator } from "@/lib/validators/course-session/create-course-session-validator";
 import { eq, or } from "drizzle-orm";
 import { getServerSession } from "next-auth";
@@ -10,11 +12,14 @@ import z from "zod";
 
 export async function apiPostCreateCourseSession(
   requestBody: Partial<CourseSession>
-) {
+): Promise<ApiResult<null>> {
   const authSession = await getServerSession(authOptions);
 
   if (!authSession || !authSession.user) {
-    throw new Error("Unauthorized");
+    return {
+      success: false,
+      message: "Unauthorized",
+    };
   }
 
   // Validate the request body
@@ -22,9 +27,11 @@ export async function apiPostCreateCourseSession(
     createCourseSessionValidator.parse(requestBody);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      throw new Error(
-        "Validation error: " + error.errors.map((e) => e.message).join(", ")
-      );
+      return {
+        success: false,
+        message:
+          "Validation error: " + error.errors.map((e) => e.message).join(", "),
+      };
     }
   }
   const { courseId, sessionStart, sessionEnd, description, studentAllotment } =
@@ -40,19 +47,30 @@ export async function apiPostCreateCourseSession(
       description: description || null,
       studentAllotment: studentAllotment!,
     });
+    return {
+      success: true,
+    };
   } catch (error) {
-    throw new Error(
-      "An error occurred while creating the course:" + (error as Error).message
-    );
+    return {
+      success: false,
+      message:
+        "An error occurred while creating the course:" +
+        (error as Error).message,
+    };
   }
 }
 
 // This route gets all available courses for browsing purposes
-export async function apiGetAllAvailableCourses(showCompleted: boolean) {
+export async function apiGetAllAvailableCourses(
+  showCompleted: boolean
+): Promise<ApiResult<CourseSessionInfo[]>> {
   const authSession = await getServerSession(authOptions);
 
   if (!authSession || !authSession.user) {
-    throw new Error("Unauthorized");
+    return {
+      success: false,
+      message: "Unauthorized",
+    };
   }
 
   const conditionalQuery = showCompleted
@@ -83,10 +101,15 @@ export async function apiGetAllAvailableCourses(showCompleted: boolean) {
       .where(conditionalQuery)
       .innerJoin(course, eq(course.id, courseSession.courseId))
       .innerJoin(user, eq(user.id, courseSession.instructorId));
-    return availableCourses;
+    return {
+      data: availableCourses as CourseSessionInfo[],
+      success: true,
+    };
   } catch (error) {
-    throw new Error(
-      "An error occurred while fetching courses:" + (error as Error).message
-    );
+    return {
+      success: false,
+      message:
+        "An error occurred while fetching courses:" + (error as Error).message,
+    };
   }
 }
