@@ -1,28 +1,29 @@
+"use server";
 import { authOptions } from "@/auth/auth";
 import { db } from "@/db/index";
 import { user } from "@/db/schema";
+import { ApiResult } from "@/lib/types/api/api-return-type";
+import { EnrolledStudent } from "@/lib/types/db/course-session-info";
+
 import { eq } from "drizzle-orm";
 import { getServerSession } from "next-auth";
-import { NextResponse } from "next/server";
 
-export async function GET() {
+export async function apiGetEnrolledStudents(): Promise<
+  ApiResult<EnrolledStudent[]>
+> {
   const authSession = await getServerSession(authOptions);
   if (!authSession || !authSession.user) {
-    return NextResponse.json(
-      {
-        error: "Unauthorized",
-      },
-      { status: 401 }
-    );
+    return {
+      success: false,
+      message: "Unauthorized",
+    };
   }
 
   if (!["admin", "teacher"].includes(authSession.user.role)) {
-    return NextResponse.json(
-      {
-        error: "Forbidden access",
-      },
-      { status: 403 }
-    );
+    return {
+      success: false,
+      message: "Forbidden access",
+    };
   }
 
   try {
@@ -37,14 +38,15 @@ export async function GET() {
       .from(user)
       .where(eq(user.role, "student"));
 
-    return NextResponse.json(res);
+    return {
+      success: true,
+      data: res,
+    };
   } catch (error) {
-    console.error("Error fetching students:", error);
-    return NextResponse.json(
-      {
-        error: (error as Error).message,
-      },
-      { status: 500 }
-    );
+    return {
+      success: false,
+      message:
+        "An error occurred while fetching users: " + (error as Error).message,
+    };
   }
 }
