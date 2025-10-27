@@ -1,3 +1,12 @@
+import {
+  apiGetCoursesSessionById,
+  apiPatchCoursesSessionById,
+} from "@/api/courses/sessions/[courseSessionId]/api";
+import {
+  apiGetAllAvailableCourses,
+  apiPostCreateCourseSession,
+} from "@/api/courses/sessions/api";
+import { apiGetGroupedCoursesSessionsByCourse } from "@/api/courses/sessions/grouped/api";
 import { apiAdminGetCoursesSessions } from "@/api/user/admin/me/course-sessions/api";
 import { apiUserGetCoursesSessions } from "@/api/user/me/course-sessions/api";
 import { AcademicGrade, CourseSession, GradeWeight } from "@/db/schema";
@@ -19,22 +28,13 @@ export const CourseSessionClient = {
     description,
     studentAllotment,
   }: Partial<CourseSession>): Promise<void> => {
-    const res = await fetch("/api/courses/sessions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        courseId,
-        sessionStart,
-        sessionEnd,
-        description,
-        studentAllotment,
-      }),
+    await apiPostCreateCourseSession({
+      courseId,
+      sessionStart,
+      sessionEnd,
+      description,
+      studentAllotment,
     });
-    if (!res.ok) {
-      throw Error("Failed to create course");
-    }
   },
   patchCourseSession: async (
     courseSessionId: string,
@@ -50,15 +50,8 @@ export const CourseSessionClient = {
     if (sessionEnd) {
       content = { ...content, sessionEnd };
     }
-    await fetch(`/api/courses/sessions/${courseSessionId}`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        ...content,
-      }),
-    });
+
+    await apiPatchCoursesSessionById(courseSessionId, content);
   },
   fetchCourseSessionsAdmin: async () => {
     return apiAdminGetCoursesSessions();
@@ -70,17 +63,9 @@ export const CourseSessionClient = {
   fetchCourseSessionByIdAdmin: async (
     id: string
   ): Promise<CourseSessionDataAPIResponse> => {
-    const res = await fetch(`/api/courses/sessions/${id}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    if (!res.ok) {
-      throw Error("Failed to fetch course sessions");
-    }
-
-    return res.json();
+    return apiGetCoursesSessionById(
+      id
+    ) as Promise<CourseSessionDataAPIResponse>;
   },
   addStudentToCourseSession: async ({
     courseSessionId,
@@ -131,20 +116,9 @@ export const CourseSessionClient = {
   fetchAvailableCourses: async (
     showCompleted: boolean = false
   ): Promise<CourseSessionInfo[]> => {
-    const res = await fetch(
-      `/api/courses/sessions?showCompleted=${showCompleted}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    if (!res.ok) {
-      throw Error("Failed to fetch available courses");
-    }
-    return await res.json();
+    return apiGetAllAvailableCourses(showCompleted) as Promise<
+      CourseSessionInfo[]
+    >;
   },
   fetchGradesForCourseSession: async (
     courseSessionId: string
@@ -245,16 +219,7 @@ export const CourseSessionClient = {
     return res.json();
   },
   fetchGroupedCourseSessionByCourse: async (): Promise<GroupedCourseInfo[]> => {
-    const res = await fetch("/api/courses/sessions/grouped", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    if (!res.ok) {
-      throw Error("Failed to fetch grouped course sessions");
-    }
-    return res.json();
+    return apiGetGroupedCoursesSessionsByCourse();
   },
   getCourseGradeAverage: async (
     courseSessionId: string

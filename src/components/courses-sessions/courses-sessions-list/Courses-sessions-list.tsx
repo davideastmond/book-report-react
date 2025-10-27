@@ -1,8 +1,11 @@
-import { CourseSessionsAPIResponse } from "@/lib/types/db/course-session-info";
+import {
+  CourseSessionInfo,
+  CourseSessionsAPIResponse,
+} from "@/lib/types/db/course-session-info";
 import { Card, CardBody, CardHeader, Divider, Link } from "@heroui/react";
 
 type CoursesSessionsListProps = {
-  coursesSessions?: CourseSessionsAPIResponse;
+  coursesSessions?: CourseSessionsAPIResponse | CourseSessionInfo[];
   linkable?: boolean;
   enrolled?: {
     show: boolean;
@@ -36,6 +39,7 @@ export function CoursesSessionsList({
               }
               key={session.courseSessionId}
               data-testid="course-session-card-body"
+              className="w-full"
             >
               <Card
                 className={`bg-gray-900 p-3 rounded-md mb-2 w-full ${
@@ -70,14 +74,16 @@ export function CoursesSessionsList({
                       <span className="font-bold">Ends:</span>{" "}
                       {new Date(session.sessionEnd!).toLocaleDateString()}
                     </p>
-                    <p>
-                      <span className="font-bold">Allotment: </span>
-                      <span className=" text-amber-300">
-                        {session.studentAllotment}
-                      </span>
-                    </p>
+                    {session.studentAllotment && (
+                      <p>
+                        <span className="font-bold">Allotment: </span>
+                        <span className=" text-amber-300">
+                          {session.studentAllotment}
+                        </span>
+                      </p>
+                    )}
                     <p className="text-amber-300">
-                      {session.isCompleted ? "Y" : ""}
+                      {session.isCompleted ? "Course is completed" : ""}
                     </p>
                     {enrolled && enrolled.show && (
                       <p>

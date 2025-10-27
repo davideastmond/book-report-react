@@ -1,35 +1,29 @@
+"use server";
 import { authOptions } from "@/auth/auth";
 import { db } from "@/db/index";
-import { course, courseSession, user } from "@/db/schema";
+import { course, CourseSession, courseSession, user } from "@/db/schema";
 import { createCourseSessionValidator } from "@/lib/validators/course-session/create-course-session-validator";
 import { eq, or } from "drizzle-orm";
 import { getServerSession } from "next-auth";
-import { NextRequest, NextResponse } from "next/server";
+
 import z from "zod";
 
-export async function POST(request: NextRequest) {
+export async function apiPostCreateCourseSession(
+  requestBody: Partial<CourseSession>
+) {
   const authSession = await getServerSession(authOptions);
 
   if (!authSession || !authSession.user) {
-    return NextResponse.json(
-      {
-        error: "Unauthorized",
-      },
-      { status: 401 }
-    );
+    throw new Error("Unauthorized");
   }
-  const requestBody = await request.json();
 
   // Validate the request body
   try {
     createCourseSessionValidator.parse(requestBody);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return NextResponse.json(
-        {
-          error: error.errors,
-        },
-        { status: 400 }
+      throw new Error(
+        "Validation error: " + error.errors.map((e) => e.message).join(", ")
       );
     }
   }
@@ -39,50 +33,34 @@ export async function POST(request: NextRequest) {
   try {
     await db.insert(courseSession).values({
       id: crypto.randomUUID(),
-      courseId: courseId,
-      sessionStart: new Date(sessionStart),
-      sessionEnd: new Date(sessionEnd),
-      instructorId: authSession.user.id,
+      courseId: courseId!,
+      sessionStart: new Date(sessionStart!),
+      sessionEnd: new Date(sessionEnd!),
+      instructorId: authSession.user.id as string,
       description: description || null,
-      studentAllotment: studentAllotment,
+      studentAllotment: studentAllotment!,
     });
-    return NextResponse.json(
-      { message: "Course created successfully" },
-      { status: 201 }
-    );
   } catch (error) {
-    return NextResponse.json(
-      {
-        error:
-          "An error occurred while creating the course:" +
-          (error as Error).message,
-      },
-      { status: 500 }
+    throw new Error(
+      "An error occurred while creating the course:" + (error as Error).message
     );
   }
 }
 
 // This route gets all available courses for browsing purposes
-export async function GET(req: NextRequest) {
+export async function apiGetAllAvailableCourses(showCompleted: boolean) {
   const authSession = await getServerSession(authOptions);
 
   if (!authSession || !authSession.user) {
-    return NextResponse.json(
-      {
-        error: "Unauthorized",
-      },
-      { status: 401 }
-    );
+    throw new Error("Unauthorized");
   }
 
-  const showCompleted = req.nextUrl.searchParams.get("showCompleted");
-  const conditionalQuery =
-    showCompleted === "true"
-      ? or(
-          eq(courseSession.isCompleted, true),
-          eq(courseSession.isCompleted, false)
-        )
-      : eq(courseSession.isCompleted, false);
+  const conditionalQuery = showCompleted
+    ? or(
+        eq(courseSession.isCompleted, true),
+        eq(courseSession.isCompleted, false)
+      )
+    : eq(courseSession.isCompleted, false);
 
   try {
     const availableCourses = await db
@@ -105,15 +83,10 @@ export async function GET(req: NextRequest) {
       .where(conditionalQuery)
       .innerJoin(course, eq(course.id, courseSession.courseId))
       .innerJoin(user, eq(user.id, courseSession.instructorId));
-    return NextResponse.json(availableCourses);
+    return availableCourses;
   } catch (error) {
-    return NextResponse.json(
-      {
-        error:
-          "An error occurred while fetching courses:" +
-          (error as Error).message,
-      },
-      { status: 500 }
+    throw new Error(
+      "An error occurred while fetching courses:" + (error as Error).message
     );
   }
 }

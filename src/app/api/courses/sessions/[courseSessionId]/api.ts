@@ -1,26 +1,18 @@
+"use server";
 import { authOptions } from "@/auth/auth";
 import { db } from "@/db/index";
 import { course, courseSession, roster, user } from "@/db/schema";
 import { isStudentEnrolled } from "@/lib/utils/db/course-enrollment-helpers";
-import { error } from "console";
-import { eq } from "drizzle-orm";
-import { getServerSession } from "next-auth";
-import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(
-  req: NextRequest,
-  urlData: { params: Promise<{ courseSessionId: string }> }
-) {
+import { eq } from "drizzle-orm";
+
+import { getServerSession } from "next-auth";
+
+export async function apiGetCoursesSessionById(courseSessionId: string) {
   const authSession = await getServerSession(authOptions);
   if (!authSession || !authSession.user) {
-    return NextResponse.json(
-      {
-        error,
-      },
-      { status: 401 }
-    );
+    throw new Error("Unauthorized");
   }
-  const { courseSessionId } = await urlData.params;
 
   if (["admin", "teacher", "student"].includes(authSession.user.role)) {
     const { courseSessionData, students } = await doAdminQuery(courseSessionId);
@@ -43,14 +35,9 @@ export async function GET(
     if (["student"].includes(authSession.user.role)) {
       dataBeforeSending.students = [];
     }
-    return NextResponse.json(dataBeforeSending);
+    return dataBeforeSending;
   }
-  return NextResponse.json(
-    {
-      error: "For admins only",
-    },
-    { status: 403 }
-  );
+  throw Error("Unauthorized access.");
 }
 
 async function doAdminQuery(courseSessionId: string) {
@@ -96,55 +83,42 @@ async function doAdminQuery(courseSessionId: string) {
   };
 }
 
-export async function PATCH(
-  req: NextRequest,
-  urlData: { params: Promise<{ courseSessionId: string }> }
-) {
-  const authSession = await getServerSession(authOptions);
-  if (!authSession || !authSession.user) {
-    return NextResponse.json(
-      {
-        error: "Unauthorized",
-      },
-      { status: 401 }
-    );
-  }
-  const { courseSessionId } = await urlData.params;
-  if (!["admin", "teacher"].includes(authSession.user.role)) {
-    return NextResponse.json(
-      {
-        error: "Unauthorized access.",
-      },
-      { status: 403 }
-    );
-  }
-  const data = (await req.json()) as {
+export async function apiPatchCoursesSessionById(
+  courseSessionId: string,
+  requestBody: {
     sessionStart?: string;
     sessionEnd?: string;
     description?: string;
     studentAllotment?: number;
-  };
+  }
+) {
+  const authSession = await getServerSession(authOptions);
+  if (!authSession || !authSession.user) {
+    throw new Error("Unauthorized");
+  }
+
+  if (!["admin", "teacher"].includes(authSession.user.role)) {
+    throw Error("Unauthorized access.");
+  }
 
   try {
     // Validate data structure here if necessary
     await db
       .update(courseSession)
       .set({
-        sessionStart: data.sessionStart
-          ? new Date(data.sessionStart)
+        sessionStart: requestBody.sessionStart
+          ? new Date(requestBody.sessionStart)
           : undefined,
-        sessionEnd: data.sessionEnd ? new Date(data.sessionEnd) : undefined,
-        description: data.description,
-        studentAllotment: data.studentAllotment,
+        sessionEnd: requestBody.sessionEnd
+          ? new Date(requestBody.sessionEnd)
+          : undefined,
+        description: requestBody.description,
+        studentAllotment: requestBody.studentAllotment,
       })
       .where(eq(courseSession.id, courseSessionId));
-    return NextResponse.json({ success: true });
   } catch (error) {
-    return NextResponse.json(
-      {
-        error: "Error updating course session: " + (error as Error).message,
-      },
-      { status: 500 }
+    throw new Error(
+      "Failed to update course session: " + (error as Error).message
     );
   }
 }
