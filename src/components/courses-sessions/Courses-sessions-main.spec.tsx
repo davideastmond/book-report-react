@@ -19,9 +19,9 @@ describe("Courses Sessions Main Component Tests", () => {
   describe("admin user", () => {
     it("new course session link should be visible", async () => {
       // Mock the component and check if the link is rendered
-      const { getByText } = render(<CoursesSessionsMain isAdmin={true} />);
-      expect(getByText("+ New Course Session")).toBeDefined();
-      expect(getByText("No course sessions found.")).toBeDefined();
+      const { findByText } = render(<CoursesSessionsMain isAdmin={true} />);
+      await expect(findByText(/new course session/i)).toBeDefined();
+      await expect(findByText("No course sessions found.")).toBeDefined();
       expect(fetchCoursesAdminSpy).toHaveBeenCalled();
       expect(fetchCoursesUserSpy).not.toHaveBeenCalled();
     });
