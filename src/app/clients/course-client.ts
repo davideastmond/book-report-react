@@ -3,6 +3,10 @@ import { Course } from "@/db/schema";
 
 export const CourseClient = {
   fetchCourses: async (): Promise<Partial<Course>[]> => {
-    return apiGetCourses();
+    const response = await apiGetCourses();
+    if (!response.success) {
+      throw new Error(response.message || "Failed to fetch courses");
+    }
+    return response.data!;
   },
 };
