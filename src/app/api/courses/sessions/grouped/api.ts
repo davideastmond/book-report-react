@@ -10,7 +10,7 @@ import { getServerSession } from "next-auth";
 /* 
 This route will return a list of completed course sessions, grouped by the course they belong to.
 */
-export async function apiGetGroupedCoursesSessionsByCourse<T>(): Promise<
+export async function apiGetGroupedCoursesSessionsByCourse(): Promise<
   ApiResult<GroupedCourseInfo[]>
 > {
   const authSession = await getServerSession(authOptions);
