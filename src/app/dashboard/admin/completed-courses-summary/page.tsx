@@ -5,13 +5,20 @@ import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 export default async function CompletedCoursesSummaryPage() {
   const serverSession = await getServerSession(authOptions);
-
-  const groupedCourses =
-    await CourseSessionClient.fetchGroupedCourseSessionByCourse();
-
   if (!serverSession || !serverSession.user) {
-    redirect("/login");
+    return redirect("/login");
   }
 
-  return <GroupedCourseList groupedCourses={groupedCourses} />;
+  try {
+    const groupedCourses =
+      await CourseSessionClient.fetchGroupedCourseSessionByCourse();
+
+    return <GroupedCourseList groupedCourses={groupedCourses || []} />;
+  } catch (error) {
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
+    if (errorMessage === "Unauthorized") {
+      return redirect("/login");
+    }
+  }
 }
