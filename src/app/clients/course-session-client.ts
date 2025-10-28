@@ -28,13 +28,16 @@ export const CourseSessionClient = {
     description,
     studentAllotment,
   }: Partial<CourseSession>): Promise<void> => {
-    await apiPostCreateCourseSession({
+    const result = await apiPostCreateCourseSession({
       courseId,
       sessionStart,
       sessionEnd,
       description,
       studentAllotment,
     });
+    if (!result.success) {
+      throw new Error(result.message || "Failed to create course session");
+    }
   },
   patchCourseSession: async (
     courseSessionId: string,
@@ -53,8 +56,10 @@ export const CourseSessionClient = {
 
     await apiPatchCoursesSessionById(courseSessionId, content);
   },
-  fetchCourseSessionsAdmin: async () => {
-    return apiAdminGetCoursesSessions();
+  fetchCourseSessionsAdmin: async (): Promise<CourseSessionInfo[]> => {
+    const result = await apiAdminGetCoursesSessions();
+    if (!result.success) throw new Error(result.message!);
+    return result.data!;
   },
   fetchCourseSessionsByStudent:
     async (): Promise<CourseSessionsAPIResponse> => {
@@ -116,9 +121,9 @@ export const CourseSessionClient = {
   fetchAvailableCourses: async (
     showCompleted: boolean = false
   ): Promise<CourseSessionInfo[]> => {
-    return apiGetAllAvailableCourses(showCompleted) as Promise<
-      CourseSessionInfo[]
-    >;
+    const result = await apiGetAllAvailableCourses(showCompleted);
+    if (!result.success) throw new Error(result.message!);
+    return result.data!;
   },
   fetchGradesForCourseSession: async (
     courseSessionId: string
@@ -219,7 +224,9 @@ export const CourseSessionClient = {
     return res.json();
   },
   fetchGroupedCourseSessionByCourse: async (): Promise<GroupedCourseInfo[]> => {
-    return apiGetGroupedCoursesSessionsByCourse();
+    const result = await apiGetGroupedCoursesSessionsByCourse();
+    if (!result.success) throw new Error(result.message!);
+    return result.data!;
   },
   getCourseGradeAverage: async (
     courseSessionId: string
