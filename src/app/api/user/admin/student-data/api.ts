@@ -1,40 +1,32 @@
+"use server";
 import { authOptions } from "@/auth/auth";
 import { db } from "@/db/index";
 import { course, courseSession, roster, user } from "@/db/schema";
 import { StudentGradeCalculator } from "@/lib/controller/grades/calculations/student-grade-calculator";
 import { GradeController } from "@/lib/controller/grades/grade-controller";
+import {
+  AdminStudentDataAPIResponse,
+  CourseHistoryData,
+} from "@/lib/types/admin-data/admin-student-data-api-response";
+import { ApiResult } from "@/lib/types/api/api-return-type";
 import { eq } from "drizzle-orm";
 import { getServerSession } from "next-auth";
-import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(req: NextRequest) {
+export async function getAdminStudentData(
+  userId: string
+): Promise<ApiResult<AdminStudentDataAPIResponse>> {
   const authSession = await getServerSession(authOptions);
   if (!authSession || !authSession.user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    return { success: false, message: "Unauthorized" };
   }
 
   // Only admins  can access this endpoint
   if (authSession.user.role !== "admin") {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-  }
-
-  const queryParams = req.nextUrl.searchParams;
-  if (!queryParams.has("userId")) {
-    return NextResponse.json(
-      { error: "Missing userId query parameter" },
-      { status: 400 }
-    );
-  }
-  const userId = queryParams.get("userId");
-  if (!userId) {
-    return NextResponse.json(
-      { error: "Invalid userId query parameter" },
-      { status: 400 }
-    );
+    return { success: false, message: "Forbidden" };
   }
 
   // This user should exist
-  const data = await db
+  const queryData = await db
     .select({
       studentFirstName: user.firstName,
       studentLastName: user.lastName,
@@ -67,16 +59,18 @@ export async function GET(req: NextRequest) {
   // Return the basic user identity and all of the classes and grading stats
 
   // Let's first get all of the courses
-  return NextResponse.json(
-    {
+  return {
+    success: true,
+    data: {
       studentData: {
-        studentFirstName: data[0]?.studentFirstName || "",
-        studentLastName: data[0]?.studentLastName || "",
-        studentId: data[0]?.studentId || "",
+        studentFirstName: queryData[0]?.studentFirstName || "",
+        studentLastName: queryData[0]?.studentLastName || "",
+        studentId: queryData[0]?.studentId || "",
+        studentDob: null,
+        studentEmail: null,
       },
-      coursesData: data,
+      coursesData: queryData as CourseHistoryData[],
       gradesData: collatedGradeData,
     },
-    { status: 200 }
-  );
+  };
 }
