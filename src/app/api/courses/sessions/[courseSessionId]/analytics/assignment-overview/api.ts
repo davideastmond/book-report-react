@@ -1,45 +1,35 @@
+"use server";
 import { authOptions } from "@/auth/auth";
 import { aggregateCourseAssignmentData } from "@/lib/controller/grades/aggregators/course-assignment-aggregator";
+import { AggregatedCourseAssignmentData } from "@/lib/controller/grades/aggregators/definitions";
 import { GradeController } from "@/lib/controller/grades/grade-controller";
+import { ApiResult } from "@/lib/types/api/api-return-type";
 import { getServerSession } from "next-auth";
-import { NextRequest, NextResponse } from "next/server";
 
 /* 
 In this route, we want to gather all the assignments for a course session
 */
-export async function GET(
-  _: NextRequest,
-  urlData: { params: Promise<{ courseSessionId: string }> }
-) {
+export async function apiGetAssignmentsOverview(
+  courseSessionId: string
+): Promise<ApiResult<AggregatedCourseAssignmentData[]>> {
   const authSession = await getServerSession(authOptions);
   if (!authSession || !authSession.user) {
-    return NextResponse.json(
-      {
-        error: "Unauthorized access",
-      },
-      { status: 401 }
-    );
+    return {
+      success: false,
+      message: "Unauthorized",
+    };
   }
 
   if (!["teacher", "admin"].includes(authSession.user.role)) {
-    return NextResponse.json(
-      { error: "You do not have permission to access this resource" },
-      { status: 403 }
-    );
-  }
-
-  const { courseSessionId } = await urlData.params;
-
-  if (!courseSessionId) {
-    return NextResponse.json(
-      { error: "Course session ID is required" },
-      { status: 400 }
-    );
+    return {
+      success: false,
+      message: "Forbidden: Insufficient permissions",
+    };
   }
 
   const rawGradeData = await GradeController.getRawDataForCourseSessionById(
     courseSessionId
   );
   const aggregatedData = aggregateCourseAssignmentData(rawGradeData);
-  return NextResponse.json(aggregatedData, { status: 200 });
+  return { success: true, data: aggregatedData };
 }
