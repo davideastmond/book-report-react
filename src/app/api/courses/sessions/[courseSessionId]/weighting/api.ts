@@ -1,79 +1,50 @@
-import { authOptions } from "@/auth/auth";
+"use server";
 
 import { db } from "@/db/index";
 import { academicTask, GradeWeight, gradeWeight } from "@/db/schema";
+import { ApiResult } from "@/lib/types/api/api-return-type";
 import { weightDataValidator } from "@/lib/validators/weightings/weight-data-validator";
 import { eq } from "drizzle-orm";
-import { getServerSession } from "next-auth";
-import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
-export async function GET(
-  _: NextRequest,
-  urlData: { params: Promise<{ courseSessionId: string }> }
-) {
-  const authSession = await getServerSession(authOptions);
-  if (!authSession || !authSession.user) {
-    return NextResponse.json(
-      {
-        error: "Unauthorized",
-      },
-      { status: 401 }
-    );
-  }
-
-  const { courseSessionId } = await urlData.params;
-
+export async function apiGetCourseWeightings(
+  courseSessionId: string
+): Promise<ApiResult<GradeWeight[]>> {
   try {
     const weights = await db.query.gradeWeight.findMany({
       where: eq(gradeWeight.courseSessionId, courseSessionId),
     });
-    return NextResponse.json(weights);
+    return {
+      success: true,
+      data: weights,
+    };
   } catch (error) {
-    return NextResponse.json(
-      {
-        error: "Error fetching weights: " + (error as Error).message,
-      },
-      { status: 500 }
-    );
+    return {
+      success: false,
+      message: "Error fetching weights: " + (error as Error).message,
+    };
   }
 }
 
-export async function POST(
-  req: NextRequest,
-  urlData: { params: Promise<{ courseSessionId: string }> }
-) {
-  const authSession = await getServerSession(authOptions);
-  if (!authSession || !authSession.user) {
-    return NextResponse.json(
-      {
-        error: "Unauthorized",
-      },
-      { status: 401 }
-    );
-  }
-
-  const { courseSessionId } = await urlData.params;
-  const requestBody = (await req.json()) as GradeWeight[];
-
+export async function apiCreateCourseWeighting(
+  courseSessionId: string,
+  payload: GradeWeight[]
+): Promise<ApiResult<void>> {
   // Validate the request body
   try {
-    weightDataValidator.parse(requestBody);
+    weightDataValidator.parse(payload);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return NextResponse.json(
-        {
-          error: error.errors,
-        },
-        { status: 400 }
-      );
+      return {
+        success: false,
+        message:
+          "Validation error: " + error.errors.map((e) => e.message).join(", "),
+      };
     }
-    return NextResponse.json(
-      {
-        error: "Invalid request data",
-      },
-      { status: 400 }
-    );
+    return {
+      success: false,
+      message: "Unknown validation error",
+    };
   }
 
   // The weightings for a course session need to add up to 100%
@@ -110,7 +81,7 @@ export async function POST(
   }
 
   // Now insert the new weights.
-  const dataToInsert = requestBody.map((w) => {
+  const dataToInsert = payload.map((w) => {
     const elementId = crypto.randomUUID();
     return {
       courseSessionId: courseSessionId,
@@ -125,17 +96,14 @@ export async function POST(
     console.info("Inserting new weights for course session:", courseSessionId);
     await db.insert(gradeWeight).values(dataToInsert);
     console.info(`Inserted ${dataToInsert.length} weights successfully`);
-    return NextResponse.json({
+    return {
       success: true,
-      message: "Course weighting created successfully",
-    });
+    };
   } catch (error) {
     console.error("Error inserting new weights:", (error as Error).message);
-    return NextResponse.json(
-      {
-        error: "Failed to create course weighting",
-      },
-      { status: 500 }
-    );
+    return {
+      success: false,
+      message: "Error inserting new weights: " + (error as Error).message,
+    };
   }
 }
