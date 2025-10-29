@@ -2,6 +2,16 @@ import {
   apiGetCoursesSessionById,
   apiPatchCoursesSessionById,
 } from "@/api/courses/sessions/[courseSessionId]/api";
+import { apiMarkCourseSessionAsCompleted } from "@/api/courses/sessions/[courseSessionId]/complete/api";
+import {
+  apiGetGradesForCourseSession,
+  apiSubmitGradeUpdatesForCourseSession,
+} from "@/api/courses/sessions/[courseSessionId]/grades/api";
+import { apiToggleLockedStatusForCourseSession } from "@/api/courses/sessions/[courseSessionId]/lock/api";
+import {
+  apiAddStudentToCourseSession,
+  apiRemoveStudentFromCourseSession,
+} from "@/api/courses/sessions/[courseSessionId]/student/api";
 import {
   apiGetAllAvailableCourses,
   apiPostCreateCourseSession,
@@ -79,20 +89,13 @@ export const CourseSessionClient = {
     courseSessionId: string;
     studentId: string;
   }): Promise<void> => {
-    const res = await fetch(
-      `/api/courses/sessions/${courseSessionId}/student`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          studentId,
-        }),
-      }
+    const result = await apiAddStudentToCourseSession(
+      courseSessionId,
+      studentId
     );
-    if (!res.ok) {
-      throw Error("Failed to add user to course session");
+
+    if (!result.success) {
+      throw Error(result.message || "Failed to add user to course session");
     }
   },
   removeStudentFromCourseSession: async ({
@@ -102,20 +105,14 @@ export const CourseSessionClient = {
     courseSessionId: string;
     studentId: string;
   }): Promise<void> => {
-    const res = await fetch(
-      `/api/courses/sessions/${courseSessionId}/student`,
-      {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          studentId,
-        }),
-      }
+    const result = await apiRemoveStudentFromCourseSession(
+      courseSessionId,
+      studentId
     );
-    if (!res.ok) {
-      throw Error("Failed to remove user from session");
+    if (!result.success) {
+      throw Error(
+        result.message || "Failed to remove user from course session"
+      );
     }
   },
   fetchAvailableCourses: async (
@@ -128,12 +125,14 @@ export const CourseSessionClient = {
   fetchGradesForCourseSession: async (
     courseSessionId: string
   ): Promise<AcademicGrade[]> => {
-    const res = await fetch(`/api/courses/sessions/${courseSessionId}/grades`);
-
-    if (!res.ok) {
-      throw Error("Failed to fetch grades for course session");
+    const result = await apiGetGradesForCourseSession(courseSessionId);
+    if (!result.success) {
+      throw new Error(
+        result.message || "Failed to fetch grades for course session"
+      );
     }
-    return await res.json();
+
+    return result.data!;
   },
   submitGradeUpdatesForCourseSession: async ({
     courseSessionId,
@@ -142,50 +141,40 @@ export const CourseSessionClient = {
     courseSessionId: string;
     data: TableData;
   }): Promise<void> => {
-    const res = await fetch(`/api/courses/sessions/${courseSessionId}/grades`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-    if (!res.ok) {
-      throw Error("Failed to submit grade updates for course session");
+    const result = await apiSubmitGradeUpdatesForCourseSession(
+      courseSessionId,
+      data
+    );
+    if (!result.success) {
+      throw new Error(
+        result.message || "Failed to submit grade updates for course session"
+      );
     }
   },
   toggleLockedStatusForCourseSession: async (
     courseSessionId: string
   ): Promise<void> => {
-    const res = await fetch(`/api/courses/sessions/${courseSessionId}/lock`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    if (!res.ok) {
-      throw Error("Failed to toggle locked status for course session");
+    const result = await apiToggleLockedStatusForCourseSession(courseSessionId);
+    if (!result.success) {
+      throw new Error(
+        result.message || "Failed to toggle locked status for course session"
+      );
     }
   },
   markCourseSessionAsCompleted: async (
     courseSessionId: string
   ): Promise<void> => {
-    const res = await fetch(
-      `/api/courses/sessions/${courseSessionId}/complete`,
-      {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const result = await apiMarkCourseSessionAsCompleted(courseSessionId);
 
-    if (!res.ok) {
-      if (res.status === 422) {
+    if (!result.success) {
+      if (result.status === 422) {
         throw Error(
           "Please ensure all grade-weights have at least one course-work item assigned before marking the course session as complete."
         );
       }
-      throw Error("Failed to mark course session as completed.");
+      throw Error(
+        result.message || "Failed to mark course session as completed."
+      );
     }
   },
   createCourseWeighting: async (
