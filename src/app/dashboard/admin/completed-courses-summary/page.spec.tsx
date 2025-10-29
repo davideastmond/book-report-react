@@ -29,6 +29,6 @@ describe("completed courses summary page tests", () => {
   });
   it("should render the completed courses summary page for admin user", async () => {
     await CompletedCoursesSummaryPage();
-    expect(serverRedirectMock).toHaveBeenCalledTimes(2);
+    expect(serverRedirectMock).toHaveBeenCalledTimes(1);
   });
 });
