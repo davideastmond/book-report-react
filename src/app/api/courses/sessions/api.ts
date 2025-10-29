@@ -64,15 +64,6 @@ export async function apiPostCreateCourseSession(
 export async function apiGetAllAvailableCourses(
   showCompleted: boolean
 ): Promise<ApiResult<CourseSessionInfo[]>> {
-  const authSession = await getServerSession(authOptions);
-
-  if (!authSession || !authSession.user) {
-    return {
-      success: false,
-      message: "Unauthorized",
-    };
-  }
-
   const conditionalQuery = showCompleted
     ? or(
         eq(courseSession.isCompleted, true),
