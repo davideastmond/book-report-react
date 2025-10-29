@@ -1,6 +1,8 @@
+"use server";
 import { authOptions } from "@/auth/auth";
 import { db } from "@/db/index";
-import { academicGrade } from "@/db/schema";
+import { AcademicGrade, academicGrade } from "@/db/schema";
+import { ApiResult } from "@/lib/types/api/api-return-type";
 import {
   GradeData,
   StudentGradeData,
@@ -8,53 +10,47 @@ import {
 } from "@/lib/types/grading/student/definitions";
 import { and, eq } from "drizzle-orm";
 import { getServerSession } from "next-auth";
-import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(
-  _: NextRequest,
-  urlData: { params: Promise<{ courseSessionId: string }> }
-) {
+export async function apiGetGradesForCourseSession(
+  courseSessionId: string
+): Promise<ApiResult<AcademicGrade[]>> {
   const authSession = await getServerSession(authOptions);
   if (!authSession || !authSession.user) {
-    return NextResponse.json(
-      {
-        error: "Unauthorized",
-      },
-      { status: 401 }
-    );
+    return {
+      success: false,
+      message: "Unauthorized",
+    };
   }
-  const { courseSessionId } = await urlData.params;
+
   try {
     const gradeResults = await db.query.academicGrade.findMany({
       where: eq(academicGrade.courseSessionId, courseSessionId),
     });
-    return NextResponse.json(gradeResults);
+    return {
+      success: true,
+      data: gradeResults,
+    };
   } catch (error) {
-    return NextResponse.json(
-      {
-        error: "Error fetching grades: " + (error as Error).message,
-      },
-      { status: 500 }
-    );
+    return {
+      success: false,
+      message: "Error fetching grades: " + (error as Error).message,
+    };
   }
 }
 
-export async function PATCH(
-  req: NextRequest,
-  urlData: { params: Promise<{ courseSessionId: string }> }
-) {
+export async function apiSubmitGradeUpdatesForCourseSession(
+  courseSessionId: string,
+  data: TableData
+): Promise<ApiResult<null>> {
   const authSession = await getServerSession(authOptions);
   if (!authSession || !authSession.user) {
-    return NextResponse.json(
-      {
-        error: "Unauthorized",
-      },
-      { status: 401 }
-    );
+    return {
+      success: false,
+      message: "Unauthorized",
+    };
   }
-  const { courseSessionId } = await urlData.params;
+
   try {
-    const data = (await req.json()) as TableData;
     // Validate data structure here if necessary
     const taskedPromises: Promise<void>[] = [];
     Object.entries(data).forEach(([academicTaskId, studentGradeData]) => {
@@ -67,14 +63,12 @@ export async function PATCH(
       );
     });
     await Promise.all(taskedPromises);
-    return NextResponse.json({ success: true });
+    return { success: true };
   } catch (error) {
-    return NextResponse.json(
-      {
-        error: "Error updating grades: " + (error as Error).message,
-      },
-      { status: 500 }
-    );
+    return {
+      success: false,
+      message: "Error submitting grade updates: " + (error as Error).message,
+    };
   }
 }
 
