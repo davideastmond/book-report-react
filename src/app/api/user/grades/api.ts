@@ -1,12 +1,9 @@
 "use server";
-import { authOptions } from "@/auth/auth";
 import { calculateGPA } from "@/lib/controller/grades/calculations/gpa-calculator";
 import { StudentGradeCalculator } from "@/lib/controller/grades/calculations/student-grade-calculator";
 import { GradeController } from "@/lib/controller/grades/grade-controller";
 import { ApiResult } from "@/lib/types/api/api-return-type";
 import { GradeSummaryData } from "@/lib/types/grading/student/definitions";
-
-import { getServerSession } from "next-auth";
 
 /* 
 Example endpoint
@@ -17,16 +14,7 @@ export async function apiGetGradesForStudentWithDateRange(
   startDate: Date,
   endDate: Date
 ): Promise<ApiResult<{ gradeSummaryData: GradeSummaryData[]; gpa: string }>> {
-  const authSession = await getServerSession(authOptions);
-  if (!authSession || !authSession.user) {
-    return {
-      success: false,
-      message: "Unauthorized",
-    };
-  }
-
   // TODO: do some date validation?
-
   try {
     // Create the raw report data
     const rawReportData =

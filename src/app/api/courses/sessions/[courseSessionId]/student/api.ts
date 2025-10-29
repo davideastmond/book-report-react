@@ -11,14 +11,6 @@ export async function apiAddStudentToCourseSession(
   courseSessionId: string,
   studentId: string
 ): Promise<ApiResult<void>> {
-  const authSession = await getServerSession(authOptions);
-  if (!authSession || !authSession.user) {
-    return {
-      success: false,
-      message: "Unauthorized",
-    };
-  }
-
   // TODO: Could we make these queries more efficient by combining them?
   // Count the roster for this course session
   const isCourseFull = await isMaxAllotment(courseSessionId);
