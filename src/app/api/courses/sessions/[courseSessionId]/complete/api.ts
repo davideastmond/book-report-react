@@ -1,34 +1,29 @@
+"use server";
 import { authOptions } from "@/auth/auth";
 import { db } from "@/db/index";
 import { academicTask, courseSession, gradeWeight } from "@/db/schema";
+import { ApiResult } from "@/lib/types/api/api-return-type";
 import { eq } from "drizzle-orm";
 import { getServerSession } from "next-auth";
-import { NextRequest, NextResponse } from "next/server";
 
 // This endpoint marks a course session as complete.
-export async function PATCH(
-  _: NextRequest,
-  urlData: { params: Promise<{ courseSessionId: string }> }
-) {
+export async function apiMarkCourseSessionAsCompleted(
+  courseSessionId: string
+): Promise<ApiResult<null>> {
   const authRequest = await getServerSession(authOptions);
   if (!authRequest || !authRequest.user) {
-    return NextResponse.json(
-      {
-        error: "Unauthorized",
-      },
-      { status: 401 }
-    );
+    return {
+      success: false,
+      message: "Unauthorized.",
+    };
   }
 
   if (!["admin", "teacher"].includes(authRequest.user.role)) {
-    return NextResponse.json(
-      {
-        error: "Unauthorized access.",
-      },
-      { status: 403 }
-    );
+    return {
+      success: false,
+      message: "Unauthorized access.",
+    };
   }
-  const { courseSessionId } = await urlData.params;
 
   // Find a course session by ID. Make sure it exists. Make sure it's in the correct state
 
@@ -37,30 +32,24 @@ export async function PATCH(
       where: eq(courseSession.id, courseSessionId),
     });
     if (!fndCourse) {
-      return NextResponse.json(
-        {
-          error: "Course session not found.",
-        },
-        { status: 404 }
-      );
+      return {
+        success: false,
+        message: "Course session not found.",
+      };
     }
 
     if (fndCourse.isCompleted) {
-      return NextResponse.json(
-        {
-          error: "Course session is already marked as complete.",
-        },
-        { status: 400 }
-      );
+      return {
+        success: false,
+        message: "Course session is already completed.",
+      };
     }
   } catch (error) {
     console.error("Error fetching course session:", error);
-    return NextResponse.json(
-      {
-        error: "Error fetching course session: " + (error as Error).message,
-      },
-      { status: 500 }
-    );
+    return {
+      success: false,
+      message: "Error fetching course session: " + (error as Error).message,
+    };
   }
   // As a validation measure, all course-work should have a weight percentage
   try {
@@ -72,21 +61,18 @@ export async function PATCH(
         (task) => task.gradeWeightId !== null
       );
       if (!allWeightsPresent) {
-        return NextResponse.json(
-          {
-            error: "All course work must have a weight percentage.",
-          },
-          { status: 400 }
-        );
+        return {
+          success: false,
+          message: "All course work must have a weight percentage.",
+        };
       }
     }
   } catch (error) {
-    return NextResponse.json(
-      {
-        error: "Error fetching course work: " + (error as Error).message,
-      },
-      { status: 500 }
-    );
+    return {
+      success: false,
+      message:
+        "Error validating course work weights: " + (error as Error).message,
+    };
   }
 
   // There should also be at least one academic task for each grading weight
@@ -103,23 +89,20 @@ export async function PATCH(
       (item) => item.academic_task === null
     );
     if (validation) {
-      return NextResponse.json(
-        {
-          error:
-            "weights-tasks-count-mismatch: Each grading weight must have at least one academic task assigned.",
-        },
-        { status: 422 }
-      );
+      return {
+        success: false,
+        status: 422,
+        message:
+          "weights-tasks-count-mismatch: Each grading weight must have at least one academic task assigned.",
+      };
     }
   } catch (error) {
-    return NextResponse.json(
-      {
-        error:
-          "Error validating course work and weightings - matching tasks and weights are assigned: " +
-          (error as Error).message,
-      },
-      { status: 500 }
-    );
+    return {
+      success: false,
+      message:
+        "Error validating course work and weightings - matching tasks and weights are assigned: " +
+        (error as Error).message,
+    };
   }
 
   try {
@@ -127,15 +110,13 @@ export async function PATCH(
       .update(courseSession)
       .set({ isCompleted: true })
       .where(eq(courseSession.id, courseSessionId));
-    return NextResponse.json({ success: true });
+    return { success: true };
   } catch (error) {
-    return NextResponse.json(
-      {
-        error:
-          "Error marking course session as complete: " +
-          (error as Error).message,
-      },
-      { status: 500 }
-    );
+    return {
+      success: false,
+      message:
+        "Error marking course session as completed: " +
+        (error as Error).message,
+    };
   }
 }
