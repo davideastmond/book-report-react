@@ -32,7 +32,6 @@ export const CourseWorkClient = {
     return result.data!;
   },
   getCourseWorkById: async ({
-    courseSessionId,
     courseWorkId,
   }: {
     courseSessionId: string;
