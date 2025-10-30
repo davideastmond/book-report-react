@@ -1,24 +1,13 @@
 /* This route fetches the maximum and minimum student grades for a specific course session. */
 
-import { authOptions } from "@/auth/auth";
 import { CourseSessionGradeCalculator } from "@/lib/controller/grades/calculations/course-session-grade-calculator";
 import { GradeController } from "@/lib/controller/grades/grade-controller";
-import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 
 export async function GET(
   _: Request,
   urlData: { params: Promise<{ courseSessionId: string }> }
 ) {
-  const authSession = await getServerSession(authOptions);
-  if (!authSession || !authSession.user) {
-    return NextResponse.json(
-      {
-        error: "Unauthorized",
-      },
-      { status: 401 }
-    );
-  }
   const { courseSessionId } = await urlData.params;
 
   // Validate courseSessionId
