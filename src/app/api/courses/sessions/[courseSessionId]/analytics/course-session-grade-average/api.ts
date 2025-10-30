@@ -2,9 +2,17 @@
 import { CourseSessionGradeCalculator } from "@/lib/controller/grades/calculations/course-session-grade-calculator";
 
 import { GradeController } from "@/lib/controller/grades/grade-controller";
+import { ApiResult } from "@/lib/types/api/api-return-type";
 
 // this route is going to calculate the class average grade for a course session
-export async function apiGetCourseGradeAverage(courseSessionId: string) {
+export async function apiGetCourseGradeAverage(
+  courseSessionId: string
+): Promise<
+  ApiResult<{
+    courseSessionGradeAverage: number;
+    courseSessionId: string;
+  }>
+> {
   try {
     const rawReportData = await GradeController.getRawDataForCourseSessionById(
       courseSessionId
