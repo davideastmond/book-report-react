@@ -199,11 +199,7 @@ export function CourseWorkCreateUpdateForm({
   async function updateCourseWork(data: Partial<AcademicTask>) {
     try {
       setIsBusy(true);
-      CourseWorkClient.updateCourseWorkAttributesById(
-        courseSessionId,
-        courseWorkId!,
-        data
-      );
+      CourseWorkClient.updateCourseWorkAttributesById(courseWorkId!, data);
       setIsBusy(false);
     } catch (error) {
       console.error("Error updating course work:", error);
