@@ -1,3 +1,11 @@
+import {
+  apiGetCourseWorkById,
+  apiUpdateCourseWorkAttributesById,
+} from "@/api/courses/sessions/[courseSessionId]/course-work/[courseWorkId]/api";
+import {
+  apiCreateCourseWork,
+  apiGetCourseWorkForSession,
+} from "@/api/courses/sessions/[courseSessionId]/course-work/api";
 import { AcademicTask } from "@/db/schema";
 import { AcademicTaskWithWeighting } from "@/lib/types/course-work/definitions";
 
@@ -9,36 +17,19 @@ export const CourseWorkClient = {
     data: Partial<AcademicTask>;
     courseSessionId: string;
   }): Promise<void> => {
-    const res = await fetch(
-      `/api/courses/sessions/${courseSessionId}/course-work`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      }
-    );
-    if (!res.ok) {
-      const errorData = await res.json();
-      throw Error(
-        `Failed to create course work: ${errorData.error || "Unknown error"}`
-      );
+    const result = await apiCreateCourseWork(courseSessionId, data);
+    if (!result.success) {
+      throw Error(`Failed to create course work: ${result.message}`);
     }
   },
   getCourseWorkForSession: async (
     courseSessionId: string
   ): Promise<AcademicTaskWithWeighting[]> => {
-    const res = await fetch(
-      `/api/courses/sessions/${courseSessionId}/course-work`
-    );
-    if (!res.ok) {
-      const errorData = await res.json();
-      throw Error(
-        `Failed to fetch course work: ${errorData.error || "Unknown error"}`
-      );
+    const result = await apiGetCourseWorkForSession(courseSessionId);
+    if (!result.success) {
+      throw Error(`Failed to fetch course work: ${result.message}`);
     }
-    return res.json();
+    return result.data!;
   },
   getCourseWorkById: async ({
     courseSessionId,
@@ -47,41 +38,20 @@ export const CourseWorkClient = {
     courseSessionId: string;
     courseWorkId: string;
   }): Promise<AcademicTask> => {
-    const res = await fetch(
-      `/api/courses/sessions/${courseSessionId}/course-work/${courseWorkId}`
-    );
-    if (!res.ok) {
-      const errorData = await res.json();
-      throw Error(
-        `Failed to fetch course work by ID: ${
-          errorData.error || "Unknown error"
-        }`
-      );
+    const result = await apiGetCourseWorkById(courseWorkId);
+    if (!result.success) {
+      throw Error(`Failed to fetch course work by ID: ${result.message}`);
     }
-    return res.json();
+    return result.data!;
   },
+
   updateCourseWorkAttributesById: async (
-    courseSessionId: string,
     courseWorkId: string,
     data: Partial<AcademicTask>
   ): Promise<void> => {
-    const res = await fetch(
-      `/api/courses/sessions/${courseSessionId}/course-work/${courseWorkId}`,
-      {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      }
-    );
-    if (!res.ok) {
-      const errorData = await res.json();
-      throw Error(
-        `Failed to update course work attributes: ${
-          errorData.error || "Unknown error"
-        }`
-      );
+    const result = await apiUpdateCourseWorkAttributesById(courseWorkId, data);
+    if (!result.success) {
+      throw Error(`Failed to update course work attributes: ${result.message}`);
     }
   },
 };
