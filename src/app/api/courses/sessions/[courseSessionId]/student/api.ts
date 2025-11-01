@@ -40,6 +40,7 @@ export async function apiAddStudentToCourseSession(
   const foundSession = await db.query.courseSession.findFirst({
     where: eq(courseSession?.id, courseSessionId),
   });
+
   if (foundSession && foundSession.isLocked) {
     return {
       success: false,
