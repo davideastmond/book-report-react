@@ -1,9 +1,27 @@
 import { CourseSessionClient } from "@/clients/course-session-client";
-import { render } from "@testing-library/react";
 
+import { render } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { CoursesSessionsMain } from "./Courses-sessions-main";
 
+const serverSessionMock = vi
+  .fn()
+  .mockResolvedValueOnce({
+    user: {
+      id: "test-user-id",
+      role: "admin",
+    },
+  })
+  .mockResolvedValueOnce({
+    user: {
+      id: "test-user-id",
+      role: "student",
+    },
+  });
+
+vi.mock("next-auth", () => ({
+  getServerSession: () => serverSessionMock(),
+}));
 const fetchCoursesAdminSpy = vi
   .spyOn(CourseSessionClient, "fetchCourseSessionsAdmin")
   .mockResolvedValue([]);
@@ -19,9 +37,10 @@ describe("Courses Sessions Main Component Tests", () => {
   describe("admin user", () => {
     it("new course session link should be visible", async () => {
       // Mock the component and check if the link is rendered
-      const { findByText } = render(<CoursesSessionsMain isAdmin={true} />);
-      await expect(findByText(/new course session/i)).toBeDefined();
-      await expect(findByText("No course sessions found.")).toBeDefined();
+      const page = await CoursesSessionsMain({ isAdmin: true });
+      const { findByText } = render(page);
+      expect(await findByText(/new course session/i)).toBeDefined();
+      expect(await findByText("No course sessions found.")).toBeDefined();
       expect(fetchCoursesAdminSpy).toHaveBeenCalled();
       expect(fetchCoursesUserSpy).not.toHaveBeenCalled();
     });
@@ -29,11 +48,13 @@ describe("Courses Sessions Main Component Tests", () => {
   describe("student user", () => {
     it("new course session link should not be visible", async () => {
       // Mock the component and check if the link is not rendered
-      const { queryByText } = render(<CoursesSessionsMain isAdmin={false} />);
-      expect(queryByText("+ New Course Session")).toBeNull();
-      expect(queryByText("No course sessions found.")).toBeDefined();
-      expect(fetchCoursesUserSpy).toHaveBeenCalled();
+      const page = await CoursesSessionsMain({ isAdmin: false });
+      const { findByText, queryByText } = render(page);
+      expect(await findByText(/No course sessions found/i)).toBeDefined();
+      expect(queryByText(/New Course Session/i)).toBeNull();
       expect(fetchCoursesAdminSpy).not.toHaveBeenCalled();
+      expect(fetchCoursesUserSpy).toHaveBeenCalled();
+      expect(page).toBeDefined();
     });
   });
 });

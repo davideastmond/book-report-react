@@ -1,8 +1,10 @@
+import { authOptions } from "@/auth/auth";
 import { CourseSessionClient } from "@/clients/course-session-client";
 import {
   CourseSessionInfo,
   CourseSessionsAPIResponse,
 } from "@/lib/types/db/course-session-info";
+import { getServerSession } from "next-auth";
 import Link from "next/link";
 import { CoursesSessionsList } from "./courses-sessions-list/Courses-sessions-list";
 
@@ -12,14 +14,17 @@ type CoursesSessionsMainProps = {
 export async function CoursesSessionsMain({
   isAdmin,
 }: CoursesSessionsMainProps) {
-  const courseSessions = await fetchCourseSessions();
-
-  async function fetchCourseSessions() {
-    if (isAdmin) {
-      return CourseSessionClient.fetchCourseSessionsAdmin();
+  const authUser = await getServerSession(authOptions);
+  const fetchCourseSessions = async () => {
+    console.log("isAdmin:", isAdmin);
+    if (isAdmin && authUser) {
+      return CourseSessionClient.fetchCourseSessionsAdmin(
+        authUser.user!.id as string
+      );
     }
     return CourseSessionClient.fetchCourseSessionsByStudent();
-  }
+  };
+  const courseSessions = await fetchCourseSessions();
 
   if (isAdmin) {
     return (
