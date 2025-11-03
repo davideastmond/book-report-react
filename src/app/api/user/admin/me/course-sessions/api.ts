@@ -8,9 +8,9 @@ import { CourseSessionInfo } from "@/lib/types/db/course-session-info";
 import { eq } from "drizzle-orm";
 import { getServerSession } from "next-auth";
 
-export async function apiAdminGetCoursesSessions(): Promise<
-  ApiResult<CourseSessionInfo[]>
-> {
+export async function apiAdminGetCoursesSessions(
+  sessionUserId: string
+): Promise<ApiResult<CourseSessionInfo[]>> {
   const authSession = await getServerSession(authOptions);
 
   if (!authSession || !authSession.user) {
@@ -36,7 +36,7 @@ export async function apiAdminGetCoursesSessions(): Promise<
         isCompleted: courseSession.isCompleted,
       })
       .from(user)
-      .where(eq(user.id, authSession?.user.id))
+      .where(eq(user.id, sessionUserId))
       .leftJoin(courseSession, eq(user.id, courseSession.instructorId))
       .leftJoin(course, eq(course.id, courseSession.courseId));
 

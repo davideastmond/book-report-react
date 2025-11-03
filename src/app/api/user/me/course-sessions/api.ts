@@ -5,8 +5,8 @@ import { course, courseSession, roster, user } from "@/db/schema";
 import { and, eq } from "drizzle-orm";
 import { getServerSession } from "next-auth";
 
+// Get all course sessions for which the user is registered as student
 export async function apiUserGetCoursesSessions() {
-  // Get all course sessions for which the user is registered as student
   const authSession = await getServerSession(authOptions);
   if (!authSession || !authSession.user) {
     throw new Error("Unauthorized");
