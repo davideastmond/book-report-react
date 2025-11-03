@@ -73,8 +73,10 @@ export const CourseSessionClient = {
 
     await apiPatchCoursesSessionById(courseSessionId, content);
   },
-  fetchCourseSessionsAdmin: async (): Promise<CourseSessionInfo[]> => {
-    const result = await apiAdminGetCoursesSessions();
+  fetchCourseSessionsAdmin: async (
+    sessionUserId: string
+  ): Promise<CourseSessionInfo[]> => {
+    const result = await apiAdminGetCoursesSessions(sessionUserId);
     if (!result.success) throw new Error(result.message!);
     return result.data!;
   },
