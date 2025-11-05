@@ -15,5 +15,10 @@ export default async function CoursesSessionsPage() {
     redirect("/login");
   }
 
-  return <CoursesSessionsMain isAdmin={serverSession.user.role === "admin"} />;
+  return (
+    <CoursesSessionsMain
+      isAdmin={serverSession.user.role === "admin"}
+      userId={serverSession.user.id}
+    />
+  );
 }

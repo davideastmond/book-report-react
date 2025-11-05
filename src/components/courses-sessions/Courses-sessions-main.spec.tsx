@@ -37,7 +37,10 @@ describe("Courses Sessions Main Component Tests", () => {
   describe("admin user", () => {
     it("new course session link should be visible", async () => {
       // Mock the component and check if the link is rendered
-      const page = await CoursesSessionsMain({ isAdmin: true });
+      const page = await CoursesSessionsMain({
+        isAdmin: true,
+        userId: "fake-id",
+      });
       const { findByText } = render(page);
       expect(await findByText(/new course session/i)).toBeDefined();
       expect(await findByText("No course sessions found.")).toBeDefined();
