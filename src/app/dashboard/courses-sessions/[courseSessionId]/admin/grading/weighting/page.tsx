@@ -21,7 +21,6 @@ export default function GradeWeightingPage() {
   return (
     <div>
       <h1 className="text-2xl my-4">Weight Definitions</h1>
-
       <div>
         <GradeWeightTable courseSessionId={params.courseSessionId} />
       </div>
