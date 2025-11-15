@@ -1,9 +1,9 @@
 "use client";
 import { CourseSessionClient } from "@/clients/course-session-client";
+import { Spinner } from "@/components/spinner/Spinner";
 import { GradeWeight } from "@/db/schema";
 import { useToast } from "@/hooks/use-toast";
 import { weightDataValidator } from "@/lib/validators/weightings/weight-data-validator";
-import { Spinner } from "@heroui/react";
 import { useEffect, useState } from "react";
 import { z } from "zod";
 
@@ -22,9 +22,11 @@ export function GradeWeightTable({
   const [errors, setErrors] = useState<string | null>(null);
   const [isBusy, setIsBusy] = useState(false);
   const { showToast, ToastElement: WeightsUpdatedToast } = useToast();
+
   useEffect(() => {
     fetchCurrentWeights();
   }, [courseSessionId]);
+
   const fetchCurrentWeights = async () => {
     try {
       setIsBusy(true);
