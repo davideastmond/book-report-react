@@ -71,7 +71,7 @@ export function UserQueryPage() {
             <p className="font-bold">
               Student Name:
               <span>
-                {studentInfo.studentLastName},{studentInfo.studentFirstName}
+                {studentInfo.studentLastName}, {studentInfo.studentFirstName}
               </span>
             </p>
           </CardBody>
