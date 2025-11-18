@@ -1,3 +1,4 @@
+// @vitest-environment jsdom
 import { UserClient } from "@/clients/user-client";
 import { fireEvent, render } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
