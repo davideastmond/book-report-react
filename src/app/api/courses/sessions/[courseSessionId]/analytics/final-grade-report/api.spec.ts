@@ -38,7 +38,6 @@ describe("Final Grade Report API", () => {
   }));
   test("Returns a properly formatted object", async () => {
     const result = await apiGetFinalGradeReport("test-course-session-id");
-    console.log(result);
     expect(result).toHaveProperty("success", true);
     expect(result).toHaveProperty("data");
     expect(result.data).toHaveProperty("report");
