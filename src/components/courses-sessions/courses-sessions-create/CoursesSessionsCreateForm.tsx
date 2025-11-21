@@ -2,9 +2,11 @@
 import { CourseClient } from "@/clients/course-client";
 import { CourseSessionClient } from "@/clients/course-session-client";
 import { Course } from "@/db/schema";
+import { useAdminAuthorized } from "@/hooks/use-admin-authorized";
 import { createCourseSessionValidator } from "@/lib/validators/course-session/create-course-session-validator";
 import { useRouter } from "next/navigation";
 
+import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import z from "zod";
 export function CoursesSessionsCreateForm() {
@@ -17,6 +19,8 @@ export function CoursesSessionsCreateForm() {
     studentAllotment: null,
   });
   const router = useRouter();
+  const { isAdminAuthorized } = useAdminAuthorized();
+  const { status } = useSession();
   useEffect(() => {
     fetchCourses();
   }, []);
@@ -62,6 +66,14 @@ export function CoursesSessionsCreateForm() {
       studentAllotment: null,
     });
   };
+
+  if (status === "unauthenticated") {
+    return <div>Unauthorized</div>;
+  }
+  if (!isAdminAuthorized) {
+    return <div>Unauthorized</div>;
+  }
+
   return (
     <div className="p-4">
       <h1 className="text-2xl text-center mb-4 font-bold">

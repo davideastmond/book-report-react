@@ -1,42 +1,24 @@
-"use client";
+import { authOptions } from "@/auth/auth";
 import { CourseSessionClient } from "@/clients/course-session-client";
-import { GroupedCourseTable } from "@/components/grouped-course-table/Grouped-course-table";
-import { GroupedCourseInfo } from "@/lib/types/db/grouped-course-info";
-import { useAdminAuthorized } from "app/hooks/use-admin-authorized";
-import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
+import { GroupedCourseList } from "@/components/grouped-course-table/Grouped-course-list";
+import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
+export default async function CompletedCoursesSummaryPage() {
+  const serverSession = await getServerSession(authOptions);
+  if (!serverSession || !serverSession.user) {
+    return redirect("/login");
+  }
 
-export default function CompletedCoursesSummaryPage() {
-  const [groupedCourses, setGroupedCourses] = useState<GroupedCourseInfo[]>([]);
-  const { status } = useSession();
-  const { isAdminAuthorized } = useAdminAuthorized();
+  try {
+    const groupedCourses =
+      await CourseSessionClient.fetchGroupedCourseSessionByCourse();
 
-  useEffect(() => {
-    if (isAdminAuthorized) {
-      loadGroupedCourseInfo();
+    return <GroupedCourseList groupedCourses={groupedCourses || []} />;
+  } catch (error) {
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
+    if (errorMessage === "Unauthorized") {
+      return redirect("/login");
     }
-  }, [isAdminAuthorized]);
-
-  async function loadGroupedCourseInfo() {
-    if (status === "unauthenticated") return;
-    const data = await CourseSessionClient.fetchGroupedCourseSessionByCourse();
-    setGroupedCourses(data);
   }
-
-  if (status === "unauthenticated") {
-    return <h1 className="text-4xl">Not authorized</h1>;
-  }
-
-  if (!isAdminAuthorized) {
-    return (
-      <div className="flex flex-col items-center justify-center h-full">
-        <p className="text-lg">You do not have permission to view this page.</p>
-      </div>
-    );
-  }
-  return (
-    <>
-      <GroupedCourseTable groupedCourses={groupedCourses} />
-    </>
-  );
 }

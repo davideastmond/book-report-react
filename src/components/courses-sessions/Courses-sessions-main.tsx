@@ -1,30 +1,26 @@
 import { CourseSessionClient } from "@/clients/course-session-client";
-import { CourseSessionsAPIResponse } from "@/lib/types/db/course-session-info";
+import {
+  CourseSessionInfo,
+  CourseSessionsAPIResponse,
+} from "@/lib/types/db/course-session-info";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import { CoursesSessionsList } from "./courses-sessions-list/Courses-sessions-list";
 
 type CoursesSessionsMainProps = {
   isAdmin?: boolean;
+  userId?: string;
 };
-export function CoursesSessionsMain({ isAdmin }: CoursesSessionsMainProps) {
-  const [courseSessions, setCourseSessions] =
-    useState<CourseSessionsAPIResponse>([]);
-
-  useEffect(() => {
-    fetchCourseSessions();
-  }, [isAdmin]);
-
-  async function fetchCourseSessions() {
+export async function CoursesSessionsMain({
+  isAdmin,
+  userId,
+}: CoursesSessionsMainProps) {
+  const fetchCourseSessions = async () => {
     if (isAdmin) {
-      const res = await CourseSessionClient.fetchCourseSessionsAdmin();
-      setCourseSessions(res);
-      return;
+      return CourseSessionClient.fetchCourseSessionsAdmin(userId as string);
     }
-    // TODO: Implement for students
-    const res = await CourseSessionClient.fetchCourseSessionsByStudent();
-    setCourseSessions(res);
-  }
+    return CourseSessionClient.fetchCourseSessionsByStudent();
+  };
+  const courseSessions = await fetchCourseSessions();
 
   if (isAdmin) {
     return (
@@ -34,17 +30,21 @@ export function CoursesSessionsMain({ isAdmin }: CoursesSessionsMainProps) {
             + New Course Session
           </Link>
         </div>
-        <div className="flex justify-end p-4">
-          <CoursesSessionsList coursesSessions={courseSessions} linkable />
+        <div className="flex p-4">
+          <CoursesSessionsList
+            coursesSessions={courseSessions as CourseSessionInfo[]}
+            linkable
+          />
         </div>
       </>
     );
   }
   return (
-    <>
-      <div className="flex justify-end p-4">
-        <CoursesSessionsList coursesSessions={courseSessions} linkable />
-      </div>
-    </>
+    <div className="flex p-4">
+      <CoursesSessionsList
+        coursesSessions={courseSessions as CourseSessionsAPIResponse}
+        linkable
+      />
+    </div>
   );
 }

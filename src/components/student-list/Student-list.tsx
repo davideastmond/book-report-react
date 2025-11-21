@@ -1,6 +1,5 @@
-"use client";
 import { EnrolledStudent } from "@/lib/types/db/course-session-info";
-
+import { Card, CardBody } from "@heroui/react";
 type StudentListProps = {
   linkable?: boolean;
   students: EnrolledStudent[];
@@ -22,41 +21,40 @@ export function StudentList({
     }
     if (suppressLink) return;
   };
+
+  if (!students || students.length === 0) {
+    return <p data-testid="no-data-message">No data</p>;
+  }
   return (
-    <table className="table-auto w-full" data-testid="user-search-results">
-      <thead className="text-left">
-        <tr>
-          <th>Name</th>
-          <th>Email</th>
-          <th>DOB</th>
-        </tr>
-      </thead>
-      <tbody>
-        {students.length === 0 && (
-          <tr>
-            <td colSpan={4} className="text-center text-gray-500">
-              No data
-            </td>
-          </tr>
-        )}
-        {students?.map((student, index) => (
-          <tr
-            key={student.studentId}
-            className={`${
-              linkable && "hover:cursor-pointer "
-            } hover:bg-list-hover/20 ${
-              index % 2 === 0 ? "bg-slate-400/10" : "bg-background"
-            }`}
-            onClick={() => handleStudentClick(student.studentId)}
-          >
-            <td>
-              {student.studentLastName} {student.studentFirstName?.slice(0, 1)}
-            </td>
-            <td>{student.studentEmail}</td>
-            <td>{new Date(student.studentDob!).toLocaleDateString()}</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
+    <div className="flex flex-wrap gap-6">
+      {students?.map((student) => (
+        <Card
+          data-testid="user-search-results"
+          className={`bg-gray-900 p-3 rounded-md mb-2 w-full ${
+            linkable ? "cursor-pointer hover:bg-gray-800" : ""
+          }`}
+          key={student.studentId}
+        >
+          <CardBody onClick={() => handleStudentClick(student.studentId)}>
+            <p>
+              <span className="font-bold">Student Name: </span>
+              <span>
+                {student.studentLastName}
+                {", "}
+                {student.studentFirstName?.slice(0, 1)}
+              </span>
+            </p>
+            <p>
+              <span className="font-bold">Email: </span>
+              <span>{student.studentEmail}</span>
+            </p>
+            <p>
+              <span className="font-bold">DOB: </span>
+              <span>{new Date(student.studentDob!).toLocaleDateString()}</span>
+            </p>
+          </CardBody>
+        </Card>
+      ))}
+    </div>
   );
 }

@@ -1,3 +1,4 @@
+// @vitest-environment jsdom
 import { UserClient } from "@/clients/user-client";
 import { fireEvent, render } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
@@ -48,12 +49,7 @@ describe("Registration form component tests", () => {
     expect(getByText(/Passwords do not match/i)).toBeDefined();
   });
   it("Register function is called with correct data", () => {
-    const mockRegister = vi
-      .spyOn(UserClient, "registerUser")
-      .mockResolvedValue({
-        ok: true,
-        json: () => Promise.resolve({}),
-      } as Response);
+    const mockRegister = vi.spyOn(UserClient, "registerUser");
 
     const { getByLabelText, getByTestId } = render(<RegistrationForm />);
 

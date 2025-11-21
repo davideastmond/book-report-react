@@ -166,7 +166,8 @@ export function CourseGradingMain({
             disabled={
               isLoading ||
               !isAdminEditable ||
-              courseData.courseSessionData.isCompleted
+              courseData.courseSessionData.isCompleted ||
+              courseWork.length === 0
             }
           >
             <span className="flex items-center gap-2">

@@ -1,4 +1,5 @@
 import { NavBar } from "@/components/nav/NavBar";
+import { HeroUIProvider } from "@heroui/react";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Suspense } from "react";
@@ -31,8 +32,10 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <NextAuthProvider>
-          <NavBar />
-          <Suspense>{children}</Suspense>
+          <HeroUIProvider>
+            <NavBar />
+            <Suspense>{children}</Suspense>
+          </HeroUIProvider>
         </NextAuthProvider>
       </body>
     </html>
