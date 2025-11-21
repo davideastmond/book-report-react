@@ -1,21 +1,85 @@
 "use client";
+import { CourseSessionClient } from "@/clients/course-session-client";
+import { Spinner } from "@/components/spinner/Spinner";
 import { GradeWeight } from "@/db/schema";
-import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
+import { weightDataValidator } from "@/lib/validators/weightings/weight-data-validator";
+import { useEffect, useState } from "react";
+import { z } from "zod";
 
-type GradeWeightTableProps = {
-  gradeWeights: GradeWeight[];
-  onWeightsUpdated?: (weights: GradeWeight[]) => void;
-};
+// This component allows teachers/admins to set the weighting of different grading components for a course session.
+// There should be a list of course work. Then there should be a component that allows them to choose  weighting category.
+// All of the category weights should add up to 100%.
+
 export function GradeWeightTable({
-  onWeightsUpdated,
-  gradeWeights = [],
-}: GradeWeightTableProps) {
-  const [calculatedWeights, setCalculatedWeights] =
-    useState<GradeWeight[]>(gradeWeights);
+  courseSessionId,
+}: {
+  courseSessionId: string;
+}) {
+  const [calculatedWeights, setCalculatedWeights] = useState<GradeWeight[]>([]);
 
   const [validationError, setValidationError] = useState<string | null>(null);
+  const [errors, setErrors] = useState<string | null>(null);
+  const [isBusy, setIsBusy] = useState(false);
+  const { showToast, ToastElement: WeightsUpdatedToast } = useToast();
 
-  const handleWeightsUpdated = () => {
+  useEffect(() => {
+    fetchCurrentWeights();
+  }, [courseSessionId]);
+
+  const fetchCurrentWeights = async () => {
+    try {
+      setIsBusy(true);
+      const weights = await CourseSessionClient.getCourseWeightings(
+        courseSessionId
+      );
+      // TODO: setCurrentWeights(weights);
+      setCalculatedWeights(weights);
+    } catch (error) {
+      console.error("Error fetching current weights:", error);
+    } finally {
+      setIsBusy(false);
+    }
+  };
+
+  const handleSaveWeightings = async (updatedWeights: GradeWeight[]) => {
+    setErrors(null);
+
+    try {
+      weightDataValidator.parse(updatedWeights);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        const joinedErrors = error.issues
+          .map((issue) => issue.message)
+          .join(". ");
+        setErrors(joinedErrors);
+        console.error("Error parsing weight data:", joinedErrors);
+        return;
+      }
+      console.error(
+        "Unexpected error parsing weight data:",
+        (error as Error).message
+      );
+      return;
+    }
+
+    try {
+      setIsBusy(true);
+      await CourseSessionClient.createCourseWeighting(
+        courseSessionId,
+        updatedWeights
+      );
+      showToast("Weightings updated successfully.");
+      await fetchCurrentWeights(); // Refresh
+    } catch (error) {
+      console.error("Error saving weightings:", error);
+      setErrors("Failed to save weightings. Please try again.");
+      return;
+    } finally {
+      setIsBusy(false);
+    }
+  };
+  const handleWeightsUpdated = async () => {
     const inputs = document.querySelectorAll('input[type="number"]');
     const updatedWeights: { id: string; name: string; percentage: number }[] =
       [];
@@ -38,7 +102,8 @@ export function GradeWeightTable({
       return;
     }
     setValidationError(null);
-    onWeightsUpdated?.(updatedWeights as GradeWeight[]);
+    // onWeightsUpdated?.(updatedWeights as GradeWeight[]);
+    await handleSaveWeightings(updatedWeights as GradeWeight[]);
   };
 
   const handleDelete = (id: string) => {
@@ -59,6 +124,8 @@ export function GradeWeightTable({
     };
     setCalculatedWeights([...calculatedWeights, newWeight]);
   };
+
+  if (isBusy) return <Spinner />;
   return (
     <>
       <div className="flex justify-end mr-2">
@@ -119,6 +186,11 @@ export function GradeWeightTable({
       {validationError && (
         <div className="text-red-500 mt-2 ml-4">{validationError}</div>
       )}
+      {errors && (
+        <div className="mt-4 p-4 border border-red-500 bg-red-100 text-red-700">
+          {errors}
+        </div>
+      )}
       <div className="flex justify-end mr-4">
         <button
           type="button"
@@ -127,6 +199,9 @@ export function GradeWeightTable({
         >
           Update Weightings
         </button>
+      </div>
+      <div>
+        <WeightsUpdatedToast />
       </div>
     </>
   );

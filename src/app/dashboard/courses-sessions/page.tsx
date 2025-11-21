@@ -1,10 +1,7 @@
-"use client";
+import { authOptions } from "@/auth/auth";
 import { CoursesSessionsMain } from "@/components/courses-sessions/Courses-sessions-main";
-
-import { Spinner } from "@/components/spinner/Spinner";
-import { useAdminAuthorized } from "app/hooks/use-admin-authorized";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
 /**
  * This page deals with courses session. Teachers should show all of the courses they've created
  * Admins should see all of the courses created by teachers
@@ -12,17 +9,16 @@ import { useRouter } from "next/navigation";
  *
  * Admins and teachers should be able to create new courses
  */
-export default function CoursesSessionsPage() {
-  const router = useRouter();
-  const { status } = useSession();
-
-  const { isAdminAuthorized } = useAdminAuthorized();
-
-  if (isAdminAuthorized === null) {
-    return <Spinner />;
+export default async function CoursesSessionsPage() {
+  const serverSession = await getServerSession(authOptions);
+  if (!serverSession || !serverSession.user) {
+    redirect("/login");
   }
-  if (status === "unauthenticated") {
-    router.replace("/login");
-  }
-  return <CoursesSessionsMain isAdmin={isAdminAuthorized} />;
+
+  return (
+    <CoursesSessionsMain
+      isAdmin={serverSession.user.role === "admin"}
+      userId={serverSession.user.id}
+    />
+  );
 }

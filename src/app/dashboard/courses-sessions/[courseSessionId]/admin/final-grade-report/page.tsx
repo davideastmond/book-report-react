@@ -11,11 +11,11 @@ export default function CourseSessionFinalReportPage() {
   const [finalGradeReport, setFinalGradeReport] = useState<{
     report: SummarizedData[];
     courseData: {
-      courseName: string;
-      courseCode: string;
-      sessionStart: string;
-      sessionEnd: string;
-      courseSessionId: string;
+      courseName?: string | null;
+      courseCode?: string | null;
+      sessionStart?: string | null;
+      sessionEnd?: string | null;
+      courseSessionId?: string | null;
     };
   } | null>(null);
 
@@ -55,13 +55,15 @@ export default function CourseSessionFinalReportPage() {
             {finalGradeReport?.courseData.courseCode})
           </h2>
           <h2>
-            {new Date(
-              finalGradeReport.courseData.sessionStart
-            ).toLocaleDateString()}{" "}
+            {finalGradeReport.courseData.sessionStart &&
+              new Date(
+                finalGradeReport.courseData.sessionStart
+              ).toLocaleDateString()}{" "}
             -
-            {new Date(
-              finalGradeReport.courseData.sessionEnd
-            ).toLocaleDateString()}
+            {finalGradeReport.courseData.sessionEnd &&
+              new Date(
+                finalGradeReport.courseData.sessionEnd
+              ).toLocaleDateString()}
           </h2>
           {finalGradeReport && (
             <ClassListFinalGradeTable data={finalGradeReport.report} />

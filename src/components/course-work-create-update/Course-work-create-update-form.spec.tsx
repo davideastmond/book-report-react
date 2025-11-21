@@ -143,18 +143,14 @@ describe("Course-work-create-update-form tests", () => {
       const submitButton = await findByRole("button", { name: /update/i });
       submitButton.click();
 
-      expect(createCourseWorkSpy).toHaveBeenCalledWith(
-        "course-session-id",
-        "course-work-id",
-        {
-          description: "This is a test course work description",
-          dueDate: "2023-12-31",
-          gradeValueType: "p",
-          gradeWeightId: "weight-id",
-          name: "Test Course Work",
-          taskType: "assignment",
-        }
-      );
+      expect(createCourseWorkSpy).toHaveBeenCalledWith("course-work-id", {
+        description: "This is a test course work description",
+        dueDate: "2023-12-31",
+        gradeValueType: "p",
+        gradeWeightId: "weight-id",
+        name: "Test Course Work",
+        taskType: "assignment",
+      });
     });
 
     it("handles submission errors gracefully", async () => {

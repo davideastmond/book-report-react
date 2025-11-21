@@ -1,3 +1,12 @@
+import { apiRegisterUser, RegistrationRequest } from "@/api/auth/register/api";
+import { getAdminStudentData } from "@/api/user/admin/student-data/api";
+import { apiGetEnrolledStudents } from "@/api/user/api";
+import {
+  apiGetUserIdentity,
+  apiUpdateUserIdentityNames,
+} from "@/api/user/identity/api";
+import { apiUpdateUserIdentityGender } from "@/api/user/identity/gender/api";
+import { apiUpdateUserIdentityPassword } from "@/api/user/identity/password/api";
 import { User } from "@/db/schema";
 import { AdminStudentDataAPIResponse } from "@/lib/types/admin-data/admin-student-data-api-response";
 import { EnrolledStudent } from "@/lib/types/db/course-session-info";
@@ -5,80 +14,58 @@ import { EnrolledStudent } from "@/lib/types/db/course-session-info";
 export const UserClient = {
   registerUser: async (
     data: Record<string, FormDataEntryValue>
-  ): Promise<Response> => {
-    const res = await fetch("/api/auth/register", {
-      method: "POST",
-      body: JSON.stringify(data),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    if (!res.ok) {
-      throw Error("Failed to register user");
+  ): Promise<void> => {
+    const result = await apiRegisterUser(data as RegistrationRequest);
+    if (!result.success) {
+      throw Error(result.message!);
     }
-    return res;
   },
   getAllStudentsAdmin: async (): Promise<EnrolledStudent[]> => {
-    const res = await fetch("/api/user");
-    if (!res.ok) {
-      throw Error("Failed to fetch students");
+    const res = await apiGetEnrolledStudents();
+    if (!res.success) {
+      throw Error(res.message!);
     }
-    return res.json();
+    return res.data!;
   },
   getUserIdentity: async (userId: string): Promise<Partial<User>> => {
-    const res = await fetch(`/api/user/identity?userId=${userId}`);
-    if (!res.ok) {
-      throw Error("Failed to fetch user identity");
+    const res = await apiGetUserIdentity(userId);
+    if (!res.success) {
+      throw Error(res.message!);
     }
-    return res.json();
+    return res.data!;
   },
   updateUserName: async (
     userId: string,
     data: Partial<User>
   ): Promise<Partial<User>> => {
-    const res = await fetch(`/api/user/identity?userId=${userId}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-    if (!res.ok) {
-      throw Error("Failed to update user identity");
+    const result = await apiUpdateUserIdentityNames(userId, { ...data });
+    if (!result.success) {
+      throw Error(result.message!);
     }
-    return res.json();
+    return result.data!;
   },
   updatePassword: async (userId: string, password: string): Promise<void> => {
-    const res = await fetch(`/api/user/identity/password?userId=${userId}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ password }),
-    });
-    if (!res.ok) {
-      throw Error("Failed to update password");
+    const result = await apiUpdateUserIdentityPassword(userId, password);
+    if (!result.success) {
+      throw Error(result.message!);
     }
   },
   updateUserGender: async (userId: string, gender: string): Promise<void> => {
-    const res = await fetch(`/api/user/identity/gender?userId=${userId}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ gender }),
-    });
-    if (!res.ok) {
-      throw Error("Failed to update gender");
+    const result = await apiUpdateUserIdentityGender(
+      userId,
+      gender as "male" | "female" | "other"
+    );
+    if (!result.success) {
+      throw Error(result.message!);
     }
   },
   getAdminUserData: async (
     userId: string
   ): Promise<AdminStudentDataAPIResponse> => {
-    const res = await fetch(`/api/user/admin/student-data?userId=${userId}`);
-    if (!res.ok) {
-      throw Error("Failed to fetch user courses");
+    const result = await getAdminStudentData(userId);
+    if (!result.success) {
+      throw Error(result.message!);
     }
-    return res.json();
+    return result.data!;
   },
 };

@@ -1,5 +1,5 @@
 "use client";
-import { GradeWeightingComponentMain } from "@/components/grade-weighting/Grade-Weighting-component-Main";
+import { GradeWeightTable } from "@/components/grade-weighting/Grade-Weight-table";
 import { useAdminAuthorized } from "app/hooks/use-admin-authorized";
 import { useParams } from "next/navigation";
 
@@ -20,8 +20,10 @@ export default function GradeWeightingPage() {
 
   return (
     <div>
-      <h1 className="text-3xl">Grade Weighting Page</h1>
-      <GradeWeightingComponentMain courseSessionId={params.courseSessionId} />
+      <h1 className="text-2xl my-4">Weight Definitions</h1>
+      <div>
+        <GradeWeightTable courseSessionId={params.courseSessionId} />
+      </div>
     </div>
   );
 }

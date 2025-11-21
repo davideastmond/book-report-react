@@ -5,13 +5,11 @@ import { StudentList } from "./Student-list";
 describe("Student List ", () => {
   // Placeholder for future tests
   it("student data is empty - should see the 'no data' message", () => {
-    const { getByText } = render(<StudentList students={[]} linkable={true} />);
-    expect(getByText(/no data/i)).toBeDefined();
+    const { getByTestId } = render(
+      <StudentList students={[]} linkable={true} />
+    );
+    expect(getByTestId("no-data-message")).toBeDefined();
     // Check for the table headers
-    const headers = ["Name", "Email", "DOB"];
-    headers.forEach((header) => {
-      expect(getByText(header)).toBeDefined();
-    });
   });
   it("it should render a table with the student data and callback is invoked", () => {
     const mockStudents = [
@@ -39,23 +37,28 @@ describe("Student List ", () => {
     ];
 
     const onStudentClickStub = vi.fn();
-    const { getByText } = render(
+    const { getByText, getAllByText } = render(
       <StudentList
         students={mockStudents}
         linkable={true}
         onStudentClick={onStudentClickStub}
       />
     );
-    expect(getByText("Doe J")).toBeDefined();
-    expect(getByText("Smith J")).toBeDefined();
-    expect(getByText("Johnson A")).toBeDefined();
+    expect(getByText(`Doe, J`)).toBeDefined();
+    expect(getByText("Smith, J")).toBeDefined();
+    expect(getByText("Johnson, A")).toBeDefined();
 
     // Emails should be displayed
     expect(getByText("john.doe@example.com")).toBeDefined();
     expect(getByText("jane.smith@example.com")).toBeDefined();
     expect(getByText("alice.johnson@example.com")).toBeDefined();
 
-    const studentElement = getByText("Doe J");
+    const headers = [/student Name/i, /email/i, /dob/i];
+    headers.forEach((header) => {
+      expect(getAllByText(header).length).greaterThan(0);
+    });
+
+    const studentElement = getByText("Doe, J");
     studentElement.click();
 
     expect(onStudentClickStub).toHaveBeenCalledWith("1");
@@ -81,7 +84,7 @@ describe("Student List ", () => {
       />
     );
 
-    const studentElement = getByText("Doe J");
+    const studentElement = getByText("Doe, J");
     studentElement.click();
 
     expect(onStudentClickStub).not.toHaveBeenCalled();

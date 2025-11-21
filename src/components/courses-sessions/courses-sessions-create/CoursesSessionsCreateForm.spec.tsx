@@ -3,7 +3,19 @@ import { CourseSessionClient } from "@/clients/course-session-client";
 import { fireEvent, render, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { CoursesSessionsCreateForm } from "./CoursesSessionsCreateForm";
-
+vi.mock("next-auth/react", () => ({
+  useSession: () => ({
+    data: {
+      user: {
+        email: "test@example.com",
+        name: "Test User",
+        image: "https://example.com/test.jpg",
+        role: "admin",
+      },
+    },
+  }),
+  SessionProvider: ({ children }: { children: React.ReactNode }) => children,
+}));
 describe("CoursesSessionsCreateForm", () => {
   afterEach(() => {
     vi.restoreAllMocks();

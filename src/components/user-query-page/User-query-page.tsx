@@ -5,6 +5,7 @@ import {
   UserSummaryData,
 } from "@/lib/types/admin-data/admin-student-data-api-response";
 import { GradeSummaryData } from "@/lib/types/grading/student/definitions";
+import { Card, CardBody } from "@heroui/react";
 import { useCallback, useState } from "react";
 import { Spinner } from "../spinner/Spinner";
 import { UserSearch } from "../user-search/User-Search";
@@ -60,70 +61,78 @@ export function UserQueryPage() {
 
       {isBusy && <Spinner />}
       {/* We want to show details after a student is selected */}
-      {studentInfo && (
-        <table className="w-full mt-4">
-          <thead className="text-left">
-            <tr>
-              <th>First Name</th>
-              <th>Last Name</th>
-              <th>Student ID</th>
-            </tr>
-          </thead>
-          <tbody>
-            {studentInfo ? (
-              <tr>
-                <td>{studentInfo.studentFirstName}</td>
-                <td>{studentInfo.studentLastName}</td>
-                <td>{studentInfo.studentId}</td>
-              </tr>
-            ) : (
-              <tr>
-                <td colSpan={3}>No student selected</td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+      {studentInfo ? (
+        <Card>
+          <CardBody>
+            <p className="font-bold">
+              StudentId:
+              <span className="font-thin">{studentInfo.studentId}</span>
+            </p>
+            <p className="font-bold">
+              Student Name:
+              <span>
+                {studentInfo.studentLastName}, {studentInfo.studentFirstName}
+              </span>
+            </p>
+          </CardBody>
+        </Card>
+      ) : (
+        <Card>
+          <CardBody>
+            <p className="text-center">No student selected</p>
+          </CardBody>
+        </Card>
       )}
       {/* We want to show details after a student is selected */}
-      {courseHistoryInfo && (
-        <table className="w-full mt-4">
-          <thead className="text-left">
-            <tr>
-              <th>Course Name</th>
-              <th>Course Code</th>
-              <th>Session ID</th>
-              <th>Session Start</th>
-              <th>Session End</th>
-              <th>Completed</th>
-              <th>Final Grade</th>
-            </tr>
-          </thead>
-          <tbody>
-            {courseHistoryInfo?.map((course, index) => (
-              <tr
-                key={course.courseSessionId}
-                className={`${
-                  index % 2 === 0 ? "bg-slate-400/10" : "bg-background"
-                } hover:bg-list-hover/20`}
+      {courseHistoryInfo?.map((course, index) => (
+        <Card
+          key={course.courseSessionId}
+          className={`${
+            index % 2 === 0 ? "bg-slate-400/10" : "bg-background"
+          } hover:bg-list-hover/20`}
+        >
+          <CardBody>
+            <p className="font-bold">
+              Course Name:
+              <span className="font-thin">{course.courseName}</span>
+            </p>
+            <p className="font-bold">
+              Course Code:
+              <span className="font-thin">{course.courseCode}</span>
+            </p>
+            <p className="font-bold">
+              Session ID:
+              <span className="font-thin">{course.courseSessionId}</span>
+            </p>
+            <p className="font-bold">
+              Session Start:
+              <span className="font-thin">
+                {new Date(course.sessionStart).toLocaleDateString()}
+              </span>
+            </p>
+            <p className="font-bold">
+              Session End:
+              <span className="font-thin">
+                {new Date(course.sessionEnd.toString()).toLocaleDateString()}
+              </span>
+            </p>
+            <p className="font-bold">
+              Completed:
+              <span className="font-thin">
+                {course.isCompleted ? "Yes" : "No"}
+              </span>
+            </p>
+            <p className="font-bold">
+              Final Grade:
+              <span
+                className={getGradeCSS(getFinalGrade(course.courseSessionId))}
               >
-                <td>{course.courseName}</td>
-                <td>{course.courseCode}</td>
-                <td>{course.courseSessionId}</td>
-                <td>{new Date(course.sessionStart).toLocaleDateString()}</td>
-                <td>
-                  {new Date(course.sessionEnd.toString()).toLocaleDateString()}
-                </td>
-                <td>{course.isCompleted ? "Yes" : "No"}</td>
-                <td
-                  className={getGradeCSS(getFinalGrade(course.courseSessionId))}
-                >
-                  {getFinalGrade(course.courseSessionId)}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
+                {getFinalGrade(course.courseSessionId)}
+              </span>
+            </p>
+          </CardBody>
+        </Card>
+      ))}
     </div>
   );
 }

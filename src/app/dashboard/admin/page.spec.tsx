@@ -1,34 +1,46 @@
 import { render } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import AdminPage from "./page";
-const accessLevels = ["student", "admin"];
-let accessIdx = 0;
+const serverRedirectMock = vi.fn();
 
-vi.mock("next-auth/react", () => ({
-  useSession: () => ({
-    data: {
-      user: {
-        email: "test@example.com",
-        name: "Test User",
-        image: "https://example.com/test.jpg",
-        role: accessLevels[accessIdx],
-      },
-    },
-  }),
-  SessionProvider: ({ children }: { children: React.ReactNode }) => children,
+vi.mock("next/navigation", () => ({
+  redirect: () => serverRedirectMock(),
 }));
 
+vi.mock("next-auth", () => {
+  return {
+    getServerSession: vi
+      .fn()
+      .mockResolvedValueOnce({
+        session: {
+          user: {
+            id: "user-1",
+            email: "user1@example.com",
+            name: "User One",
+            role: "student",
+          },
+        },
+      })
+      .mockResolvedValueOnce({
+        session: {
+          user: {
+            id: "user-1",
+            email: "user1@example.com",
+            name: "User One",
+            role: "admin",
+          },
+        },
+      }),
+  };
+});
+
 describe("Admin Page Tests", () => {
-  it("User is not adminAuthorized, should see the permission denied page", () => {
-    accessIdx = 0; // student
-    const { getByText } = render(<AdminPage />);
-    expect(
-      getByText(/You do not have permission to view this page/i)
-    ).toBeDefined();
+  it("User is not adminAuthorized, should see the permission denied page", async () => {
+    await AdminPage();
+    expect(serverRedirectMock).toHaveBeenCalled();
   });
-  it("shows welcome message when user is admin", () => {
-    accessIdx = 1; // admin
-    const { getByText } = render(<AdminPage />);
-    expect(getByText(/welcome to the admin dashboard/i)).toBeDefined();
+  it("shows welcome message when user is admin", async () => {
+    const { findByText } = render(<AdminPage />);
+    await expect(findByText(/welcome to the admin dashboard/i)).toBeDefined();
   });
 });

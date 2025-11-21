@@ -84,9 +84,9 @@ describe("CourseGradingMain", () => {
       />
     );
     // The grading table is rendered
-    expect(screen.getByTestId("grading-table")).toBeDefined();
+    expect(screen.getByTestId("grading-container")).toBeDefined();
     expect(screen.getByText(/test course/i)).toBeDefined();
-    expect(screen.getByText(/smith jane/i)).toBeDefined();
+    expect(screen.getByText(/smith, j/i)).toBeDefined();
     expect(screen.getByText(/TC101/i)).toBeDefined();
   });
 });
