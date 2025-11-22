@@ -28,7 +28,7 @@ export function GradesNavMain() {
         </li>
         <li>
           <Link
-            href={`/dashboard/student/grades`}
+            href={`/dashboard/student/grades/history`}
             className="text-white hover:text-gray-300 self-start"
           >
             Course History
