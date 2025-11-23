@@ -15,8 +15,11 @@ describe("course-client test", () => {
       { id: 1, name: "Course 1" },
       { id: 2, name: "Course 2" },
     ];
-    CourseClient.fetchCourses = vi.fn().mockResolvedValueOnce(mockData);
+
+    const mockFunctionCall = vi.fn().mockResolvedValueOnce(mockData);
+    CourseClient.fetchCourses = mockFunctionCall;
     const data = await CourseClient.fetchCourses();
+    expect(mockFunctionCall).toHaveBeenCalledTimes(1);
     expect(data).toEqual(mockData);
   });
 });
