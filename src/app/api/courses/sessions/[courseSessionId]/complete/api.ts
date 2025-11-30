@@ -57,10 +57,7 @@ export async function apiMarkCourseSessionAsCompleted(
       where: eq(academicTask.courseSessionId, courseSessionId),
     });
     if (results.length > 0) {
-      const allWeightsPresent = results.every(
-        (task) => task.gradeWeightId !== null
-      );
-      if (!allWeightsPresent) {
+      if (!results.every((task) => task.gradeWeightId !== null)) {
         return {
           success: false,
           message: "All course work must have a weight percentage.",
