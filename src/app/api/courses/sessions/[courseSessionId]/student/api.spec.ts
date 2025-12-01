@@ -1,3 +1,4 @@
+/* eslint  @typescript-eslint/no-explicit-any: "off" */
 import { db } from "@/db/index";
 import * as courseEnrollmentHelpers from "@/lib/utils/db/course-enrollment-helpers";
 import { describe, expect, test, vi } from "vitest";
@@ -29,7 +30,7 @@ describe("src/app/api/courses/sessions/[courseSessionId]/student/api.ts", () => 
         id: "existing-enrollment-id",
         courseSessionId: "test-course-session-id",
         studentId: "test-student-id",
-      } as any);
+      });
 
     const result = await apiAddStudentToCourseSession(
       "test-course-session-id",
