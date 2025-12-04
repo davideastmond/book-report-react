@@ -82,7 +82,9 @@ export const CourseSessionClient = {
   },
   fetchCourseSessionsByStudent:
     async (): Promise<CourseSessionsAPIResponse> => {
-      return apiUserGetCoursesSessions() as Promise<CourseSessionsAPIResponse>;
+      const result = await apiUserGetCoursesSessions();
+      if (!result.success) throw new Error(result.message!);
+      return result.data as CourseSessionsAPIResponse;
     },
   fetchCourseSessionByIdAdmin: async (
     id: string
