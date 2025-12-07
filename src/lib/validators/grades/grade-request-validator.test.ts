@@ -33,6 +33,14 @@ describe("Grade Request Validator Tests", () => {
         startDate: "2023-01-01",
       }),
     ],
+    [
+      "Invalid filter value: invalidFilter",
+      new URLSearchParams({
+        filter: "invalidFilter",
+        startDate: "2023-01-01",
+        studentId: "student123",
+      }),
+    ],
   ];
   it.each(testCases)("throws error for %s", (message, query) => {
     expect(() => validateGradesAPIRequest(query as URLSearchParams)).toThrow(
