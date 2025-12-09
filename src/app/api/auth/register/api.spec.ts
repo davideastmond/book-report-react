@@ -1,5 +1,5 @@
 import { describe, expect, test, vi } from "vitest";
-import { apiRegisterUser } from "./api";
+import { apiRegisterUser, RegistrationRequest } from "./api";
 
 const userDbQueryMock = vi.fn();
 
@@ -127,7 +127,9 @@ describe("Register API", () => {
       "should validate %s",
       async (name, requestData, expected) => {
         userDbQueryMock.mockReturnValue(null);
-        const result = await apiRegisterUser(requestData as any);
+        const result = await apiRegisterUser(
+          requestData as RegistrationRequest
+        );
         expect(result.success).toBe(expected);
       }
     );
