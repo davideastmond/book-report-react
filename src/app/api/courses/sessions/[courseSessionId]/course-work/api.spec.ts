@@ -1,3 +1,4 @@
+// @vitest-environment jsdom
 /* eslint  @typescript-eslint/no-explicit-any: "off" */
 import { describe, expect, test, vi } from "vitest";
 import { apiCreateCourseWork, apiGetCourseWorkForSession } from "./api";

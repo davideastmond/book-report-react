@@ -1,3 +1,4 @@
+// @vitest-environment jsdom
 import { describe, expect, test, vi } from "vitest";
 import { apiGetCourseWorkById, apiUpdateCourseWorkAttributesById } from "./api";
 const dbMock = vi.fn();
