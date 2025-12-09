@@ -1,3 +1,4 @@
+// @vitest-environment jsdom
 import { describe, expect, test, vi } from "vitest";
 import { apiGetEnrolledStudents } from "./api";
 const getServerSessionMock = vi.fn();
