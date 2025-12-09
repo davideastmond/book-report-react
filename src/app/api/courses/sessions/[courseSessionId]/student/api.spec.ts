@@ -1,3 +1,4 @@
+// @vitest-environment jsdom
 /* eslint  @typescript-eslint/no-explicit-any: "off" */
 import { db } from "@/db/index";
 import * as courseEnrollmentHelpers from "@/lib/utils/db/course-enrollment-helpers";

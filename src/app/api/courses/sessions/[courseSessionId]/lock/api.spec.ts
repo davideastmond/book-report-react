@@ -1,3 +1,4 @@
+// @vitest-environment jsdom
 import { apiToggleLockedStatusForCourseSession } from "@/api/courses/sessions/[courseSessionId]/lock/api";
 
 import { describe, expect, test, vi } from "vitest";
