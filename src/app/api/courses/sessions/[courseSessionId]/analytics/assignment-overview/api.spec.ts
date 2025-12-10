@@ -1,5 +1,4 @@
 // @vitest-environment jsdom
-
 import { GradeController } from "@/lib/controller/grades/grade-controller";
 import { describe, expect, test, vi } from "vitest";
 import { apiGetAssignmentsOverview } from "./api";
