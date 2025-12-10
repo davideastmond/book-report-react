@@ -2,7 +2,7 @@
 import { db } from "@/db/index";
 import { user } from "@/db/schema";
 import { ApiResult } from "@/lib/types/api/api-return-type";
-import { registrationValidator } from "@/lib/validators/registration/registration-validator";
+import { registrationValidatorWithConfirmPassword } from "@/lib/validators/registration/registration-validator";
 import { hashSync } from "bcrypt";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
@@ -20,7 +20,7 @@ export async function apiRegisterUser(
   registrationData: RegistrationRequest
 ): Promise<ApiResult<null>> {
   try {
-    registrationValidator.parse(registrationData);
+    registrationValidatorWithConfirmPassword.parse(registrationData);
   } catch (error) {
     if (error instanceof z.ZodError) {
       return {
@@ -29,6 +29,7 @@ export async function apiRegisterUser(
       };
     }
   }
+
   const { email } = registrationData;
 
   try {

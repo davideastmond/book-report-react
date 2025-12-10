@@ -8,12 +8,25 @@ export default defineConfig({
   test: {
     environment: "jsdom",
     setupFiles: "./setup-tests.ts",
+    include: ["**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"],
     exclude: [
-      "**/*.config.{ts,js,mts,mjs}",
       "**/node_modules/**",
       "**/dist/**",
       "**/cypress/**",
       "**/.{idea,git,cache,output,temp}/**",
     ],
+    coverage: {
+      exclude: [
+        "**/*.config.{ts,js,mts,mjs,cjs}",
+        "hero.ts",
+        "**/*.d.ts",
+        "**/node_modules/**",
+        "**/dist/**",
+        "**/.next/**",
+        "**/cypress/**",
+        "**/.{idea,git,cache,output,temp}/**",
+        "**/setup-tests.ts",
+      ],
+    },
   },
 });

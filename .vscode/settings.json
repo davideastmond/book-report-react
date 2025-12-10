@@ -1,7 +1,13 @@
 {
-  "cSpell.words": [
-    "lpignore",
-    "Vercel"
+  "cSpell.words": ["lpignore", "Vercel"],
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.preferences.autoImportFileExcludePatterns": [
+    "node:test",
+    "node:test/with-typescript"
+    // You can add other problematic modules here, e.g., "@radix-ui/themes/*"
   ],
-  "typescript.tsdk": "node_modules/typescript/lib"
+  "javascript.preferences.autoImportFileExcludePatterns": [
+    "node:test",
+    "node:test/with-typescript"
+  ]
 }

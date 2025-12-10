@@ -1,3 +1,4 @@
+// @vitest-environment jsdom
 import { apiGetCourses } from "@/api/courses/api";
 import { db } from "@/db/index";
 import { afterEach, describe, expect, test, vi } from "vitest";

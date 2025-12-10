@@ -9,17 +9,27 @@ import { getServerSession } from "next-auth";
 export async function apiUserGetCoursesSessions() {
   const authSession = await getServerSession(authOptions);
   if (!authSession || !authSession.user) {
-    throw new Error("Unauthorized");
+    return {
+      success: false,
+      message: "Unauthorized",
+    };
   }
 
   if (["admin", "teacher"].includes(authSession.user.role)) {
     try {
-      return adminGetMyCourses(authSession.user.id);
+      const data = await adminGetMyCourses(authSession.user.id);
+      return {
+        success: true,
+        data,
+        message: "admin",
+      };
     } catch (error) {
-      throw new Error(
-        "Failed to fetch course sessions for admin/teacher: " +
-          (error as Error).message
-      );
+      return {
+        success: false,
+        message:
+          "Failed to fetch course sessions for admin/teacher: " +
+          (error as Error).message,
+      };
     }
   }
 
@@ -42,9 +52,18 @@ export async function apiUserGetCoursesSessions() {
       .innerJoin(course, eq(course.id, courseSession.courseId))
       .innerJoin(user, eq(user.id, courseSession.instructorId));
 
-    return res;
+    return {
+      success: true,
+      data: res,
+      message: "student",
+    };
   } catch (error) {
-    throw error;
+    return {
+      success: false,
+      message:
+        "Failed to fetch course sessions for student: " +
+        (error as Error).message,
+    };
   }
 }
 

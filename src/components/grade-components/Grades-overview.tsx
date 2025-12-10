@@ -40,14 +40,18 @@ export function GradesOverviewComponent() {
       ? new Date(endDateInput.value)
       : new Date();
 
-    const overViewData = await GradesClient.getGradesForStudentWithDateRange({
-      studentId: session?.user?.id as string,
-      startDate,
-      endDate,
-    });
+    try {
+      const overViewData = await GradesClient.getGradesForStudentWithDateRange({
+        studentId: session?.user?.id as string,
+        startDate,
+        endDate,
+      });
 
-    setGradesOverviewData(overViewData.data);
-    setGpaValue(overViewData.gpa);
+      setGradesOverviewData(overViewData.data);
+      setGpaValue(overViewData.gpa);
+    } catch (error) {
+      console.error("Error fetching grades:", error);
+    }
   }
 
   async function handleDateRangeChange() {
@@ -103,6 +107,11 @@ export function GradesOverviewComponent() {
         </form>
       </div>
       <div>
+        {gradesOverviewData.length === 0 && (
+          <p className="mt-4 text-yellow-400">
+            No course grades available for the selected dates.
+          </p>
+        )}
         {gradesOverviewData.map((gradeSummary) => (
           <div className="my-4" key={gradeSummary.courseCode}>
             <CourseGradeSummaryTable gradeSummaryData={gradeSummary} />

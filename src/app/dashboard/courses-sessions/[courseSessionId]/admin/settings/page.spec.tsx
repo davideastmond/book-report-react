@@ -1,4 +1,3 @@
-// @vitest-environment jsdom
 import { CourseSessionClient } from "@/clients/course-session-client";
 import { fireEvent, render, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";

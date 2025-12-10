@@ -1,6 +1,5 @@
 "use client";
 import { GradesOverviewComponent } from "@/components/grade-components/Grades-overview";
-import { GradesNavMain } from "@/components/nav/student/Grades-nav-main";
 import { useSession } from "next-auth/react";
 
 export default function StudentGradesPage() {
@@ -11,7 +10,6 @@ export default function StudentGradesPage() {
   }
   return (
     <div>
-      <GradesNavMain />
       <GradesOverviewComponent />
     </div>
   );
