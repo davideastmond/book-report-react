@@ -1,3 +1,4 @@
+// @vitest-environment jsdom
 import { CourseSessionGradeCalculator } from "@/lib/controller/grades/calculations/course-session-grade-calculator";
 import { GradeController } from "@/lib/controller/grades/grade-controller";
 import { describe, expect, test, vi } from "vitest";
